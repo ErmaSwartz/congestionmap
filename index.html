@@ -8,14 +8,24 @@
 <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --powder-petal: #f7e1d7;
+    --dust-grey: #dedbd2;
+    --iron-grey: #4a5759;
+    --cherry-blossom: #edafb8;
+    --cherry-blossom-deep: #d88a96;
+    --ash-grey: #b0c4b1;
+    --ash-grey-deep: #8aaa8b;
+  }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
     font-family: 'Inter', -apple-system, sans-serif;
-    background: #0a0a0a;
-    color: #e8e8e8;
+    background: var(--powder-petal);
+    color: var(--iron-grey);
   }
 
   /* ── MAP ── */
@@ -42,16 +52,16 @@
   }
 
   .step-content {
-    background: rgba(10, 10, 10, 0.88);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 12px;
+    background: rgba(222, 219, 210, 0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(74, 87, 89, 0.10);
+    border-radius: 16px;
     padding: 36px 40px;
     max-width: 420px;
     opacity: 0;
     transform: translateY(30px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
   }
 
   .step.active .step-content {
@@ -60,37 +70,41 @@
   }
 
   .step-content h2 {
-    font-size: 22px;
-    font-weight: 600;
+    font-family: 'DM Serif Display', serif;
+    font-size: 24px;
+    font-weight: 400;
     margin-bottom: 16px;
     line-height: 1.3;
-    color: #fff;
+    color: var(--iron-grey);
   }
 
   .step-content p {
     font-size: 15px;
     line-height: 1.7;
-    color: #b0b0b0;
+    color: var(--iron-grey);
+    opacity: 0.8;
     margin-bottom: 12px;
   }
 
   .step-content p:last-child { margin-bottom: 0; }
 
   .stat {
+    font-family: 'DM Serif Display', serif;
     font-size: 42px;
-    font-weight: 700;
+    font-weight: 400;
     letter-spacing: -1px;
     margin: 16px 0;
   }
 
-  .stat.negative { color: #e74c3c; }
-  .stat.positive { color: #3498db; }
+  .stat.negative { color: var(--cherry-blossom-deep); }
+  .stat.positive { color: var(--ash-grey-deep); }
 
   .stat-label {
     font-size: 13px;
     text-transform: uppercase;
     letter-spacing: 1.5px;
-    color: #777;
+    color: var(--iron-grey);
+    opacity: 0.5;
     margin-bottom: 4px;
   }
 
@@ -105,8 +119,9 @@
   .data-table th {
     text-align: left;
     padding: 8px 10px;
-    border-bottom: 1px solid rgba(255,255,255,0.15);
-    color: #999;
+    border-bottom: 1px solid rgba(74, 87, 89, 0.15);
+    color: var(--iron-grey);
+    opacity: 0.5;
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -115,12 +130,12 @@
 
   .data-table td {
     padding: 7px 10px;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-    color: #ccc;
+    border-bottom: 1px solid rgba(74, 87, 89, 0.08);
+    color: var(--iron-grey);
   }
 
-  .data-table .neg { color: #e74c3c; }
-  .data-table .pos { color: #3498db; }
+  .data-table .neg { color: var(--cherry-blossom-deep); font-weight: 600; }
+  .data-table .pos { color: var(--ash-grey-deep); font-weight: 600; }
 
   /* ── CHART CONTAINER ── */
   #chart-box {
@@ -129,16 +144,16 @@
     right: 30px;
     width: 380px;
     height: 240px;
-    background: rgba(10, 10, 10, 0.88);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 12px;
+    background: rgba(222, 219, 210, 0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(74, 87, 89, 0.10);
+    border-radius: 16px;
     padding: 20px;
     z-index: 20;
     opacity: 0;
     transform: translateY(20px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
     pointer-events: none;
   }
 
@@ -149,11 +164,11 @@
   }
 
   #chart-box h3 {
-    font-size: 13px;
-    font-weight: 500;
-    color: #999;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    font-family: 'DM Serif Display', serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--iron-grey);
+    opacity: 0.6;
     margin-bottom: 10px;
   }
 
@@ -162,15 +177,15 @@
     position: fixed;
     bottom: 30px;
     right: 30px;
-    background: rgba(10, 10, 10, 0.88);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 12px;
+    background: rgba(222, 219, 210, 0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(74, 87, 89, 0.10);
+    border-radius: 16px;
     padding: 18px 22px;
     z-index: 20;
     opacity: 0;
-    transition: opacity 0.6s ease;
+    transition: opacity 0.5s ease-out;
     pointer-events: none;
     font-size: 12px;
   }
@@ -178,11 +193,11 @@
   #legend.visible { opacity: 1; }
 
   #legend h3 {
-    font-size: 12px;
-    font-weight: 500;
-    color: #999;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    font-family: 'DM Serif Display', serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--iron-grey);
+    opacity: 0.6;
     margin-bottom: 10px;
   }
 
@@ -190,7 +205,7 @@
     display: flex;
     align-items: center;
     margin-bottom: 6px;
-    color: #ccc;
+    color: var(--iron-grey);
   }
 
   .legend-swatch {
@@ -204,20 +219,40 @@
   /* ── SPACER ── */
   .spacer { height: 50vh; }
 
-  /* ── BRIDGE TOOLTIP ── */
+  /* ── TOOLTIP ── */
   .bridge-tooltip {
-    background: rgba(10,10,10,0.92) !important;
-    border: 1px solid rgba(255,255,255,0.12) !important;
-    border-radius: 8px !important;
-    color: #e0e0e0 !important;
+    background: rgba(222, 219, 210, 0.95) !important;
+    border: 1px solid rgba(74, 87, 89, 0.15) !important;
+    border-radius: 12px !important;
+    color: var(--iron-grey) !important;
     font-family: 'Inter', sans-serif !important;
     font-size: 13px !important;
     padding: 10px 14px !important;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4) !important;
+    box-shadow: 0 4px 20px rgba(74, 87, 89, 0.12) !important;
   }
 
-  .bridge-tooltip .name { font-weight: 600; color: #fff; }
+  .bridge-tooltip .name {
+    font-family: 'DM Serif Display', serif;
+    font-weight: 400;
+    color: var(--iron-grey);
+  }
   .bridge-tooltip .pct { font-weight: 700; font-size: 16px; margin-top: 4px; }
+
+  /* ── SCROLL HINT ── */
+  .scroll-hint {
+    color: var(--iron-grey);
+    opacity: 0.35;
+    font-size: 13px;
+    font-style: italic;
+  }
+
+  /* ── SOURCE NOTE ── */
+  .source-note {
+    color: var(--iron-grey) !important;
+    opacity: 0.4 !important;
+    font-size: 12px !important;
+    margin-top: 16px !important;
+  }
 
   /* ── LEAFLET OVERRIDES ── */
   .leaflet-tooltip { box-shadow: none; }
@@ -234,10 +269,10 @@
 
 <div id="legend">
   <h3>Taxi % Change</h3>
-  <div class="legend-item"><div class="legend-swatch" style="background:#c0392b;"></div> Decrease</div>
-  <div class="legend-item"><div class="legend-swatch" style="background:#f5e6d3;"></div> 0 – 10%</div>
-  <div class="legend-item"><div class="legend-swatch" style="background:#e8c170;"></div> 10 – 25%</div>
-  <div class="legend-item"><div class="legend-swatch" style="background:#5dade2;"></div> 25%+</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:var(--cherry-blossom-deep);"></div> Decrease</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:var(--dust-grey);"></div> 0 – 10%</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:var(--cherry-blossom);"></div> 10 – 25%</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:var(--ash-grey);"></div> 25%+</div>
 </div>
 
 <div id="scroll-container">
@@ -248,7 +283,7 @@
       <h2>NYC Congestion Pricing:<br>Where Does the Traffic Go?</h2>
       <p>On January 5, 2025, New York City began charging vehicles to enter Manhattan's central business district below 60th Street.</p>
       <p>The policy aimed to reduce traffic in the most congested part of the city. But traffic doesn't just disappear — it has to go somewhere.</p>
-      <p style="color:#666; font-size:13px;">Scroll to explore the spatial story ↓</p>
+      <p class="scroll-hint">Scroll to explore the spatial story ↓</p>
     </div>
   </div>
 
@@ -339,7 +374,7 @@
       <p>The data tells a consistent story across all three sources:</p>
       <p>Bridge and tunnel entries are <strong>down 3.25%</strong>. Taxi activity outside the zone is <strong>up 20–37%</strong>. The zone boundary creates a narrow avoidance buffer.</p>
       <p>Congestion pricing works — but its effects ripple outward across the entire urban system. Surrounding neighborhoods absorb displaced demand, raising questions about equity and infrastructure readiness beyond the zone.</p>
-      <p style="color:#555; font-size:12px; margin-top:16px;">Data: NYC Yellow Taxi (TLC), MTA Bridges &amp; Tunnels, Jan–Apr 2024 vs 2025<br>Tools: Python, GeoPandas, Leaflet, Chart.js</p>
+      <p class="source-note">Data: NYC Yellow Taxi (TLC), MTA Bridges &amp; Tunnels, Jan–Apr 2024 vs 2025<br>Tools: Python, GeoPandas, Leaflet, Chart.js</p>
     </div>
   </div>
 
@@ -353,7 +388,7 @@
 
 const ZONE_GEOJSON = {"type":"FeatureCollection","features":[{"id":"0","type":"Feature","properties":{},"geometry":{"type":"Polygon","coordinates":[[[-73.9592177,40.7586545],[-73.962899,40.76024],[-73.9629361,40.76094],[-73.9676372,40.7630327],[-73.9733357,40.7654104],[-73.9737672,40.7649272],[-73.9808602,40.7679278],[-73.980963,40.7686397],[-73.9924605,40.7733774],[-73.9966746,40.7659769],[-74.0018318,40.7605226],[-74.0066243,40.7537403],[-74.0074232,40.75159],[-74.007489,40.7462796],[-74.008537,40.7407296],[-74.0093292,40.7391995],[-74.0107424,40.725111],[-74.0119076,40.7186505],[-74.0149532,40.7077046],[-74.0142825,40.7065119],[-74.0149415,40.7046603],[-74.014407,40.70445],[-74.01462,40.703356],[-74.013971,40.70230],[-74.0129592,40.7022462],[-74.0125562,40.7015574],[-74.0096568,40.702318],[-74.0004726,40.7080542],[-74.0033248,40.7106612],[-74.00447,40.7110589],[-74.004361,40.711504],[-74.003238,40.71189],[-74.002667,40.711825],[-73.9994029,40.7086882],[-73.9905637,40.7102949],[-73.9818336,40.7111312],[-73.9786637,40.7119992],[-73.9760738,40.7167453],[-73.9748494,40.7223692],[-73.9721949,40.7270026],[-73.9725413,40.7295884],[-73.9740008,40.7309898],[-73.9753818,40.7363415],[-73.9736623,40.7391983],[-73.9729701,40.7424296],[-73.9716105,40.7447917],[-73.9672742,40.7499694],[-73.9592177,40.7586545]]]}},{"id":"1","type":"Feature","properties":{},"geometry":{"type":"Polygon","coordinates":[[[-73.9586025,40.7591455],[-73.9625877,40.7609042],[-73.9621527,40.760457],[-73.9586025,40.7591455]]]}},{"id":"2","type":"Feature","properties":{},"geometry":{"type":"Polygon","coordinates":[[[-74.010502,40.701627],[-74.009247,40.69979],[-73.998293,40.70498],[-74.000959,40.706967],[-74.008266,40.702451],[-74.010502,40.701627]]]}},{"id":"5","type":"Feature","properties":{},"geometry":{"type":"Polygon","coordinates":[[[-74.0156618,40.7069632],[-74.0164228,40.705093],[-74.016386,40.70443],[-74.01586,40.704415],[-74.0151333,40.7062843],[-74.0156618,40.7069632]]]}},{"id":"6","type":"Feature","properties":{},"geometry":{"type":"Polygon","coordinates":[[[-74.0104378,40.7392454],[-74.0090691,40.742826],[-74.008184,40.7485209],[-74.0088006,40.7504749],[-74.0073049,40.7543681],[-74.0015753,40.7622716],[-73.9996253,40.7636746],[-73.9950928,40.7698923],[-73.9949212,40.7715583],[-73.9933245,40.7737265],[-73.996067,40.774653],[-74.007943,40.758806],[-74.005655,40.757941],[-74.009738,40.753506],[-74.011037,40.751197],[-74.019806,40.70621],[-74.018621,40.703614],[-74.017562,40.703562],[-74.017032,40.704149],[-74.013887,40.715174],[-74.0110904,40.7284646],[-74.0104378,40.7392454]]]}}]};
 
-const BANDS_GEOJSON = {"type":"FeatureCollection","features":[{"id":"0","type":"Feature","properties":{"dist_band":"inside","taxi_pct":13.30,"after":27442208,"before":24220416},"geometry":{"type":"Polygon","coordinates":[[[-74.01364,40.69803],[-74.02220,40.70123],[-74.02399,40.70364],[-74.02451,40.70675],[-74.01569,40.75196],[-74.01223,40.75723],[-74.01222,40.76041],[-73.99997,40.77674],[-73.99641,40.77827],[-73.99140,40.77704],[-73.95479,40.76132],[-73.95384,40.75931],[-73.95443,40.75739],[-73.96625,40.74439],[-73.96762,40.73890],[-73.96762,40.73418],[-73.96918,40.73215],[-73.96790,40.73041],[-73.96691,40.72551],[-73.96864,40.71827],[-73.97217,40.70956],[-73.97462,40.70765],[-73.97856,40.70626],[-73.98876,40.70530],[-73.99379,40.70615],[-73.99364,40.70422],[-73.99502,40.70235],[-74.00756,40.69641],[-74.01072,40.69635],[-74.01364,40.69803]]]}},{"id":"1","type":"Feature","properties":{"dist_band":"0-0.25","taxi_pct":-1.63,"after":17236,"before":17521},"geometry":{"type":"Polygon","coordinates":[[[-74.02204,40.68899],[-74.02868,40.69131],[-74.03412,40.69519],[-74.03765,40.70046],[-74.03884,40.70675],[-74.02919,40.75560],[-74.02504,40.76521],[-74.01167,40.78298],[-74.00627,40.78689],[-74.00114,40.78862],[-73.99558,40.78914],[-73.99005,40.78840],[-73.95302,40.77344],[-73.94743,40.77089],[-73.94337,40.76785],[-73.94011,40.76265],[-73.93978,40.75689],[-73.94248,40.75138],[-73.95124,40.74209],[-73.95320,40.73859],[-73.95368,40.73186],[-73.95272,40.72739],[-73.95291,40.72321],[-73.95698,40.70910],[-73.96059,40.70319],[-73.96420,40.70009],[-73.96857,40.69779],[-73.97560,40.69562],[-73.98490,40.69470],[-73.99919,40.68749],[-74.00425,40.68581],[-74.01338,40.68565],[-74.02204,40.68899]],[[-74.01324,40.69782],[-74.01072,40.69635],[-74.00756,40.69641],[-73.99502,40.70235],[-73.99364,40.70422],[-73.99379,40.70615],[-73.98876,40.70530],[-73.97856,40.70626],[-73.97462,40.70765],[-73.97217,40.70956],[-73.96864,40.71827],[-73.96691,40.72551],[-73.96790,40.73041],[-73.96918,40.73215],[-73.96762,40.73418],[-73.96762,40.73890],[-73.96625,40.74439],[-73.95443,40.75739],[-73.95384,40.75931],[-73.95479,40.76132],[-73.99140,40.77704],[-73.99558,40.78914],[-74.00114,40.78862],[-74.00627,40.78689],[-74.01167,40.78298],[-74.02504,40.76521],[-74.02919,40.75560],[-74.03884,40.70675],[-74.03765,40.70046],[-74.03412,40.69519],[-74.02868,40.69131],[-74.01324,40.69782]]]}},{"id":"2","type":"Feature","properties":{"dist_band":"0.25-1","taxi_pct":12.51,"after":7696257,"before":6840653},"geometry":{"type":"Polygon","coordinates":[[[-74.04388,40.66462],[-74.05770,40.67191],[-74.06813,40.68194],[-74.07407,40.69199],[-74.07597,40.69826],[-74.07690,40.70784],[-74.06781,40.75630],[-74.06551,40.76440],[-74.05924,40.77801],[-74.04589,40.79601],[-74.03943,40.80301],[-74.02670,40.81137],[-74.01130,40.81656],[-74.00022,40.81801],[-73.98343,40.81706],[-73.96520,40.81160],[-73.92988,40.79674],[-73.92062,40.79165],[-73.91288,40.78526],[-73.90697,40.77783],[-73.90312,40.76965],[-73.90148,40.76106],[-73.90212,40.75238],[-73.90330,40.74813],[-73.90728,40.73999],[-73.91493,40.73097],[-73.91451,40.72634],[-73.91544,40.71798],[-73.92147,40.69842],[-73.92651,40.68999],[-73.93347,40.68268],[-73.94240,40.67622],[-73.95141,40.67191],[-73.96293,40.66820],[-73.97057,40.66690],[-73.98899,40.65914],[-73.99965,40.65693],[-74.01067,40.65633],[-74.02163,40.65735],[-74.03213,40.65996],[-74.04388,40.66462]],[[-74.02156,40.68874],[-74.01338,40.68565],[-74.00425,40.68581],[-73.99919,40.68749],[-73.98490,40.69470],[-73.97560,40.69562],[-73.96857,40.69779],[-73.96420,40.70009],[-73.96059,40.70319],[-73.95698,40.70910],[-73.95291,40.72321],[-73.95272,40.72739],[-73.95368,40.73186],[-73.95320,40.73859],[-73.95124,40.74209],[-73.94248,40.75138],[-73.93978,40.75689],[-73.94011,40.76265],[-73.94337,40.76785],[-73.94743,40.77089],[-73.95302,40.77344],[-73.99005,40.78840],[-73.99558,40.78914],[-74.00114,40.78862],[-74.00627,40.78689],[-74.01167,40.78298],[-74.02504,40.76521],[-74.02919,40.75560],[-74.03884,40.70675],[-74.03765,40.70046],[-74.03412,40.69519],[-74.02868,40.69131],[-74.02156,40.68874]]]}},{"id":"3","type":"Feature","properties":{"dist_band":"1-3","taxi_pct":20.51,"after":7071892,"before":5868449},"geometry":{"type":"Polygon","coordinates":[[[-74.06071,40.63862],[-74.07659,40.64614],[-74.08373,40.65076],[-74.09606,40.66148],[-74.10676,40.67584],[-74.11048,40.68350],[-74.11304,40.69143],[-74.11476,40.70089],[-74.11496,40.70890],[-74.11399,40.71688],[-74.10567,40.75969],[-74.10184,40.77319],[-74.09716,40.78429],[-74.09346,40.79081],[-74.07912,40.81024],[-74.06836,40.82190],[-74.05480,40.83174],[-74.04713,40.83585],[-74.03039,40.84226],[-74.01231,40.84605],[-74.00299,40.84692],[-73.98424,40.84655],[-73.97500,40.84532],[-73.95720,40.84082],[-73.91471,40.82357],[-73.90272,40.81785],[-73.89529,40.81332],[-73.88238,40.80266],[-73.87253,40.79027],[-73.86612,40.77664],[-73.86340,40.76231],[-73.86448,40.74786],[-73.86932,40.73386],[-73.87662,40.72232],[-73.87958,40.70609],[-73.88551,40.68888],[-73.89352,40.67552],[-73.90511,40.66334],[-73.91925,40.65321],[-73.93428,40.64603],[-73.94414,40.64254],[-73.95605,40.63965],[-73.97550,40.63204],[-73.99326,40.62836],[-74.01161,40.62735],[-74.02988,40.62905],[-74.04737,40.63340],[-74.06071,40.63862]],[[-74.03708,40.66183],[-74.02696,40.65846],[-74.01618,40.65664],[-74.00514,40.65643],[-73.99425,40.65784],[-73.98392,40.66082],[-73.97057,40.66690],[-73.95830,40.66945],[-73.94677,40.67390],[-73.93832,40.67883],[-73.92974,40.68620],[-73.92322,40.69504],[-73.91791,40.70836],[-73.91471,40.72214],[-73.91493,40.73097],[-73.90728,40.73999],[-73.90330,40.74813],[-73.90212,40.75238],[-73.90148,40.76106],[-73.90312,40.76965],[-73.90697,40.77783],[-73.91288,40.78526],[-73.92062,40.79165],[-73.93387,40.79850],[-73.97017,40.81348],[-73.97801,40.81591],[-73.98898,40.81779],[-74.00022,40.81801],[-74.01665,40.81522],[-74.03130,40.80891],[-74.04289,40.79963],[-74.05924,40.77801],[-74.06551,40.76440],[-74.06781,40.75630],[-74.07632,40.71262],[-74.07678,40.70303],[-74.07407,40.69199],[-74.07184,40.68739],[-74.06509,40.67834],[-74.05341,40.66914],[-74.03708,40.66183]]]}},{"id":"4","type":"Feature","properties":{"dist_band":"3-5","taxi_pct":36.99,"after":2654977,"before":1938044},"geometry":{"type":"Polygon","coordinates":[[[-73.94178,40.59586],[-73.95529,40.59138],[-73.96930,40.58792],[-73.98368,40.58550],[-73.99830,40.58415],[-74.01303,40.58389],[-74.02772,40.58471],[-74.04223,40.58661],[-74.05644,40.58957],[-74.07021,40.59356],[-74.09901,40.60516],[-74.11132,40.61165],[-74.12274,40.61903],[-74.13316,40.62723],[-74.14247,40.63617],[-74.15140,40.64684],[-74.15912,40.65850],[-74.16507,40.67075],[-74.16918,40.68344],[-74.17173,40.69766],[-74.17206,40.71048],[-74.17052,40.72325],[-74.16212,40.76651],[-74.16009,40.77566],[-74.15635,40.78634],[-74.15073,40.79956],[-74.14481,40.80998],[-74.12900,40.83156],[-74.12100,40.84121],[-74.11179,40.85023],[-74.10145,40.85851],[-74.09009,40.86597],[-74.07782,40.87255],[-74.06475,40.87819],[-74.05101,40.88282],[-74.03674,40.88640],[-74.02207,40.88889],[-74.00715,40.89028],[-73.99213,40.89055],[-73.97714,40.88969],[-73.96233,40.88772],[-73.94785,40.88465],[-73.91969,40.87529],[-73.88594,40.86115],[-73.86915,40.85307],[-73.85725,40.84580],[-73.84636,40.83767],[-73.83660,40.82875],[-73.82807,40.81914],[-73.82085,40.80892],[-73.81500,40.79821],[-73.81060,40.78711],[-73.80768,40.77572],[-73.80627,40.76418],[-73.80638,40.75258],[-73.80802,40.74105],[-73.81116,40.72971],[-73.81578,40.71865],[-73.82096,40.70951],[-73.82340,40.69821],[-73.82790,40.68382],[-73.83159,40.67456],[-73.83687,40.66454],[-73.84406,40.65380],[-73.85267,40.64369],[-73.86261,40.63431],[-73.87370,40.62565],[-73.88456,40.61868],[-73.89623,40.61252],[-73.91099,40.60628],[-73.93364,40.59931],[-73.94178,40.59586]],[[-74.05563,40.63652],[-74.03876,40.63090],[-74.02080,40.62787],[-74.00240,40.62752],[-73.98427,40.62987],[-73.96706,40.63484],[-73.95605,40.63965],[-73.94414,40.64254],[-73.92654,40.64935],[-73.91246,40.65756],[-73.89890,40.66920],[-73.89352,40.67552],[-73.88551,40.68888],[-73.87958,40.70609],[-73.87662,40.72232],[-73.86932,40.73386],[-73.86644,40.74077],[-73.86346,40.75507],[-73.86428,40.76953],[-73.86887,40.78358],[-73.87705,40.79666],[-73.88238,40.80266],[-73.89529,40.81332],[-73.90272,40.81785],[-73.91471,40.82357],[-73.95720,40.84082],[-73.97500,40.84532],[-73.98424,40.84655],[-74.00299,40.84692],[-74.01231,40.84605],[-74.03039,40.84226],[-74.04713,40.83585],[-74.05480,40.83174],[-74.06836,40.82190],[-74.07912,40.81024],[-74.09346,40.79081],[-74.09716,40.78429],[-74.10184,40.77319],[-74.10567,40.75969],[-74.11399,40.71688],[-74.11496,40.70890],[-74.11476,40.70089],[-74.11304,40.69143],[-74.11048,40.68350],[-74.10676,40.67584],[-74.09606,40.66148],[-74.09024,40.65589],[-74.07659,40.64614],[-74.05563,40.63652]]]}}]};
+const BANDS_GEOJSON = {"type":"FeatureCollection","features":[{"id":"0","type":"Feature","properties":{"dist_band":"inside","taxi_pct":13.30,"after":27442208,"before":24220416},"geometry":{"type":"Polygon","coordinates":[[[-74.01364,40.69803],[-74.02220,40.70123],[-74.02399,40.70364],[-74.02451,40.70675],[-74.01569,40.75196],[-74.01223,40.75723],[-74.01222,40.76041],[-73.99997,40.77674],[-73.99641,40.77827],[-73.99140,40.77704],[-73.95479,40.76132],[-73.95384,40.75931],[-73.95443,40.75739],[-73.96625,40.74439],[-73.96762,40.73890],[-73.96762,40.73418],[-73.96918,40.73215],[-73.96790,40.73041],[-73.96691,40.72551],[-73.96864,40.71827],[-73.97217,40.70956],[-73.97462,40.70765],[-73.97856,40.70626],[-73.98876,40.70530],[-73.99379,40.70615],[-73.99364,40.70422],[-73.99502,40.70235],[-74.00756,40.69641],[-74.01072,40.69635],[-74.01364,40.69803]]]}},{"id":"1","type":"Feature","properties":{"dist_band":"0-0.25","taxi_pct":-1.63,"after":17236,"before":17521},"geometry":{"type":"Polygon","coordinates":[[[-74.02204,40.68899],[-74.02868,40.69131],[-74.03412,40.69519],[-74.03765,40.70046],[-74.03884,40.70675],[-74.02919,40.75560],[-74.02504,40.76521],[-74.01167,40.78298],[-74.00627,40.78689],[-74.00114,40.78862],[-73.99558,40.78914],[-73.99005,40.78840],[-73.95302,40.77344],[-73.94743,40.77089],[-73.94337,40.76785],[-73.94011,40.76265],[-73.93978,40.75689],[-73.94248,40.75138],[-73.95124,40.74209],[-73.95320,40.73859],[-73.95368,40.73186],[-73.95272,40.72739],[-73.95291,40.72321],[-73.95698,40.70910],[-73.96059,40.70319],[-73.96420,40.70009],[-73.96857,40.69779],[-73.97560,40.69562],[-73.98490,40.69470],[-73.99919,40.68749],[-74.00425,40.68581],[-74.01338,40.68565],[-74.02204,40.68899]],[[-74.01324,40.69782],[-74.01072,40.69635],[-74.00756,40.69641],[-73.99502,40.70235],[-73.99364,40.70422],[-73.99379,40.70615],[-73.98876,40.70530],[-73.97856,40.70626],[-73.97462,40.70765],[-73.97217,40.70956],[-73.96864,40.71827],[-73.96691,40.72551],[-73.96790,40.73041],[-73.96918,40.73215],[-73.96762,40.73418],[-73.96762,40.73890],[-73.96625,40.74439],[-73.95443,40.75739],[-73.95384,40.75931],[-73.95479,40.76132],[-73.99005,40.78840],[-73.99558,40.78914],[-74.00114,40.78862],[-74.00627,40.78689],[-74.01167,40.78298],[-74.02504,40.76521],[-74.02919,40.75560],[-74.03884,40.70675],[-74.03765,40.70046],[-74.03412,40.69519],[-74.02868,40.69131],[-74.01324,40.69782]]]}},{"id":"2","type":"Feature","properties":{"dist_band":"0.25-1","taxi_pct":12.51,"after":7696257,"before":6840653},"geometry":{"type":"Polygon","coordinates":[[[-74.04388,40.66462],[-74.05770,40.67191],[-74.06813,40.68194],[-74.07407,40.69199],[-74.07597,40.69826],[-74.07690,40.70784],[-74.06781,40.75630],[-74.06551,40.76440],[-74.05924,40.77801],[-74.04589,40.79601],[-74.03943,40.80301],[-74.02670,40.81137],[-74.01130,40.81656],[-74.00022,40.81801],[-73.98343,40.81706],[-73.96520,40.81160],[-73.92988,40.79674],[-73.92062,40.79165],[-73.91288,40.78526],[-73.90697,40.77783],[-73.90312,40.76965],[-73.90148,40.76106],[-73.90212,40.75238],[-73.90330,40.74813],[-73.90728,40.73999],[-73.91493,40.73097],[-73.91451,40.72634],[-73.91544,40.71798],[-73.92147,40.69842],[-73.92651,40.68999],[-73.93347,40.68268],[-73.94240,40.67622],[-73.95141,40.67191],[-73.96293,40.66820],[-73.97057,40.66690],[-73.98899,40.65914],[-73.99965,40.65693],[-74.01067,40.65633],[-74.02163,40.65735],[-74.03213,40.65996],[-74.04388,40.66462]],[[-74.02156,40.68874],[-74.01338,40.68565],[-74.00425,40.68581],[-73.99919,40.68749],[-73.98490,40.69470],[-73.97560,40.69562],[-73.96857,40.69779],[-73.96420,40.70009],[-73.96059,40.70319],[-73.95698,40.70910],[-73.95291,40.72321],[-73.95272,40.72739],[-73.95368,40.73186],[-73.95320,40.73859],[-73.95124,40.74209],[-73.94248,40.75138],[-73.93978,40.75689],[-73.94011,40.76265],[-73.94337,40.76785],[-73.94743,40.77089],[-73.95302,40.77344],[-73.99005,40.78840],[-73.99558,40.78914],[-74.00114,40.78862],[-74.00627,40.78689],[-74.01167,40.78298],[-74.02504,40.76521],[-74.02919,40.75560],[-74.03884,40.70675],[-74.03765,40.70046],[-74.03412,40.69519],[-74.02868,40.69131],[-74.02156,40.68874]]]}},{"id":"3","type":"Feature","properties":{"dist_band":"1-3","taxi_pct":20.51,"after":7071892,"before":5868449},"geometry":{"type":"Polygon","coordinates":[[[-74.06071,40.63862],[-74.07659,40.64614],[-74.08373,40.65076],[-74.09606,40.66148],[-74.10676,40.67584],[-74.11048,40.68350],[-74.11304,40.69143],[-74.11476,40.70089],[-74.11496,40.70890],[-74.11399,40.71688],[-74.10567,40.75969],[-74.10184,40.77319],[-74.09716,40.78429],[-74.09346,40.79081],[-74.07912,40.81024],[-74.06836,40.82190],[-74.05480,40.83174],[-74.04713,40.83585],[-74.03039,40.84226],[-74.01231,40.84605],[-74.00299,40.84692],[-73.98424,40.84655],[-73.97500,40.84532],[-73.95720,40.84082],[-73.91471,40.82357],[-73.90272,40.81785],[-73.89529,40.81332],[-73.88238,40.80266],[-73.87253,40.79027],[-73.86612,40.77664],[-73.86340,40.76231],[-73.86448,40.74786],[-73.86932,40.73386],[-73.87662,40.72232],[-73.87958,40.70609],[-73.88551,40.68888],[-73.89352,40.67552],[-73.90511,40.66334],[-73.91925,40.65321],[-73.93428,40.64603],[-73.94414,40.64254],[-73.95605,40.63965],[-73.97550,40.63204],[-73.99326,40.62836],[-74.01161,40.62735],[-74.02988,40.62905],[-74.04737,40.63340],[-74.06071,40.63862]],[[-74.03708,40.66183],[-74.02696,40.65846],[-74.01618,40.65664],[-74.00514,40.65643],[-73.99425,40.65784],[-73.98392,40.66082],[-73.97057,40.66690],[-73.95830,40.66945],[-73.94677,40.67390],[-73.93832,40.67883],[-73.92974,40.68620],[-73.92322,40.69504],[-73.91791,40.70836],[-73.91471,40.72214],[-73.91493,40.73097],[-73.90728,40.73999],[-73.90330,40.74813],[-73.90212,40.75238],[-73.90148,40.76106],[-73.90312,40.76965],[-73.90697,40.77783],[-73.91288,40.78526],[-73.92062,40.79165],[-73.93387,40.79850],[-73.97017,40.81348],[-73.97801,40.81591],[-73.98898,40.81779],[-74.00022,40.81801],[-74.01665,40.81522],[-74.03130,40.80891],[-74.04289,40.79963],[-74.05924,40.77801],[-74.06551,40.76440],[-74.06781,40.75630],[-74.07632,40.71262],[-74.07678,40.70303],[-74.07407,40.69199],[-74.07184,40.68739],[-74.06509,40.67834],[-74.05341,40.66914],[-74.03708,40.66183]]]}},{"id":"4","type":"Feature","properties":{"dist_band":"3-5","taxi_pct":36.99,"after":2654977,"before":1938044},"geometry":{"type":"Polygon","coordinates":[[[-73.94178,40.59586],[-73.95529,40.59138],[-73.96930,40.58792],[-73.98368,40.58550],[-73.99830,40.58415],[-74.01303,40.58389],[-74.02772,40.58471],[-74.04223,40.58661],[-74.05644,40.58957],[-74.07021,40.59356],[-74.09901,40.60516],[-74.11132,40.61165],[-74.12274,40.61903],[-74.13316,40.62723],[-74.14247,40.63617],[-74.15140,40.64684],[-74.15912,40.65850],[-74.16507,40.67075],[-74.16918,40.68344],[-74.17173,40.69766],[-74.17206,40.71048],[-74.17052,40.72325],[-74.16212,40.76651],[-74.16009,40.77566],[-74.15635,40.78634],[-74.15073,40.79956],[-74.14481,40.80998],[-74.12900,40.83156],[-74.12100,40.84121],[-74.11179,40.85023],[-74.10145,40.85851],[-74.09009,40.86597],[-74.07782,40.87255],[-74.06475,40.87819],[-74.05101,40.88282],[-74.03674,40.88640],[-74.02207,40.88889],[-74.00715,40.89028],[-73.99213,40.89055],[-73.97714,40.88969],[-73.96233,40.88772],[-73.94785,40.88465],[-73.91969,40.87529],[-73.88594,40.86115],[-73.86915,40.85307],[-73.85725,40.84580],[-73.84636,40.83767],[-73.83660,40.82875],[-73.82807,40.81914],[-73.82085,40.80892],[-73.81500,40.79821],[-73.81060,40.78711],[-73.80768,40.77572],[-73.80627,40.76418],[-73.80638,40.75258],[-73.80802,40.74105],[-73.81116,40.72971],[-73.81578,40.71865],[-73.82096,40.70951],[-73.82340,40.69821],[-73.82790,40.68382],[-73.83159,40.67456],[-73.83687,40.66454],[-73.84406,40.65380],[-73.85267,40.64369],[-73.86261,40.63431],[-73.87370,40.62565],[-73.88456,40.61868],[-73.89623,40.61252],[-73.91099,40.60628],[-73.93364,40.59931],[-73.94178,40.59586]],[[-74.05563,40.63652],[-74.03876,40.63090],[-74.02080,40.62787],[-74.00240,40.62752],[-73.98427,40.62987],[-73.96706,40.63484],[-73.95605,40.63965],[-73.94414,40.64254],[-73.92654,40.64935],[-73.91246,40.65756],[-73.89890,40.66920],[-73.89352,40.67552],[-73.88551,40.68888],[-73.87958,40.70609],[-73.87662,40.72232],[-73.86932,40.73386],[-73.86644,40.74077],[-73.86346,40.75507],[-73.86428,40.76953],[-73.86887,40.78358],[-73.87705,40.79666],[-73.88238,40.80266],[-73.89529,40.81332],[-73.90272,40.81785],[-73.91471,40.82357],[-73.95720,40.84082],[-73.97500,40.84532],[-73.98424,40.84655],[-74.00299,40.84692],[-74.01231,40.84605],[-74.03039,40.84226],[-74.04713,40.83585],[-74.05480,40.83174],[-74.06836,40.82190],[-74.07912,40.81024],[-74.09346,40.79081],[-74.09716,40.78429],[-74.10184,40.77319],[-74.10567,40.75969],[-74.11399,40.71688],[-74.11496,40.70890],[-74.11476,40.70089],[-74.11304,40.69143],[-74.11048,40.68350],[-74.10676,40.67584],[-74.09606,40.66148],[-74.09024,40.65589],[-74.07659,40.64614],[-74.05563,40.63652]]]}}]};
 
 const BRIDGES = [
   {name:"RFK / Triborough Bridge", lat:40.7805, lng:-73.9239, pct:-2.23, vol_after:13396322, vol_before:13701273},
@@ -377,18 +412,18 @@ const SPILLOVER = [
 ];
 
 // ============================================================
-// COLOR SCALE
+// COLOR SCALE — palette-aligned
 // ============================================================
 function getColor(val) {
-  if (val == null || isNaN(val)) return '#555';
-  if (val < 0)  return '#c0392b';
-  if (val < 10) return '#f5e6d3';
-  if (val < 25) return '#e8c170';
-  return '#5dade2';
+  if (val == null || isNaN(val)) return '#b0b0b0';
+  if (val < 0)  return '#d88a96';           // cherry-blossom-deep → decrease / human-social
+  if (val < 10) return '#dedbd2';           // dust-grey → minimal change
+  if (val < 25) return '#edafb8';           // cherry-blossom → moderate increase
+  return '#b0c4b1';                         // ash-grey → strong increase / natural
 }
 
 // ============================================================
-// MAP SETUP
+// MAP SETUP — muted warm basemap
 // ============================================================
 const map = L.map('map', {
   center: [40.75, -73.98],
@@ -403,7 +438,8 @@ const map = L.map('map', {
   keyboard: false
 });
 
-L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+// Positron (light, muted) basemap — warm and neutral
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
   maxZoom: 18
 }).addTo(map);
 
@@ -422,13 +458,13 @@ L.control.attribution({position:'bottomright', prefix:false})
 
 // Zone outline
 const zoneLayer = L.geoJSON(ZONE_GEOJSON, {
-  style: { color: '#e74c3c', weight: 2.5, fillColor: '#e74c3c', fillOpacity: 0.12, dashArray: '6 4' },
+  style: { color: '#d88a96', weight: 2.5, fillColor: '#edafb8', fillOpacity: 0.12, dashArray: '6 4' },
   interactive: false
 });
 
 // Zone filled (for early steps)
 const zoneFilled = L.geoJSON(ZONE_GEOJSON, {
-  style: { color: '#e74c3c', weight: 2, fillColor: '#e74c3c', fillOpacity: 0.25 },
+  style: { color: '#d88a96', weight: 2, fillColor: '#edafb8', fillOpacity: 0.25 },
   interactive: false
 });
 
@@ -438,19 +474,19 @@ BANDS_GEOJSON.features.forEach((feat, i) => {
   const lyr = L.geoJSON(feat, {
     style: {
       fillColor: getColor(feat.properties.taxi_pct),
-      color: 'rgba(255,255,255,0.25)',
+      color: 'rgba(74, 87, 89, 0.20)',
       weight: 1,
       fillOpacity: 0.55
     },
     onEachFeature: function(feature, layer) {
       const p = feature.properties;
       const pctStr = (p.taxi_pct >= 0 ? '+' : '') + p.taxi_pct.toFixed(1) + '%';
-      const color = p.taxi_pct >= 0 ? '#5dade2' : '#e74c3c';
+      const color = p.taxi_pct >= 0 ? '#8aaa8b' : '#d88a96';
       layer.bindTooltip(
         `<div class="bridge-tooltip">
           <div class="name">${p.dist_band}</div>
           <div class="pct" style="color:${color}">${pctStr}</div>
-          <div style="margin-top:4px;font-size:11px;color:#888">
+          <div style="margin-top:4px;font-size:11px;color:rgba(74,87,89,0.5)">
             After: ${(p.after/1e6).toFixed(1)}M trips<br>
             Before: ${(p.before/1e6).toFixed(1)}M trips
           </div>
@@ -465,12 +501,12 @@ BANDS_GEOJSON.features.forEach((feat, i) => {
 // Bridge markers
 const bridgeMarkers = [];
 BRIDGES.forEach(b => {
-  const color = b.pct >= 0 ? '#5dade2' : '#e74c3c';
+  const color = b.pct >= 0 ? '#8aaa8b' : '#d88a96';
   const radius = Math.max(6, Math.min(14, Math.abs(b.pct) * 1.5));
   const marker = L.circleMarker([b.lat, b.lng], {
     radius: radius,
     fillColor: color,
-    color: 'rgba(255,255,255,0.5)',
+    color: 'rgba(74, 87, 89, 0.35)',
     weight: 1.5,
     fillOpacity: 0.85
   });
@@ -479,7 +515,7 @@ BRIDGES.forEach(b => {
     `<div class="bridge-tooltip">
       <div class="name">${b.name}</div>
       <div class="pct" style="color:${color}">${pctStr}</div>
-      <div style="margin-top:4px;font-size:11px;color:#888">
+      <div style="margin-top:4px;font-size:11px;color:rgba(74,87,89,0.5)">
         ${(b.vol_after/1e6).toFixed(1)}M → ${(b.vol_before/1e6).toFixed(1)}M vehicles
       </div>
     </div>`,
@@ -491,7 +527,7 @@ BRIDGES.forEach(b => {
 const bridgeGroup = L.layerGroup(bridgeMarkers);
 
 // ============================================================
-// CHART
+// CHART — palette-aligned
 // ============================================================
 let chart = null;
 function initChart() {
@@ -503,7 +539,7 @@ function initChart() {
       datasets: [{
         data: SPILLOVER.map(s => s.pct),
         backgroundColor: SPILLOVER.map(s => getColor(s.pct)),
-        borderColor: 'rgba(255,255,255,0.15)',
+        borderColor: 'rgba(74, 87, 89, 0.15)',
         borderWidth: 1,
         borderRadius: 3
       }]
@@ -514,13 +550,13 @@ function initChart() {
       plugins: { legend: { display: false } },
       scales: {
         y: {
-          title: { display: true, text: '% Change', color: '#888', font: {size:11} },
-          grid: { color: 'rgba(255,255,255,0.06)' },
-          ticks: { color: '#888', font: {size:10} }
+          title: { display: true, text: '% Change', color: 'rgba(74,87,89,0.6)', font: {size:11, family:'Inter'} },
+          grid: { color: 'rgba(74, 87, 89, 0.08)' },
+          ticks: { color: 'rgba(74,87,89,0.5)', font: {size:10, family:'Inter'} }
         },
         x: {
           grid: { display: false },
-          ticks: { color: '#888', font: {size:10}, maxRotation: 45 }
+          ticks: { color: 'rgba(74,87,89,0.5)', font: {size:10, family:'Inter'}, maxRotation: 45 }
         }
       }
     }
@@ -531,7 +567,6 @@ function initChart() {
 // MAP STATES
 // ============================================================
 function clearAll() {
-  map.eachLayer(l => { if (l !== map._layers[Object.keys(map._layers)[0]]) {} });
   zoneLayer.remove();
   zoneFilled.remove();
   bridgeGroup.remove();
@@ -541,21 +576,21 @@ function clearAll() {
 const states = {
   0: function() {
     clearAll();
-    map.flyTo([40.75, -73.98], 11, {duration: 1.2});
+    map.flyTo([40.75, -73.98], 11, {duration: 1.4});
     zoneFilled.addTo(map);
     document.getElementById('chart-box').classList.remove('visible');
     document.getElementById('legend').classList.remove('visible');
   },
   1: function() {
     clearAll();
-    map.flyTo([40.735, -73.99], 13, {duration: 1.2});
+    map.flyTo([40.735, -73.99], 13, {duration: 1.4});
     zoneFilled.addTo(map);
     document.getElementById('chart-box').classList.remove('visible');
     document.getElementById('legend').classList.remove('visible');
   },
   2: function() {
     clearAll();
-    map.flyTo([40.72, -73.92], 10, {duration: 1.5});
+    map.flyTo([40.72, -73.92], 10, {duration: 1.6});
     zoneLayer.addTo(map);
     bridgeGroup.addTo(map);
     document.getElementById('chart-box').classList.remove('visible');
@@ -563,14 +598,14 @@ const states = {
   },
   3: function() {
     clearAll();
-    map.flyTo([40.75, -73.98], 12, {duration: 1.2});
+    map.flyTo([40.75, -73.98], 12, {duration: 1.4});
     zoneLayer.addTo(map);
     document.getElementById('chart-box').classList.remove('visible');
     document.getElementById('legend').classList.remove('visible');
   },
   4: function() {
     clearAll();
-    map.flyTo([40.74, -73.95], 11, {duration: 1.5});
+    map.flyTo([40.74, -73.95], 11, {duration: 1.6});
     zoneLayer.addTo(map);
     bandLayers.forEach(l => l.addTo(map));
     if (!chart) initChart();
@@ -579,39 +614,36 @@ const states = {
   },
   5: function() {
     clearAll();
-    map.flyTo([40.73, -73.99], 13, {duration: 1.2});
+    map.flyTo([40.73, -73.99], 13, {duration: 1.4});
     zoneLayer.addTo(map);
-    // Show only "inside" and "0-0.25" bands
     bandLayers[0].addTo(map);
     bandLayers[1].addTo(map);
-    // Highlight the 0-0.25 band
-    bandLayers[1].setStyle({fillOpacity: 0.8, weight: 2.5, color: '#e74c3c'});
+    bandLayers[1].setStyle({fillOpacity: 0.8, weight: 2.5, color: '#d88a96'});
     document.getElementById('chart-box').classList.add('visible');
     document.getElementById('legend').classList.add('visible');
   },
   6: function() {
     clearAll();
-    map.flyTo([40.72, -73.95], 11, {duration: 1.5});
+    map.flyTo([40.72, -73.95], 11, {duration: 1.6});
     zoneLayer.addTo(map);
     bandLayers.forEach(l => l.addTo(map));
-    // Highlight 3-5 band
-    bandLayers[4].setStyle({fillOpacity: 0.85, weight: 2.5, color: '#fff'});
-    bandLayers[3].setStyle({fillOpacity: 0.75, weight: 1.5, color: 'rgba(255,255,255,0.4)'});
+    bandLayers[4].setStyle({fillOpacity: 0.85, weight: 2.5, color: '#4a5759'});
+    bandLayers[3].setStyle({fillOpacity: 0.75, weight: 1.5, color: 'rgba(74, 87, 89, 0.4)'});
     document.getElementById('chart-box').classList.add('visible');
     document.getElementById('legend').classList.add('visible');
   },
   7: function() {
     clearAll();
-    map.flyTo([40.74, -73.99], 13, {duration: 1.2});
+    map.flyTo([40.74, -73.99], 13, {duration: 1.4});
     zoneLayer.addTo(map);
     bandLayers[0].addTo(map);
-    bandLayers[0].setStyle({fillOpacity: 0.8, weight: 2, color: '#5dade2'});
+    bandLayers[0].setStyle({fillOpacity: 0.8, weight: 2, color: '#8aaa8b'});
     document.getElementById('chart-box').classList.add('visible');
     document.getElementById('legend').classList.add('visible');
   },
   8: function() {
     clearAll();
-    map.flyTo([40.72, -73.95], 11, {duration: 1.5});
+    map.flyTo([40.72, -73.95], 11, {duration: 1.6});
     zoneLayer.addTo(map);
     bandLayers.forEach(l => l.addTo(map));
     bridgeGroup.addTo(map);
