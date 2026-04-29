@@ -376,7 +376,7 @@
     <div class="figure-caption">Fig. 03 — Local R² (where the model fits)</div>
   </div>
   <div class="figure-frame" data-fig="12">
-    <img src="poster_assets/10_gwr_dd_coeff.svg" alt="GWR difference-in-differences distance coefficient">
+    <img src="poster_assets/10_gwr_dd_coeff.svg" alt="Toll-attributable distance gradient (peak − off-peak)">
     <div class="figure-caption">Fig. 10 — The cordon-attributable component (peak − off-peak)</div>
   </div>
 </div>
@@ -455,11 +455,11 @@
       <h2>One slope can't tell this story</h2>
       <div class="stat-row">
         <div>
-          <div class="stat-label">OLS R²</div>
-          <div class="stat neutral">0.49</div>
+          <div class="stat-label">OLS R² (peak)</div>
+          <div class="stat neutral">0.51</div>
         </div>
         <div>
-          <div class="stat-label">GWR R²</div>
+          <div class="stat-label">GWR R² (peak)</div>
           <div class="stat positive">0.76</div>
         </div>
       </div>
@@ -472,10 +472,10 @@
     <div class="step-content">
       <div class="step-number">06 · The headline finding</div>
       <h2>The distance effect flips sign across the city</h2>
-      <div class="stat-label">Local distance coefficient, range across 237 zones (peak regime)</div>
+      <div class="stat-label">Local distance coefficient, range across 237 zones (peak)</div>
       <div class="stat neutral">−39 to +176</div>
-      <p>Geographically Weighted Regression (mgwr, adaptive bisquare kernel, bw = 50) fits a separate local slope at every zone.</p>
-      <p>Inner Manhattan and the Hudson waterfront read near-zero or negative — pickups are up almost everywhere there, regardless of distance. Outer Brooklyn, Queens, the Bronx, and Staten Island read strongly positive: the further from the cordon, the more pickups grew.</p>
+      <p>Geographically Weighted Regression (mgwr, adaptive bisquare kernel, bw = 48) fits a separate local slope at every zone.</p>
+      <p>Inner Manhattan and the Hudson waterfront read near-zero or slightly negative — pickups are up almost everywhere there, regardless of distance. Outer Brooklyn, Queens, the Bronx, and Staten Island read strongly positive: the further from the cordon, the more pickups grew.</p>
       <p><strong>119 of 237 zones (50%)</strong> have a coefficient that is statistically distinguishable from zero.</p>
     </div>
   </div>
@@ -484,8 +484,8 @@
     <div class="step-content">
       <div class="step-number">07 · Time of day · peak</div>
       <h2>Peak hours look like the all-hours field</h2>
-      <p>Re-running GWR on peak-hour pickups produces a coefficient field that looks remarkably similar to the all-hours version. Inner Manhattan and the Hudson waterfront still read near zero or slightly negative; outer boroughs still run strongly positive. GWR R² is <strong>0.76</strong> in this regime.</p>
-      <p>The expected sharpening when the toll is most expensive does not materialize: the cordon's price signal is producing the spatial pattern, but only a small slice of it.</p>
+      <p>Re-running GWR on peak-hour pickups isolates the commute window, when the toll is most expensive and the cordon is bindingly active.</p>
+      <p>The coefficient field looks remarkably similar to the all-hours version: inner Manhattan stays near zero or slightly negative, outer boroughs stay strongly positive. The expected sharpening when the toll is most expensive does not materialize. The cordon is producing the spatial pattern, but only a slice of it.</p>
     </div>
   </div>
 
@@ -493,26 +493,26 @@
     <div class="step-content">
       <div class="step-number">08 · Time of day · off-peak</div>
       <h2>Off-peak: the surprise</h2>
-      <p>Re-running on off-peak pickups, when the toll is discounted by 75%, produces a coefficient field with a similar spatial pattern but a <em>steeper</em> average gradient. Mean local β is <strong>+19</strong> — twice the peak value. GWR R² is <strong>0.77</strong>, slightly higher than peak.</p>
-      <p>This is the surprise: when the cordon is essentially off, distance from it predicts pickup change <em>more</em> steeply than when it is on. The pattern is being driven by something other than the toll alone — likely a combination of post-pandemic taxi recovery weighted toward late-night airport service, and outer-borough demand growth that was already underway.</p>
+      <p>In off-peak hours the toll is discounted by 75%, so the cordon's price signal is weak. The expected outcome is a softer field with smaller magnitudes. The actual result is the opposite: mean local β is +19, twice the peak value, and GWR R² is 0.77, slightly higher than peak.</p>
+      <p>When the cordon is essentially off, distance from it predicts pickup change <em>more</em> steeply than when it is on. Something other than the toll is producing the geography of spillover. The most likely candidates are post-pandemic taxi recovery weighted toward late-night airport service and outer-borough demand growth that was already underway.</p>
     </div>
   </div>
 
   <div class="step" data-step="9">
     <div class="step-content">
-      <div class="step-number">09 · Identification</div>
-      <h2>Differencing the two regimes isolates the toll</h2>
-      <p>To isolate the toll's own contribution from broader 2024-to-2025 trends, the two regimes are differenced at every zone: <strong>β(peak) − β(off-peak)</strong>. Anything that affected both regimes equally — secular taxi recovery, weather — drops out. What remains is the cordon-attributable component of the local distance gradient.</p>
-      <p>The differenced field is much weaker than either single-regime field. The mean is <strong>−9.9 percentage points per mile</strong>, and the field is mostly negative across the city. At the global level, the toll adds approximately <strong>2 percentage points per mile</strong> of additional distance-decay during tolled hours (peak OLS minus off-peak OLS) — a real and statistically significant effect, but a modest part of the broader spatial pattern.</p>
+      <div class="step-number">09 · Robustness</div>
+      <h2>Difference-in-differences, locally</h2>
+      <p>To isolate the toll's own contribution from broader 2024-to-2025 trends, the two regimes are differenced at every zone: β(peak) − β(off-peak). Anything affecting both regimes equally — secular taxi recovery, weather, shared seasonal drift — drops out. What remains is the cordon-attributable component of the local distance gradient.</p>
+      <p>The differenced field is much weaker than either single-regime field. The mean is −9.9 percentage points per mile, and the field is mostly negative across the city. At the global level, the toll adds approximately 2 percentage points per mile of additional distance-decay during tolled hours, a real and statistically significant effect but a modest part of the broader spatial pattern.</p>
     </div>
   </div>
 
   <div class="step" data-step="10">
     <div class="step-content">
       <div class="step-number">10 · Model fit</div>
-      <h2>GWR beats OLS in both regimes — by the same margin</h2>
-      <p>Comparing the two regimes side by side, GWR raises R² from about <strong>0.5 to 0.76</strong> in the peak regime and from <strong>0.45 to 0.77</strong> in off-peak. Letting the slope vary in space recovers a substantial amount of explanatory power that no single OLS slope can capture, and the magnitude of that improvement is essentially identical across regimes.</p>
-      <p>The spatial-heterogeneity story works equally well whether the toll is on or off — which is the central reason to interpret the cordon's contribution as <em>additive</em> rather than dominant.</p>
+      <h2>GWR lifts R² in both regimes by the same amount</h2>
+      <p>Comparing OLS and GWR side by side for each regime, GWR raises R² from 0.51 to 0.76 in the peak regime and from 0.45 to 0.77 in off-peak. Letting the slope vary in space recovers a substantial amount of explanatory power that no single OLS slope can capture.</p>
+      <p>The improvement is essentially the same magnitude in both regimes. The spatial-heterogeneity story works equally well whether the toll is on or off, which is the central reason to interpret the cordon's contribution as additive rather than dominant.</p>
     </div>
   </div>
 
@@ -530,9 +530,9 @@
   <div class="step" data-step="12">
     <div class="step-content">
       <div class="step-number">12 · Takeaway</div>
-      <h2>The cordon amplifies, not originates</h2>
+      <h2>The cordon redistributes — heterogeneously</h2>
       <p>Bridge entries down 3.25%. Pickups up almost everywhere, with the strongest growth 3 to 5 miles from the cordon. A global slope of −5.3 %/mile during tolled hours that hides a local range from −39 to +176.</p>
-      <p>Congestion pricing does produce a measurable additional distance-decay, but the broader spillover pattern was already in motion: yellow-taxi demand was redistributing toward outer boroughs whether or not the cordon went on. <strong>The policy amplifies a dynamic rather than originating it.</strong> The fringe and outer-borough zones that absorbed the most demand are where a redistributive-equity analysis of the policy should look next.</p>
+      <p>Congestion pricing produces a measurable additional distance-decay, but the broader spillover pattern was already in motion: yellow-taxi demand was redistributing toward outer boroughs whether or not the cordon went on. The policy amplifies a dynamic rather than originating it. The fringe and outer-borough zones that absorbed the most demand are where a redistributive-equity analysis of the policy should look next.</p>
       <p class="source-note">Data: NYC TLC yellow-taxi trip records (89.6M trips, Jan–Apr 2024 vs 2025); MTA Bridges &amp; Tunnels daily plaza traffic; NYC DOT Congestion Relief Zone polygon. All spatial work in EPSG:2263.<br>Methods: mgwr 2.x, adaptive bisquare kernel, bandwidth 50 (AICc). Code: github.com/ermaswartz/congestionmap</p>
     </div>
   </div>
