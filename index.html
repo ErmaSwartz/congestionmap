@@ -3,10 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NYC Congestion Pricing: Spatial Spillover Analysis</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
-<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<title>NYC Congestion Pricing: Spatial Spillover (GWR)</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600;700&display=swap');
 
@@ -28,22 +25,67 @@
     color: var(--iron-grey);
   }
 
-  /* ── MAP ── */
-  #map {
+  /* ── FIGURE STAGE (full-screen fixed background) ── */
+  #figure-stage {
     position: fixed;
     top: 0; left: 0;
-    width: 100%; height: 100vh;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
     z-index: 0;
+    background: var(--powder-petal);
     pointer-events: none;
   }
 
-  /* ── SCROLL CONTAINER ── */
+  .figure-frame {
+    position: absolute;
+    inset: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: scale(0.985);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+    pointer-events: none;
+  }
+
+  .figure-frame.active {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .figure-frame img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 8px 24px rgba(74, 87, 89, 0.10));
+  }
+
+  .figure-caption {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--iron-grey);
+    opacity: 0.45;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  /* ── SCROLL CONTAINER (overlays the figure) ── */
   #scroll-container {
     position: relative;
     z-index: 10;
   }
 
-  /* ── STORY SECTIONS ── */
   .step {
     min-height: 100vh;
     display: flex;
@@ -58,7 +100,7 @@
     border: 1px solid rgba(74, 87, 89, 0.10);
     border-radius: 16px;
     padding: 36px 40px;
-    max-width: 420px;
+    max-width: 460px;
     opacity: 0;
     transform: translateY(30px);
     transition: opacity 0.5s ease-out, transform 0.5s ease-out;
@@ -69,9 +111,19 @@
     transform: translateY(0);
   }
 
+  .step-number {
+    font-family: 'DM Serif Display', serif;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--cherry-blossom-deep);
+    opacity: 0.7;
+    margin-bottom: 12px;
+  }
+
   .step-content h2 {
     font-family: 'DM Serif Display', serif;
-    font-size: 24px;
+    font-size: 26px;
     font-weight: 400;
     margin-bottom: 16px;
     line-height: 1.3;
@@ -82,7 +134,7 @@
     font-size: 15px;
     line-height: 1.7;
     color: var(--iron-grey);
-    opacity: 0.8;
+    opacity: 0.85;
     margin-bottom: 12px;
   }
 
@@ -93,14 +145,16 @@
     font-size: 42px;
     font-weight: 400;
     letter-spacing: -1px;
-    margin: 16px 0;
+    margin: 14px 0 4px;
+    line-height: 1;
   }
 
   .stat.negative { color: var(--cherry-blossom-deep); }
   .stat.positive { color: var(--ash-grey-deep); }
+  .stat.neutral  { color: var(--iron-grey); }
 
   .stat-label {
-    font-size: 13px;
+    font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 1.5px;
     color: var(--iron-grey);
@@ -108,14 +162,19 @@
     margin-bottom: 4px;
   }
 
-  /* ── MINI TABLE ── */
+  .stat-row {
+    display: flex;
+    gap: 24px;
+    margin: 18px 0 8px;
+  }
+  .stat-row .stat { font-size: 32px; margin: 4px 0; }
+
   .data-table {
     width: 100%;
     border-collapse: collapse;
-    margin: 16px 0;
+    margin: 16px 0 4px;
     font-size: 13px;
   }
-
   .data-table th {
     text-align: left;
     padding: 8px 10px;
@@ -127,254 +186,264 @@
     letter-spacing: 0.5px;
     font-size: 11px;
   }
-
   .data-table td {
     padding: 7px 10px;
     border-bottom: 1px solid rgba(74, 87, 89, 0.08);
     color: var(--iron-grey);
   }
-
   .data-table .neg { color: var(--cherry-blossom-deep); font-weight: 600; }
   .data-table .pos { color: var(--ash-grey-deep); font-weight: 600; }
 
-  /* ── CHART CONTAINER ── */
-  #chart-box {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    width: 380px;
-    height: 240px;
-    background: rgba(222, 219, 210, 0.92);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(74, 87, 89, 0.10);
-    border-radius: 16px;
-    padding: 20px;
-    z-index: 20;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
-    pointer-events: none;
-  }
-
-  #chart-box.visible {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
-  }
-
-  #chart-box h3 {
-    font-family: 'DM Serif Display', serif;
-    font-size: 14px;
-    font-weight: 400;
-    color: var(--iron-grey);
-    opacity: 0.6;
-    margin-bottom: 10px;
-  }
-
-  /* ── LEGEND ── */
-  #legend {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    background: rgba(222, 219, 210, 0.92);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(74, 87, 89, 0.10);
-    border-radius: 16px;
-    padding: 18px 22px;
-    z-index: 20;
-    opacity: 0;
-    transition: opacity 0.5s ease-out;
-    pointer-events: none;
-    font-size: 12px;
-  }
-
-  #legend.visible { opacity: 1; }
-
-  #legend h3 {
-    font-family: 'DM Serif Display', serif;
-    font-size: 13px;
-    font-weight: 400;
-    color: var(--iron-grey);
-    opacity: 0.6;
-    margin-bottom: 10px;
-  }
-
-  .legend-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 6px;
-    color: var(--iron-grey);
-  }
-
-  .legend-swatch {
-    width: 18px;
-    height: 12px;
-    border-radius: 2px;
-    margin-right: 10px;
-    flex-shrink: 0;
-  }
-
-  /* ── SPACER ── */
-  .spacer { height: 50vh; }
-
-  /* ── TOOLTIP ── */
-  .bridge-tooltip {
-    background: rgba(222, 219, 210, 0.95) !important;
-    border: 1px solid rgba(74, 87, 89, 0.15) !important;
-    border-radius: 12px !important;
-    color: var(--iron-grey) !important;
-    font-family: 'Inter', sans-serif !important;
-    font-size: 13px !important;
-    padding: 10px 14px !important;
-    box-shadow: 0 4px 20px rgba(74, 87, 89, 0.12) !important;
-  }
-
-  .bridge-tooltip .name {
-    font-family: 'DM Serif Display', serif;
-    font-weight: 400;
-    color: var(--iron-grey);
-  }
-  .bridge-tooltip .pct { font-weight: 700; font-size: 16px; margin-top: 4px; }
-
-  /* ── SCROLL HINT ── */
   .scroll-hint {
     color: var(--iron-grey);
-    opacity: 0.35;
+    opacity: 0.4;
     font-size: 13px;
     font-style: italic;
+    margin-top: 18px;
   }
 
-  /* ── SOURCE NOTE ── */
   .source-note {
     color: var(--iron-grey) !important;
     opacity: 0.4 !important;
     font-size: 12px !important;
-    margin-top: 16px !important;
+    margin-top: 18px !important;
+    line-height: 1.6 !important;
   }
 
-  /* ── LEAFLET OVERRIDES ── */
-  .leaflet-tooltip { box-shadow: none; }
+  .spacer { height: 30vh; }
+
+  /* ── PROGRESS BAR ── */
+  #progress {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    background: var(--cherry-blossom-deep);
+    width: 0%;
+    z-index: 100;
+    transition: width 0.1s linear;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .figure-frame { inset: 20px; }
+    .step { padding: 30px 24px; }
+    .step-content { max-width: 100%; }
+  }
 </style>
 </head>
 <body>
 
-<div id="map"></div>
+<div id="progress"></div>
 
-<div id="chart-box">
-  <h3>Taxi Change by Distance Band</h3>
-  <canvas id="spillover-chart"></canvas>
+<!-- ── FIGURE STAGE ── -->
+<div id="figure-stage">
+  <div class="figure-frame" data-fig="0">
+    <img src="poster_assets/06_bridge_entries.svg" alt="Bridge & tunnel entry change">
+    <div class="figure-caption">Title</div>
+  </div>
+  <div class="figure-frame" data-fig="1">
+    <img src="poster_assets/06_bridge_entries.svg" alt="MTA bridge & tunnel entry change Jan–Apr 2024 vs 2025">
+    <div class="figure-caption">Fig. 06 — MTA bridge & tunnel entries</div>
+  </div>
+  <div class="figure-frame" data-fig="2">
+    <img src="poster_assets/02_pct_change.svg" alt="Percent change in pickups by taxi zone">
+    <div class="figure-caption">Fig. 02 — % change in yellow-taxi pickups, by zone</div>
+  </div>
+  <div class="figure-frame" data-fig="3">
+    <img src="poster_assets/05_distance_bands.svg" alt="Distance bands from the congestion zone">
+    <div class="figure-caption">Fig. 05 — Concentric distance bands from the cordon</div>
+  </div>
+  <div class="figure-frame" data-fig="4">
+    <img src="poster_assets/07_band_bar_chart.svg" alt="Pickup change by distance band">
+    <div class="figure-caption">Fig. 07 — Pickup change by distance band</div>
+  </div>
+  <div class="figure-frame" data-fig="5">
+    <img src="poster_assets/04_ols_vs_gwr.svg" alt="Global OLS scatter and OLS-vs-GWR R² comparison">
+    <div class="figure-caption">Fig. 04 — Global OLS vs local GWR</div>
+  </div>
+  <div class="figure-frame" data-fig="6">
+    <img src="poster_assets/01_gwr_dist_coeff.svg" alt="Local GWR coefficient on distance to cordon">
+    <div class="figure-caption">Fig. 01 — Local distance coefficient (GWR β)</div>
+  </div>
+  <div class="figure-frame" data-fig="7">
+    <img src="poster_assets/08_gwr_peak_coeff.png" alt="GWR distance coefficient — peak hours">
+    <div class="figure-caption">Fig. 08 — GWR β, peak hours</div>
+  </div>
+  <div class="figure-frame" data-fig="8">
+    <img src="poster_assets/09_gwr_offpeak_coeff.svg" alt="GWR distance coefficient — off-peak hours">
+    <div class="figure-caption">Fig. 09 — GWR β, off-peak hours</div>
+  </div>
+  <div class="figure-frame" data-fig="9">
+    <img src="poster_assets/10_gwr_dd_coeff.svg" alt="GWR difference-in-differences distance coefficient">
+    <div class="figure-caption">Fig. 10 — GWR β, difference-in-differences</div>
+  </div>
+  <div class="figure-frame" data-fig="10">
+    <img src="poster_assets/11_gwr_dd_comparison.svg" alt="GWR DD vs OLS comparison">
+    <div class="figure-caption">Fig. 11 — DD model fit comparison</div>
+  </div>
+  <div class="figure-frame" data-fig="11">
+    <img src="poster_assets/03_local_r2.svg" alt="Local R² of the GWR model">
+    <div class="figure-caption">Fig. 03 — Local R² (where the model fits)</div>
+  </div>
+  <div class="figure-frame" data-fig="12">
+    <img src="poster_assets/01_gwr_dist_coeff.svg" alt="Local distance coefficient">
+    <div class="figure-caption">Fig. 01 — The headline finding</div>
+  </div>
 </div>
 
-<div id="legend">
-  <h3>Taxi % Change</h3>
-  <div class="legend-item"><div class="legend-swatch" style="background:var(--cherry-blossom-deep);"></div> Decrease</div>
-  <div class="legend-item"><div class="legend-swatch" style="background:var(--dust-grey);"></div> 0 – 10%</div>
-  <div class="legend-item"><div class="legend-swatch" style="background:var(--cherry-blossom);"></div> 10 – 25%</div>
-  <div class="legend-item"><div class="legend-swatch" style="background:var(--ash-grey);"></div> 25%+</div>
-</div>
-
+<!-- ── STORY ── -->
 <div id="scroll-container">
 
-  <!-- SECTION 0: TITLE -->
   <div class="step" data-step="0">
     <div class="step-content">
+      <div class="step-number">A spatial study</div>
       <h2>NYC Congestion Pricing:<br>Where Does the Traffic Go?</h2>
-      <p>On January 5, 2025, New York City began charging vehicles to enter Manhattan's central business district below 60th Street.</p>
-      <p>The policy aimed to reduce traffic in the most congested part of the city. But traffic doesn't just disappear — it has to go somewhere.</p>
-      <p class="scroll-hint">Scroll to explore the spatial story ↓</p>
+      <p>On <strong>January 5, 2025</strong>, New York City switched on the first cordon-style congestion charge in the United States — covering Manhattan south of 60th Street.</p>
+      <p>Traffic doesn't disappear when its price goes up. It moves. The question this project asks is <em>where</em>, and how unevenly.</p>
+      <p class="scroll-hint">Scroll to follow the analysis ↓</p>
     </div>
   </div>
 
-  <!-- SECTION 1: THE ZONE -->
   <div class="step" data-step="1">
     <div class="step-content">
-      <h2>The Congestion Relief Zone</h2>
-      <p>The tolled area covers Manhattan south of 60th Street — the densest commercial district in the Western Hemisphere.</p>
-      <p>Vehicles entering this zone are now charged a toll, with rates varying by time of day and vehicle type.</p>
-    </div>
-  </div>
-
-  <!-- SECTION 2: BRIDGES -->
-  <div class="step" data-step="2">
-    <div class="step-content">
-      <h2>Vehicle Entries Drop Across the Board</h2>
-      <div class="stat-label">Overall bridge &amp; tunnel inflow</div>
-      <div class="stat negative">-3.25%</div>
-      <p>Comparing Jan–Apr 2025 to the same period in 2024, traffic at MTA bridges and tunnels entering the metro area fell at nearly every crossing.</p>
+      <div class="step-number">01 · The intake side</div>
+      <h2>Vehicle entries fell at almost every crossing</h2>
+      <div class="stat-label">MTA bridge &amp; tunnel inflow, Jan–Apr 2025 vs 2024</div>
+      <div class="stat negative">−3.25%</div>
+      <p>Seven of nine MTA crossings declined. The Verrazzano-Narrows fell 8.7% and Marine Parkway 8.5%. Only Henry Hudson rose, at +2.6%.</p>
       <table class="data-table">
         <tr><th>Crossing</th><th>Change</th></tr>
-        <tr><td>Verrazzano-Narrows</td><td class="neg">-8.7%</td></tr>
-        <tr><td>Marine Parkway</td><td class="neg">-8.5%</td></tr>
-        <tr><td>Queens Midtown Tunnel</td><td class="neg">-4.8%</td></tr>
-        <tr><td>Throgs Neck</td><td class="neg">-3.7%</td></tr>
-        <tr><td>RFK / Triborough</td><td class="neg">-2.2%</td></tr>
+        <tr><td>Verrazzano-Narrows</td><td class="neg">−8.7%</td></tr>
+        <tr><td>Marine Parkway</td><td class="neg">−8.5%</td></tr>
+        <tr><td>Queens Midtown Tunnel</td><td class="neg">−4.8%</td></tr>
+        <tr><td>Throgs Neck</td><td class="neg">−3.7%</td></tr>
         <tr><td>Henry Hudson</td><td class="pos">+2.6%</td></tr>
       </table>
     </div>
   </div>
 
-  <!-- SECTION 3: TRANSITION -->
+  <div class="step" data-step="2">
+    <div class="step-content">
+      <div class="step-number">02 · The raw outcome</div>
+      <h2>But pickups grew almost everywhere</h2>
+      <p>Aggregating <strong>89.6 million</strong> yellow-taxi trips to <strong>243 taxi zones</strong>, the picture flips. Median pickup change is <strong>+160%</strong>.</p>
+      <p>Only five zones (in pink) actually declined. Everywhere else, pickups rose — but unevenly. This is the substrate the model has to explain.</p>
+    </div>
+  </div>
+
   <div class="step" data-step="3">
     <div class="step-content">
-      <h2>But Did the Traffic Disappear?</h2>
-      <p>Fewer vehicles are crossing into the metro area. But what's happening to taxi and for-hire vehicle activity across the city?</p>
-      <p>To find out, we analyzed <strong>89.9 million</strong> yellow cab trips from 2024–2025, comparing activity before and after the policy took effect.</p>
-      <p>We measured change in concentric distance bands radiating outward from the congestion zone boundary.</p>
+      <div class="step-number">03 · A first cut</div>
+      <h2>Concentric rings around the cordon</h2>
+      <p>Before reaching for a model, slice the city into distance bands measured outward from the cordon edge.</p>
+      <p>Each zone gets the distance from its centroid to the nearest point on the Congestion Relief Zone, in EPSG:2263 — the projection NYC defaults to.</p>
     </div>
   </div>
 
-  <!-- SECTION 4: BANDS REVEAL -->
   <div class="step" data-step="4">
     <div class="step-content">
-      <h2>Activity Redistributes Outward</h2>
-      <p>The pattern is clear: taxi activity didn't decrease — it <strong>shifted outward</strong> from the congestion zone.</p>
-      <p>The further from the zone boundary, the larger the increase in taxi trips.</p>
+      <div class="step-number">04 · The ring story</div>
+      <h2>A boundary "dead zone" — and a 3–5 mile peak</h2>
+      <div class="stat-row">
+        <div>
+          <div class="stat-label">0 – ¼ mi</div>
+          <div class="stat negative">−1.6%</div>
+        </div>
+        <div>
+          <div class="stat-label">3 – 5 mi</div>
+          <div class="stat positive">+37%</div>
+        </div>
+      </div>
+      <p>The narrow strip just outside the cordon is the <em>only</em> band of any width that declined — drivers staying back from the boundary.</p>
+      <p>The strongest growth lands 3–5 miles out: Long Island City, Williamsburg, Park Slope, the South Bronx — transit-accessible neighborhoods just beyond the toll.</p>
     </div>
   </div>
 
-  <!-- SECTION 5: DEAD ZONE -->
   <div class="step" data-step="5">
     <div class="step-content">
-      <h2>The Boundary "Dead Zone"</h2>
-      <div class="stat-label">Change within 0.25 miles of boundary</div>
-      <div class="stat negative">-1.6%</div>
-      <p>Immediately outside the toll boundary, activity actually <em>decreased</em>. This is the only band with a negative change.</p>
-      <p>Drivers appear to avoid the boundary fringe — too close to the toll zone for comfort, creating an avoidance buffer.</p>
+      <div class="step-number">05 · Why a global model fails</div>
+      <h2>One slope can't tell this story</h2>
+      <div class="stat-row">
+        <div>
+          <div class="stat-label">OLS R²</div>
+          <div class="stat neutral">0.49</div>
+        </div>
+        <div>
+          <div class="stat-label">GWR R²</div>
+          <div class="stat positive">0.76</div>
+        </div>
+      </div>
+      <p>A global OLS reports a clean −4.0 %/mile distance-decay (p = 0.015). It explains about half the variance in pickup change.</p>
+      <p>The scatter is too wide for any single line. The other half is spatial — distance behaves differently depending on <em>where</em> you stand.</p>
     </div>
   </div>
 
-  <!-- SECTION 6: OUTER BANDS -->
   <div class="step" data-step="6">
     <div class="step-content">
-      <h2>The Strongest Growth: 1–5 Miles Out</h2>
-      <div class="stat-label">Change in the 3–5 mile band</div>
-      <div class="stat positive">+37%</div>
-      <p>Neighborhoods 1–5 miles from the zone absorbed the largest increases in taxi activity — up to 37% more trips than the same period last year.</p>
-      <p>These are areas like Long Island City, Williamsburg, Park Slope, and the South Bronx — transit-accessible neighborhoods just beyond the toll boundary.</p>
+      <div class="step-number">06 · The headline finding</div>
+      <h2>The distance effect flips sign across the city</h2>
+      <div class="stat-label">Local distance coefficient, range across 243 zones</div>
+      <div class="stat neutral">−32 to +141</div>
+      <p>Geographically Weighted Regression (mgwr, adaptive bisquare kernel, bw = 50) fits a separate local slope at every zone.</p>
+      <p>Inner Manhattan and the Hudson waterfront read near-zero or negative — pickups are up almost everywhere there, regardless of distance. Outer Brooklyn, Queens, the Bronx, and Staten Island read strongly positive: the further from the cordon, the more pickups grew.</p>
+      <p><strong>137 of 243 zones (56%)</strong> have a coefficient that is statistically distinguishable from zero.</p>
     </div>
   </div>
 
-  <!-- SECTION 7: INSIDE ZONE -->
   <div class="step" data-step="7">
     <div class="step-content">
-      <h2>Inside the Zone: A Surprise</h2>
-      <div class="stat-label">Taxi activity inside the congestion zone</div>
-      <div class="stat positive">+13.3%</div>
-      <p>Counter-intuitively, taxi activity <em>inside</em> the congestion zone increased. With fewer private vehicles, taxis may be filling the freed-up road space.</p>
-      <p>This suggests a possible <strong>mode shift</strong>: some drivers who previously drove private cars may now be taking taxis instead.</p>
+      <div class="step-number">07 · Time of day · peak</div>
+      <h2>Peak hours sharpen the spillover ring</h2>
+      <p>Re-running GWR on peak-hour pickups isolates the commute window — when the toll is most expensive and the cordon is bindingly active.</p>
+      <p>The outer-borough positive coefficient strengthens; the inner-Manhattan near-zero band tightens. The spatial split holds, and the contrast gets cleaner.</p>
     </div>
   </div>
 
-  <!-- SECTION 8: CONCLUSION -->
   <div class="step" data-step="8">
     <div class="step-content">
-      <h2>Congestion Pricing Redistributes — It Doesn't Eliminate</h2>
-      <p>The data tells a consistent story across all three sources:</p>
-      <p>Bridge and tunnel entries are <strong>down 3.25%</strong>. Taxi activity outside the zone is <strong>up 20–37%</strong>. The zone boundary creates a narrow avoidance buffer.</p>
-      <p>Congestion pricing works — but its effects ripple outward across the entire urban system. Surrounding neighborhoods absorb displaced demand, raising questions about equity and infrastructure readiness beyond the zone.</p>
-      <p class="source-note">Data: NYC Yellow Taxi (TLC), MTA Bridges &amp; Tunnels, Jan–Apr 2024 vs 2025<br>Tools: Python, GeoPandas, Leaflet, Chart.js</p>
+      <div class="step-number">08 · Time of day · off-peak</div>
+      <h2>Off-peak: the same field, softened</h2>
+      <p>In off-peak hours, the toll is lower and the cordon is less binding. The local coefficient field smooths out — outer-borough zones still show positive distance effects, but the magnitudes are muted.</p>
+      <p>The two maps together show the spillover is a <em>commute-time</em> phenomenon first.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="9">
+    <div class="step-content">
+      <div class="step-number">09 · Robustness</div>
+      <h2>Difference-in-differences, locally</h2>
+      <p>To rule out city-wide trends that have nothing to do with the cordon, the model is re-fit as a difference-in-differences: peak vs. off-peak <em>change</em>, locally weighted.</p>
+      <p>The pattern survives. Outer-borough zones absorb peak demand at distance, even after differencing out shared seasonal drift — the local slopes aren't an artifact of when the comparison window was drawn.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="10">
+    <div class="step-content">
+      <div class="step-number">10 · Model fit</div>
+      <h2>The DD spec adds explanatory power on top of OLS</h2>
+      <p>Comparing OLS, plain GWR, and the GWR-DD specification side by side: each step that lets the model see space recovers variance the previous step couldn't.</p>
+      <p>Adding the difference structure on top of the local fit pushes adjusted R² further still — a sign that the cordon effect is genuinely heterogeneous in <em>both</em> space and time.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="11">
+    <div class="step-content">
+      <div class="step-number">11 · Where the model fails</div>
+      <h2>Local R² names the next investigation</h2>
+      <div class="stat-label">Mean local R² · max local R²</div>
+      <div class="stat neutral">0.51 · 0.87</div>
+      <p>The fit peaks on the southern and outer-borough fringe — Rockaways, southwestern Brooklyn, Staten Island — where distance and baseline volume genuinely explain most of what is happening.</p>
+      <p>It collapses below 0.20 in upper Manhattan and the central Bronx. Those zones are driven by something other than distance to the cordon: income, car ownership, road class, free-crossing proximity, PLUTO land use. They are the targets for round two.</p>
+    </div>
+  </div>
+
+  <div class="step" data-step="12">
+    <div class="step-content">
+      <div class="step-number">12 · Takeaway</div>
+      <h2>The cordon redistributes — heterogeneously</h2>
+      <p>Bridge entries down 3.25%. Pickups up almost everywhere — most of all 3–5 miles out. A global slope of −4 %/mile that hides a local range from −32 to +141.</p>
+      <p>Congestion pricing did not produce a uniform distance-decay. It produced a sign-flipping field, with outer-borough and fringe neighborhoods absorbing the displaced demand. Those are the places a redistributive-equity analysis of the policy should look at next.</p>
+      <p class="source-note">Data: NYC TLC yellow-taxi trip records (89.6M trips, Jan–Apr 2024 vs 2025); MTA Bridges &amp; Tunnels daily plaza traffic; NYC DOT Congestion Relief Zone polygon. All spatial work in EPSG:2263.<br>Methods: mgwr 2.x, adaptive bisquare kernel, bandwidth 50 (AICc). Code: github.com/ermaswartz/congestionmap</p>
     </div>
   </div>
 
@@ -382,304 +451,45 @@
 </div>
 
 <script>
-// ============================================================
-// DATA
-// ============================================================
+const frames = document.querySelectorAll('.figure-frame');
+const steps = document.querySelectorAll('.step');
+const progress = document.getElementById('progress');
 
-const ZONE_GEOJSON = {"type":"FeatureCollection","features":[{"id":"0","type":"Feature","properties":{},"geometry":{"type":"Polygon","coordinates":[[[-73.9592177,40.7586545],[-73.962899,40.76024],[-73.9629361,40.76094],[-73.9676372,40.7630327],[-73.9733357,40.7654104],[-73.9737672,40.7649272],[-73.9808602,40.7679278],[-73.980963,40.7686397],[-73.9924605,40.7733774],[-73.9966746,40.7659769],[-74.0018318,40.7605226],[-74.0066243,40.7537403],[-74.0074232,40.75159],[-74.007489,40.7462796],[-74.008537,40.7407296],[-74.0093292,40.7391995],[-74.0107424,40.725111],[-74.0119076,40.7186505],[-74.0149532,40.7077046],[-74.0142825,40.7065119],[-74.0149415,40.7046603],[-74.014407,40.70445],[-74.01462,40.703356],[-74.013971,40.70230],[-74.0129592,40.7022462],[-74.0125562,40.7015574],[-74.0096568,40.702318],[-74.0004726,40.7080542],[-74.0033248,40.7106612],[-74.00447,40.7110589],[-74.004361,40.711504],[-74.003238,40.71189],[-74.002667,40.711825],[-73.9994029,40.7086882],[-73.9905637,40.7102949],[-73.9818336,40.7111312],[-73.9786637,40.7119992],[-73.9760738,40.7167453],[-73.9748494,40.7223692],[-73.9721949,40.7270026],[-73.9725413,40.7295884],[-73.9740008,40.7309898],[-73.9753818,40.7363415],[-73.9736623,40.7391983],[-73.9729701,40.7424296],[-73.9716105,40.7447917],[-73.9672742,40.7499694],[-73.9592177,40.7586545]]]}},{"id":"1","type":"Feature","properties":{},"geometry":{"type":"Polygon","coordinates":[[[-73.9586025,40.7591455],[-73.9625877,40.7609042],[-73.9621527,40.760457],[-73.9586025,40.7591455]]]}},{"id":"2","type":"Feature","properties":{},"geometry":{"type":"Polygon","coordinates":[[[-74.010502,40.701627],[-74.009247,40.69979],[-73.998293,40.70498],[-74.000959,40.706967],[-74.008266,40.702451],[-74.010502,40.701627]]]}},{"id":"5","type":"Feature","properties":{},"geometry":{"type":"Polygon","coordinates":[[[-74.0156618,40.7069632],[-74.0164228,40.705093],[-74.016386,40.70443],[-74.01586,40.704415],[-74.0151333,40.7062843],[-74.0156618,40.7069632]]]}},{"id":"6","type":"Feature","properties":{},"geometry":{"type":"Polygon","coordinates":[[[-74.0104378,40.7392454],[-74.0090691,40.742826],[-74.008184,40.7485209],[-74.0088006,40.7504749],[-74.0073049,40.7543681],[-74.0015753,40.7622716],[-73.9996253,40.7636746],[-73.9950928,40.7698923],[-73.9949212,40.7715583],[-73.9933245,40.7737265],[-73.996067,40.774653],[-74.007943,40.758806],[-74.005655,40.757941],[-74.009738,40.753506],[-74.011037,40.751197],[-74.019806,40.70621],[-74.018621,40.703614],[-74.017562,40.703562],[-74.017032,40.704149],[-74.013887,40.715174],[-74.0110904,40.7284646],[-74.0104378,40.7392454]]]}}]};
-
-const BANDS_GEOJSON = {"type":"FeatureCollection","features":[{"id":"0","type":"Feature","properties":{"dist_band":"inside","taxi_pct":13.30,"after":27442208,"before":24220416},"geometry":{"type":"Polygon","coordinates":[[[-74.01364,40.69803],[-74.02220,40.70123],[-74.02399,40.70364],[-74.02451,40.70675],[-74.01569,40.75196],[-74.01223,40.75723],[-74.01222,40.76041],[-73.99997,40.77674],[-73.99641,40.77827],[-73.99140,40.77704],[-73.95479,40.76132],[-73.95384,40.75931],[-73.95443,40.75739],[-73.96625,40.74439],[-73.96762,40.73890],[-73.96762,40.73418],[-73.96918,40.73215],[-73.96790,40.73041],[-73.96691,40.72551],[-73.96864,40.71827],[-73.97217,40.70956],[-73.97462,40.70765],[-73.97856,40.70626],[-73.98876,40.70530],[-73.99379,40.70615],[-73.99364,40.70422],[-73.99502,40.70235],[-74.00756,40.69641],[-74.01072,40.69635],[-74.01364,40.69803]]]}},{"id":"1","type":"Feature","properties":{"dist_band":"0-0.25","taxi_pct":-1.63,"after":17236,"before":17521},"geometry":{"type":"Polygon","coordinates":[[[-74.02204,40.68899],[-74.02868,40.69131],[-74.03412,40.69519],[-74.03765,40.70046],[-74.03884,40.70675],[-74.02919,40.75560],[-74.02504,40.76521],[-74.01167,40.78298],[-74.00627,40.78689],[-74.00114,40.78862],[-73.99558,40.78914],[-73.99005,40.78840],[-73.95302,40.77344],[-73.94743,40.77089],[-73.94337,40.76785],[-73.94011,40.76265],[-73.93978,40.75689],[-73.94248,40.75138],[-73.95124,40.74209],[-73.95320,40.73859],[-73.95368,40.73186],[-73.95272,40.72739],[-73.95291,40.72321],[-73.95698,40.70910],[-73.96059,40.70319],[-73.96420,40.70009],[-73.96857,40.69779],[-73.97560,40.69562],[-73.98490,40.69470],[-73.99919,40.68749],[-74.00425,40.68581],[-74.01338,40.68565],[-74.02204,40.68899]],[[-74.01324,40.69782],[-74.01072,40.69635],[-74.00756,40.69641],[-73.99502,40.70235],[-73.99364,40.70422],[-73.99379,40.70615],[-73.98876,40.70530],[-73.97856,40.70626],[-73.97462,40.70765],[-73.97217,40.70956],[-73.96864,40.71827],[-73.96691,40.72551],[-73.96790,40.73041],[-73.96918,40.73215],[-73.96762,40.73418],[-73.96762,40.73890],[-73.96625,40.74439],[-73.95443,40.75739],[-73.95384,40.75931],[-73.95479,40.76132],[-73.99005,40.78840],[-73.99558,40.78914],[-74.00114,40.78862],[-74.00627,40.78689],[-74.01167,40.78298],[-74.02504,40.76521],[-74.02919,40.75560],[-74.03884,40.70675],[-74.03765,40.70046],[-74.03412,40.69519],[-74.02868,40.69131],[-74.01324,40.69782]]]}},{"id":"2","type":"Feature","properties":{"dist_band":"0.25-1","taxi_pct":12.51,"after":7696257,"before":6840653},"geometry":{"type":"Polygon","coordinates":[[[-74.04388,40.66462],[-74.05770,40.67191],[-74.06813,40.68194],[-74.07407,40.69199],[-74.07597,40.69826],[-74.07690,40.70784],[-74.06781,40.75630],[-74.06551,40.76440],[-74.05924,40.77801],[-74.04589,40.79601],[-74.03943,40.80301],[-74.02670,40.81137],[-74.01130,40.81656],[-74.00022,40.81801],[-73.98343,40.81706],[-73.96520,40.81160],[-73.92988,40.79674],[-73.92062,40.79165],[-73.91288,40.78526],[-73.90697,40.77783],[-73.90312,40.76965],[-73.90148,40.76106],[-73.90212,40.75238],[-73.90330,40.74813],[-73.90728,40.73999],[-73.91493,40.73097],[-73.91451,40.72634],[-73.91544,40.71798],[-73.92147,40.69842],[-73.92651,40.68999],[-73.93347,40.68268],[-73.94240,40.67622],[-73.95141,40.67191],[-73.96293,40.66820],[-73.97057,40.66690],[-73.98899,40.65914],[-73.99965,40.65693],[-74.01067,40.65633],[-74.02163,40.65735],[-74.03213,40.65996],[-74.04388,40.66462]],[[-74.02156,40.68874],[-74.01338,40.68565],[-74.00425,40.68581],[-73.99919,40.68749],[-73.98490,40.69470],[-73.97560,40.69562],[-73.96857,40.69779],[-73.96420,40.70009],[-73.96059,40.70319],[-73.95698,40.70910],[-73.95291,40.72321],[-73.95272,40.72739],[-73.95368,40.73186],[-73.95320,40.73859],[-73.95124,40.74209],[-73.94248,40.75138],[-73.93978,40.75689],[-73.94011,40.76265],[-73.94337,40.76785],[-73.94743,40.77089],[-73.95302,40.77344],[-73.99005,40.78840],[-73.99558,40.78914],[-74.00114,40.78862],[-74.00627,40.78689],[-74.01167,40.78298],[-74.02504,40.76521],[-74.02919,40.75560],[-74.03884,40.70675],[-74.03765,40.70046],[-74.03412,40.69519],[-74.02868,40.69131],[-74.02156,40.68874]]]}},{"id":"3","type":"Feature","properties":{"dist_band":"1-3","taxi_pct":20.51,"after":7071892,"before":5868449},"geometry":{"type":"Polygon","coordinates":[[[-74.06071,40.63862],[-74.07659,40.64614],[-74.08373,40.65076],[-74.09606,40.66148],[-74.10676,40.67584],[-74.11048,40.68350],[-74.11304,40.69143],[-74.11476,40.70089],[-74.11496,40.70890],[-74.11399,40.71688],[-74.10567,40.75969],[-74.10184,40.77319],[-74.09716,40.78429],[-74.09346,40.79081],[-74.07912,40.81024],[-74.06836,40.82190],[-74.05480,40.83174],[-74.04713,40.83585],[-74.03039,40.84226],[-74.01231,40.84605],[-74.00299,40.84692],[-73.98424,40.84655],[-73.97500,40.84532],[-73.95720,40.84082],[-73.91471,40.82357],[-73.90272,40.81785],[-73.89529,40.81332],[-73.88238,40.80266],[-73.87253,40.79027],[-73.86612,40.77664],[-73.86340,40.76231],[-73.86448,40.74786],[-73.86932,40.73386],[-73.87662,40.72232],[-73.87958,40.70609],[-73.88551,40.68888],[-73.89352,40.67552],[-73.90511,40.66334],[-73.91925,40.65321],[-73.93428,40.64603],[-73.94414,40.64254],[-73.95605,40.63965],[-73.97550,40.63204],[-73.99326,40.62836],[-74.01161,40.62735],[-74.02988,40.62905],[-74.04737,40.63340],[-74.06071,40.63862]],[[-74.03708,40.66183],[-74.02696,40.65846],[-74.01618,40.65664],[-74.00514,40.65643],[-73.99425,40.65784],[-73.98392,40.66082],[-73.97057,40.66690],[-73.95830,40.66945],[-73.94677,40.67390],[-73.93832,40.67883],[-73.92974,40.68620],[-73.92322,40.69504],[-73.91791,40.70836],[-73.91471,40.72214],[-73.91493,40.73097],[-73.90728,40.73999],[-73.90330,40.74813],[-73.90212,40.75238],[-73.90148,40.76106],[-73.90312,40.76965],[-73.90697,40.77783],[-73.91288,40.78526],[-73.92062,40.79165],[-73.93387,40.79850],[-73.97017,40.81348],[-73.97801,40.81591],[-73.98898,40.81779],[-74.00022,40.81801],[-74.01665,40.81522],[-74.03130,40.80891],[-74.04289,40.79963],[-74.05924,40.77801],[-74.06551,40.76440],[-74.06781,40.75630],[-74.07632,40.71262],[-74.07678,40.70303],[-74.07407,40.69199],[-74.07184,40.68739],[-74.06509,40.67834],[-74.05341,40.66914],[-74.03708,40.66183]]]}},{"id":"4","type":"Feature","properties":{"dist_band":"3-5","taxi_pct":36.99,"after":2654977,"before":1938044},"geometry":{"type":"Polygon","coordinates":[[[-73.94178,40.59586],[-73.95529,40.59138],[-73.96930,40.58792],[-73.98368,40.58550],[-73.99830,40.58415],[-74.01303,40.58389],[-74.02772,40.58471],[-74.04223,40.58661],[-74.05644,40.58957],[-74.07021,40.59356],[-74.09901,40.60516],[-74.11132,40.61165],[-74.12274,40.61903],[-74.13316,40.62723],[-74.14247,40.63617],[-74.15140,40.64684],[-74.15912,40.65850],[-74.16507,40.67075],[-74.16918,40.68344],[-74.17173,40.69766],[-74.17206,40.71048],[-74.17052,40.72325],[-74.16212,40.76651],[-74.16009,40.77566],[-74.15635,40.78634],[-74.15073,40.79956],[-74.14481,40.80998],[-74.12900,40.83156],[-74.12100,40.84121],[-74.11179,40.85023],[-74.10145,40.85851],[-74.09009,40.86597],[-74.07782,40.87255],[-74.06475,40.87819],[-74.05101,40.88282],[-74.03674,40.88640],[-74.02207,40.88889],[-74.00715,40.89028],[-73.99213,40.89055],[-73.97714,40.88969],[-73.96233,40.88772],[-73.94785,40.88465],[-73.91969,40.87529],[-73.88594,40.86115],[-73.86915,40.85307],[-73.85725,40.84580],[-73.84636,40.83767],[-73.83660,40.82875],[-73.82807,40.81914],[-73.82085,40.80892],[-73.81500,40.79821],[-73.81060,40.78711],[-73.80768,40.77572],[-73.80627,40.76418],[-73.80638,40.75258],[-73.80802,40.74105],[-73.81116,40.72971],[-73.81578,40.71865],[-73.82096,40.70951],[-73.82340,40.69821],[-73.82790,40.68382],[-73.83159,40.67456],[-73.83687,40.66454],[-73.84406,40.65380],[-73.85267,40.64369],[-73.86261,40.63431],[-73.87370,40.62565],[-73.88456,40.61868],[-73.89623,40.61252],[-73.91099,40.60628],[-73.93364,40.59931],[-73.94178,40.59586]],[[-74.05563,40.63652],[-74.03876,40.63090],[-74.02080,40.62787],[-74.00240,40.62752],[-73.98427,40.62987],[-73.96706,40.63484],[-73.95605,40.63965],[-73.94414,40.64254],[-73.92654,40.64935],[-73.91246,40.65756],[-73.89890,40.66920],[-73.89352,40.67552],[-73.88551,40.68888],[-73.87958,40.70609],[-73.87662,40.72232],[-73.86932,40.73386],[-73.86644,40.74077],[-73.86346,40.75507],[-73.86428,40.76953],[-73.86887,40.78358],[-73.87705,40.79666],[-73.88238,40.80266],[-73.89529,40.81332],[-73.90272,40.81785],[-73.91471,40.82357],[-73.95720,40.84082],[-73.97500,40.84532],[-73.98424,40.84655],[-74.00299,40.84692],[-74.01231,40.84605],[-74.03039,40.84226],[-74.04713,40.83585],[-74.05480,40.83174],[-74.06836,40.82190],[-74.07912,40.81024],[-74.09346,40.79081],[-74.09716,40.78429],[-74.10184,40.77319],[-74.10567,40.75969],[-74.11399,40.71688],[-74.11496,40.70890],[-74.11476,40.70089],[-74.11304,40.69143],[-74.11048,40.68350],[-74.10676,40.67584],[-74.09606,40.66148],[-74.09024,40.65589],[-74.07659,40.64614],[-74.05563,40.63652]]]}}]};
-
-const BRIDGES = [
-  {name:"RFK / Triborough Bridge", lat:40.7805, lng:-73.9239, pct:-2.23, vol_after:13396322, vol_before:13701273},
-  {name:"Bronx-Whitestone Bridge", lat:40.8005, lng:-73.8297, pct:0.74, vol_after:4463875, vol_before:4431065},
-  {name:"Throgs Neck Bridge", lat:40.8054, lng:-73.7935, pct:-3.67, vol_after:12490110, vol_before:12966074},
-  {name:"Queens Midtown Tunnel", lat:40.7440, lng:-73.9712, pct:-4.79, vol_after:6198113, vol_before:6510045},
-  {name:"Hugh L. Carey Tunnel", lat:40.6873, lng:-74.0159, pct:-0.33, vol_after:1901461, vol_before:1907663},
-  {name:"Henry Hudson Bridge", lat:40.8782, lng:-73.9214, pct:2.60, vol_after:2000262, vol_before:1949593},
-  {name:"Verrazzano-Narrows Bridge", lat:40.6066, lng:-74.0447, pct:-8.67, vol_after:7395260, vol_before:8097065},
-  {name:"Marine Parkway Bridge", lat:40.5722, lng:-73.8942, pct:-8.52, vol_after:5570626, vol_before:6089700},
-  {name:"Cross Bay Bridge", lat:40.6110, lng:-73.8205, pct:-1.49, vol_after:11329405, vol_before:11501265}
-];
-
-const SPILLOVER = [
-  {band:"inside", pct:13.30, after:27442208, before:24220416},
-  {band:"0–0.25 mi", pct:-1.63, after:17236, before:17521},
-  {band:"0.25–1 mi", pct:12.51, after:7696257, before:6840653},
-  {band:"1–3 mi", pct:20.51, after:7071892, before:5868449},
-  {band:"3–5 mi", pct:36.99, after:2654977, before:1938044},
-  {band:"5+ mi", pct:34.89, after:3374073, before:2501352}
-];
-
-// ============================================================
-// COLOR SCALE — palette-aligned
-// ============================================================
-function getColor(val) {
-  if (val == null || isNaN(val)) return '#b0b0b0';
-  if (val < 0)  return '#d88a96';           // cherry-blossom-deep → decrease / human-social
-  if (val < 10) return '#dedbd2';           // dust-grey → minimal change
-  if (val < 25) return '#edafb8';           // cherry-blossom → moderate increase
-  return '#b0c4b1';                         // ash-grey → strong increase / natural
-}
-
-// ============================================================
-// MAP SETUP — muted warm basemap
-// ============================================================
-const map = L.map('map', {
-  center: [40.75, -73.98],
-  zoom: 12,
-  zoomControl: false,
-  attributionControl: false,
-  scrollWheelZoom: false,
-  dragging: false,
-  doubleClickZoom: false,
-  touchZoom: false,
-  boxZoom: false,
-  keyboard: false
-});
-
-// Positron (light, muted) basemap — warm and neutral
-L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-  maxZoom: 18
-}).addTo(map);
-
-// Re-enable pointer events on overlay panes so tooltips work
-map.getPane('overlayPane').style.pointerEvents = 'auto';
-map.getPane('tooltipPane').style.pointerEvents = 'auto';
-map.getPane('markerPane').style.pointerEvents = 'auto';
-
-L.control.attribution({position:'bottomright', prefix:false})
-  .addAttribution('&copy; <a href="https://carto.com/">CARTO</a>')
-  .addTo(map);
-
-// ============================================================
-// LAYERS
-// ============================================================
-
-// Zone outline
-const zoneLayer = L.geoJSON(ZONE_GEOJSON, {
-  style: { color: '#d88a96', weight: 2.5, fillColor: '#edafb8', fillOpacity: 0.12, dashArray: '6 4' },
-  interactive: false
-});
-
-// Zone filled (for early steps)
-const zoneFilled = L.geoJSON(ZONE_GEOJSON, {
-  style: { color: '#d88a96', weight: 2, fillColor: '#edafb8', fillOpacity: 0.25 },
-  interactive: false
-});
-
-// Band layers (one per band for individual control)
-const bandLayers = [];
-BANDS_GEOJSON.features.forEach((feat, i) => {
-  const lyr = L.geoJSON(feat, {
-    style: {
-      fillColor: getColor(feat.properties.taxi_pct),
-      color: 'rgba(74, 87, 89, 0.20)',
-      weight: 1,
-      fillOpacity: 0.55
-    },
-    onEachFeature: function(feature, layer) {
-      const p = feature.properties;
-      const pctStr = (p.taxi_pct >= 0 ? '+' : '') + p.taxi_pct.toFixed(1) + '%';
-      const color = p.taxi_pct >= 0 ? '#8aaa8b' : '#d88a96';
-      layer.bindTooltip(
-        `<div class="bridge-tooltip">
-          <div class="name">${p.dist_band}</div>
-          <div class="pct" style="color:${color}">${pctStr}</div>
-          <div style="margin-top:4px;font-size:11px;color:rgba(74,87,89,0.5)">
-            After: ${(p.after/1e6).toFixed(1)}M trips<br>
-            Before: ${(p.before/1e6).toFixed(1)}M trips
-          </div>
-        </div>`,
-        {className:'bridge-tooltip', sticky:true, opacity:1}
-      );
-    }
-  });
-  bandLayers.push(lyr);
-});
-
-// Bridge markers
-const bridgeMarkers = [];
-BRIDGES.forEach(b => {
-  const color = b.pct >= 0 ? '#8aaa8b' : '#d88a96';
-  const radius = Math.max(6, Math.min(14, Math.abs(b.pct) * 1.5));
-  const marker = L.circleMarker([b.lat, b.lng], {
-    radius: radius,
-    fillColor: color,
-    color: 'rgba(74, 87, 89, 0.35)',
-    weight: 1.5,
-    fillOpacity: 0.85
-  });
-  const pctStr = (b.pct >= 0 ? '+' : '') + b.pct.toFixed(1) + '%';
-  marker.bindTooltip(
-    `<div class="bridge-tooltip">
-      <div class="name">${b.name}</div>
-      <div class="pct" style="color:${color}">${pctStr}</div>
-      <div style="margin-top:4px;font-size:11px;color:rgba(74,87,89,0.5)">
-        ${(b.vol_after/1e6).toFixed(1)}M → ${(b.vol_before/1e6).toFixed(1)}M vehicles
-      </div>
-    </div>`,
-    {className:'bridge-tooltip', permanent:false, sticky:true, opacity:1}
-  );
-  bridgeMarkers.push(marker);
-});
-
-const bridgeGroup = L.layerGroup(bridgeMarkers);
-
-// ============================================================
-// CHART — palette-aligned
-// ============================================================
-let chart = null;
-function initChart() {
-  const ctx = document.getElementById('spillover-chart').getContext('2d');
-  chart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: SPILLOVER.map(s => s.band),
-      datasets: [{
-        data: SPILLOVER.map(s => s.pct),
-        backgroundColor: SPILLOVER.map(s => getColor(s.pct)),
-        borderColor: 'rgba(74, 87, 89, 0.15)',
-        borderWidth: 1,
-        borderRadius: 3
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        y: {
-          title: { display: true, text: '% Change', color: 'rgba(74,87,89,0.6)', font: {size:11, family:'Inter'} },
-          grid: { color: 'rgba(74, 87, 89, 0.08)' },
-          ticks: { color: 'rgba(74,87,89,0.5)', font: {size:10, family:'Inter'} }
-        },
-        x: {
-          grid: { display: false },
-          ticks: { color: 'rgba(74,87,89,0.5)', font: {size:10, family:'Inter'}, maxRotation: 45 }
-        }
-      }
-    }
-  });
-}
-
-// ============================================================
-// MAP STATES
-// ============================================================
-function clearAll() {
-  zoneLayer.remove();
-  zoneFilled.remove();
-  bridgeGroup.remove();
-  bandLayers.forEach(l => l.remove());
-}
-
-const states = {
-  0: function() {
-    clearAll();
-    map.flyTo([40.75, -73.98], 11, {duration: 1.4});
-    zoneFilled.addTo(map);
-    document.getElementById('chart-box').classList.remove('visible');
-    document.getElementById('legend').classList.remove('visible');
-  },
-  1: function() {
-    clearAll();
-    map.flyTo([40.735, -73.99], 13, {duration: 1.4});
-    zoneFilled.addTo(map);
-    document.getElementById('chart-box').classList.remove('visible');
-    document.getElementById('legend').classList.remove('visible');
-  },
-  2: function() {
-    clearAll();
-    map.flyTo([40.72, -73.92], 10, {duration: 1.6});
-    zoneLayer.addTo(map);
-    bridgeGroup.addTo(map);
-    document.getElementById('chart-box').classList.remove('visible');
-    document.getElementById('legend').classList.remove('visible');
-  },
-  3: function() {
-    clearAll();
-    map.flyTo([40.75, -73.98], 12, {duration: 1.4});
-    zoneLayer.addTo(map);
-    document.getElementById('chart-box').classList.remove('visible');
-    document.getElementById('legend').classList.remove('visible');
-  },
-  4: function() {
-    clearAll();
-    map.flyTo([40.74, -73.95], 11, {duration: 1.6});
-    zoneLayer.addTo(map);
-    bandLayers.forEach(l => l.addTo(map));
-    if (!chart) initChart();
-    document.getElementById('chart-box').classList.add('visible');
-    document.getElementById('legend').classList.add('visible');
-  },
-  5: function() {
-    clearAll();
-    map.flyTo([40.73, -73.99], 13, {duration: 1.4});
-    zoneLayer.addTo(map);
-    bandLayers[0].addTo(map);
-    bandLayers[1].addTo(map);
-    bandLayers[1].setStyle({fillOpacity: 0.8, weight: 2.5, color: '#d88a96'});
-    document.getElementById('chart-box').classList.add('visible');
-    document.getElementById('legend').classList.add('visible');
-  },
-  6: function() {
-    clearAll();
-    map.flyTo([40.72, -73.95], 11, {duration: 1.6});
-    zoneLayer.addTo(map);
-    bandLayers.forEach(l => l.addTo(map));
-    bandLayers[4].setStyle({fillOpacity: 0.85, weight: 2.5, color: '#4a5759'});
-    bandLayers[3].setStyle({fillOpacity: 0.75, weight: 1.5, color: 'rgba(74, 87, 89, 0.4)'});
-    document.getElementById('chart-box').classList.add('visible');
-    document.getElementById('legend').classList.add('visible');
-  },
-  7: function() {
-    clearAll();
-    map.flyTo([40.74, -73.99], 13, {duration: 1.4});
-    zoneLayer.addTo(map);
-    bandLayers[0].addTo(map);
-    bandLayers[0].setStyle({fillOpacity: 0.8, weight: 2, color: '#8aaa8b'});
-    document.getElementById('chart-box').classList.add('visible');
-    document.getElementById('legend').classList.add('visible');
-  },
-  8: function() {
-    clearAll();
-    map.flyTo([40.72, -73.95], 11, {duration: 1.6});
-    zoneLayer.addTo(map);
-    bandLayers.forEach(l => l.addTo(map));
-    bridgeGroup.addTo(map);
-    document.getElementById('chart-box').classList.add('visible');
-    document.getElementById('legend').classList.add('visible');
-  }
-};
-
-// ============================================================
-// SCROLL OBSERVER
-// ============================================================
 let currentStep = -1;
+
+function setActive(step) {
+  if (step === currentStep) return;
+  currentStep = step;
+  frames.forEach(f => {
+    f.classList.toggle('active', parseInt(f.dataset.fig) === step);
+  });
+}
 
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     const step = parseInt(entry.target.dataset.step);
     if (entry.isIntersecting && entry.intersectionRatio > 0.4) {
       entry.target.classList.add('active');
-      if (step !== currentStep) {
-        currentStep = step;
-        if (states[step]) states[step]();
-      }
+      setActive(step);
     } else {
       entry.target.classList.remove('active');
     }
   });
 }, { threshold: [0.4] });
 
-document.querySelectorAll('.step').forEach(el => observer.observe(el));
+steps.forEach(el => observer.observe(el));
 
-// Start with step 0
+// progress bar
+window.addEventListener('scroll', () => {
+  const max = document.body.scrollHeight - window.innerHeight;
+  progress.style.width = (window.scrollY / max * 100) + '%';
+}, { passive: true });
+
+// init
 setTimeout(() => {
-  document.querySelector('[data-step="0"]').classList.add('active');
-  states[0]();
-}, 300);
-
+  steps[0].classList.add('active');
+  setActive(0);
+}, 200);
 </script>
 </body>
 </html>
