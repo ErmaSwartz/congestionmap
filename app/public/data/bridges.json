@@ -1,0 +1,11 @@
+[
+  { "name": "RFK / Triborough Bridge", "lon": -73.9239, "lat": 40.7805, "pct_change": -2.23, "pre_volume": 13701273, "post_volume": 13396322 },
+  { "name": "Bronx-Whitestone Bridge", "lon": -73.8297, "lat": 40.8005, "pct_change": 0.74, "pre_volume": 4431065, "post_volume": 4463875 },
+  { "name": "Throgs Neck Bridge", "lon": -73.7935, "lat": 40.8054, "pct_change": -3.67, "pre_volume": 12966074, "post_volume": 12490110 },
+  { "name": "Queens Midtown Tunnel", "lon": -73.9712, "lat": 40.7440, "pct_change": -4.79, "pre_volume": 6510045, "post_volume": 6198113 },
+  { "name": "Hugh L. Carey Tunnel", "lon": -74.0159, "lat": 40.6873, "pct_change": -0.33, "pre_volume": 1907663, "post_volume": 1901461 },
+  { "name": "Henry Hudson Bridge", "lon": -73.9214, "lat": 40.8782, "pct_change": 2.60, "pre_volume": 1949593, "post_volume": 2000262 },
+  { "name": "Verrazzano-Narrows Bridge", "lon": -74.0447, "lat": 40.6066, "pct_change": -8.67, "pre_volume": 8097065, "post_volume": 7395260 },
+  { "name": "Marine Parkway Bridge", "lon": -73.8942, "lat": 40.5722, "pct_change": -8.52, "pre_volume": 6089700, "post_volume": 5570626 },
+  { "name": "Cross Bay Bridge", "lon": -73.8205, "lat": 40.6110, "pct_change": -1.49, "pre_volume": 11501265, "post_volume": 11329405 }
+]
