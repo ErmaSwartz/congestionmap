@@ -223,6 +223,87 @@
     transition: width 0.1s linear;
   }
 
+  /* ── ZOOM MODAL ── */
+  .figure-frame.active img {
+    pointer-events: auto;
+    cursor: zoom-in;
+  }
+
+  #zoom-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(74, 87, 89, 0.92);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: none;
+    z-index: 1000;
+    overflow: auto;
+    cursor: zoom-out;
+    padding: 80px 40px 40px;
+  }
+  #zoom-modal.visible { display: block; }
+
+  #zoom-content {
+    min-height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #zoom-img {
+    max-width: 100%;
+    max-height: 88vh;
+    width: auto;
+    height: auto;
+    background: var(--powder-petal);
+    border-radius: 8px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+    cursor: zoom-in;
+    transition: transform 0.15s ease;
+  }
+  #zoom-img.actual {
+    max-width: none;
+    max-height: none;
+    cursor: zoom-out;
+  }
+
+  #zoom-close {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(247, 225, 215, 0.95);
+    border: 1px solid rgba(74, 87, 89, 0.15);
+    color: var(--iron-grey);
+    font-family: 'DM Serif Display', serif;
+    font-size: 26px;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 1001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: transform 0.15s ease;
+  }
+  #zoom-close:hover { transform: scale(1.08); }
+
+  #zoom-hint {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(247, 225, 215, 0.7);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    z-index: 1001;
+    pointer-events: none;
+    text-align: center;
+  }
+
   /* ── RESPONSIVE ── */
   @media (max-width: 900px) {
     .figure-frame { inset: 20px; }
@@ -234,6 +315,15 @@
 <body>
 
 <div id="progress"></div>
+
+<!-- ── ZOOM MODAL ── -->
+<div id="zoom-modal" role="dialog" aria-modal="true" aria-hidden="true">
+  <button id="zoom-close" aria-label="Close zoom view" type="button">×</button>
+  <div id="zoom-content">
+    <img id="zoom-img" src="" alt="">
+  </div>
+  <div id="zoom-hint">Click image to toggle actual size · Esc to close</div>
+</div>
 
 <!-- ── FIGURE STAGE ── -->
 <div id="figure-stage">
@@ -490,6 +580,49 @@ setTimeout(() => {
   steps[0].classList.add('active');
   setActive(0);
 }, 200);
+
+// ── ZOOM MODAL ──
+const zoomModal = document.getElementById('zoom-modal');
+const zoomImg = document.getElementById('zoom-img');
+const zoomClose = document.getElementById('zoom-close');
+
+function openZoom(src, alt) {
+  zoomImg.src = src;
+  zoomImg.alt = alt || '';
+  zoomImg.classList.remove('actual');
+  zoomModal.classList.add('visible');
+  zoomModal.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+  zoomModal.scrollTop = 0;
+  zoomModal.scrollLeft = 0;
+}
+
+function closeZoom() {
+  zoomModal.classList.remove('visible');
+  zoomModal.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+  zoomImg.classList.remove('actual');
+}
+
+document.querySelectorAll('.figure-frame img').forEach(img => {
+  img.addEventListener('click', e => {
+    if (!img.closest('.figure-frame').classList.contains('active')) return;
+    e.stopPropagation();
+    openZoom(img.src, img.alt);
+  });
+});
+
+zoomImg.addEventListener('click', e => {
+  e.stopPropagation();
+  zoomImg.classList.toggle('actual');
+});
+
+zoomModal.addEventListener('click', closeZoom);
+zoomClose.addEventListener('click', e => { e.stopPropagation(); closeZoom(); });
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && zoomModal.classList.contains('visible')) closeZoom();
+});
 </script>
 </body>
 </html>
