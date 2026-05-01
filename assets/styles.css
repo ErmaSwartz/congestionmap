@@ -726,6 +726,23 @@ a:hover { opacity: 0.6; }
   vertical-align: middle;
 }
 
+/* Chapter card with headline number — TOC doubles as dashboard */
+.chapter-card.has-stat { padding: var(--s-3) var(--s-3) var(--s-3) var(--s-3); }
+.chapter-card.has-stat .icon { display: none; }
+.chapter-card .card-stat {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(40px, 5vw, 60px);
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+  margin-bottom: var(--s-2);
+}
+.chapter-card .card-stat-pct {
+  font-size: 0.55em;
+  font-weight: 400;
+  margin-left: 1px;
+}
+
 /* Tech divider rule */
 .tech-divider {
   display: flex;

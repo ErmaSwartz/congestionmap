@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Congestion Map · NYC's 2025 cordon, where the traffic moved</title>
-<meta name="description" content="A spatial investigation of NYC's January 2025 congestion charge — bridges, taxis, transit, and air quality, four months in.">
+<meta name="description" content="A look at NYC's January 2025 congestion charge, more than a year on — comparing bridges, taxis, transit, and air quality across the same four months in 2024 and 2025.">
 <link rel="stylesheet" href="assets/styles.css">
 </head>
 <body class="theme-night">
@@ -26,7 +26,7 @@
     <div class="title-block">
       <div class="label-mono" style="margin-bottom: var(--s-3);">What happened when NYC started charging drivers to enter Manhattan</div>
       <div class="project-name">Where did<br>the traffic <span class="accent">go?</span></div>
-      <div class="project-sub">A look at NYC's congestion toll — four months in, across the bridges, the taxis, the subways, and the air.</div>
+      <div class="project-sub">More than a year into NYC's congestion toll — what the bridges, taxis, subways, and air actually show, across a matched four-month window in 2024 and 2025.</div>
     </div>
 
     <!-- coord/metadata strip -->
@@ -38,19 +38,15 @@
   </section>
 
   <!-- ── FRAMING ────────────────────────────────────────────── -->
-  <section class="wrap-narrow" style="padding-top: var(--s-7);">
+  <section class="wrap-narrow" style="padding-top: var(--s-6);">
     <div class="tech-divider">▸ Start here</div>
 
     <p style="font-family: var(--font-display); font-size: var(--t-body-lg); line-height: 1.6; color: var(--night-soft); max-width: 56ch; margin-bottom: var(--s-3);">
-      On <strong style="color: var(--night-ink); font-weight: 500;">January 5, 2025</strong>, New York City became the first U.S. city to charge drivers a toll just for entering part of downtown. If you drove a car into Manhattan below 60th Street, you paid $9 during the day and $2.25 at night. The idea was to push fewer cars onto the streets, more people onto the subway, and cleaner air into everyone's lungs.
-    </p>
-
-    <p style="font-family: var(--font-display); font-size: var(--t-body-lg); line-height: 1.6; color: var(--night-soft); max-width: 56ch; margin-bottom: var(--s-3);">
-      Four months in, I wanted to know what actually changed. Did fewer cars come into Manhattan? Did the taxi traffic just shift somewhere else? Did people switch to the subway? Did the air get noticeably cleaner? Was any of it really because of the toll?
+      On <strong style="color: var(--night-ink); font-weight: 500;">January 5, 2025</strong>, New York City became the first U.S. city to charge drivers a toll just for entering part of downtown. Drive into Manhattan below 60th Street, and you paid $9 during the day and $2.25 at night. The idea was to push fewer cars onto the streets, more people onto the subway, and cleaner air into everyone's lungs.
     </p>
 
     <p style="font-family: var(--font-display); font-size: var(--t-body-lg); line-height: 1.6; color: var(--night-soft); max-width: 56ch;">
-      <strong style="color: var(--night-ink); font-weight: 500;">The short answer is more interesting than yes or no.</strong> The cordon did real work — but a lot of what people are giving it credit for was already in motion before it switched on. Here's how I got there.
+      More than a year later, I pulled five datasets to ask what actually changed in the first four months of the policy — the same calendar window where we have a clean comparison against 2024. <strong style="color: var(--night-ink); font-weight: 500;">The short answer is more interesting than yes or no.</strong> The cordon did real work — but a lot of what people are giving it credit for was already in motion before it switched on.
     </p>
   </section>
 
@@ -152,122 +148,52 @@
     </div>
   </section>
 
-  <!-- ── THE FIVE QUESTIONS ─────────────────────────────────── -->
-  <section class="wrap" style="padding-top: var(--s-5);">
-    <div class="tech-divider">▸ The five questions everyone keeps asking</div>
-
-    <div class="questions">
-      <div class="question">
-        <div class="num">01</div>
-        <div class="text">Did fewer cars actually come into Manhattan?</div>
-        <a class="ref" href="01-bridges.html">▸ The Bridges</a>
-      </div>
-      <div class="question">
-        <div class="num">02</div>
-        <div class="text">Where did the traffic go instead?</div>
-        <a class="ref" href="02-taxis.html">▸ The Taxis</a>
-      </div>
-      <div class="question">
-        <div class="num">03</div>
-        <div class="text">Did people switch to the subway and the bus?</div>
-        <a class="ref" href="03-modes.html">▸ The Modes</a>
-      </div>
-      <div class="question">
-        <div class="num">04</div>
-        <div class="text">Did the air get noticeably cleaner?</div>
-        <a class="ref" href="04-air.html">▸ The Air</a>
-      </div>
-      <div class="question">
-        <div class="num">05</div>
-        <div class="text">Was it really the toll — or was something else going on?</div>
-        <a class="ref" href="05-twist.html">▸ The Twist</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── CHAPTER CARDS ──────────────────────────────────────── -->
+  <!-- ── CHAPTER CARDS (single TOC) ─────────────────────────── -->
   <section class="wrap" style="padding-top: var(--s-7);">
     <div class="tech-divider">▸ Six chapters · read in order, or jump</div>
 
     <div class="chapter-grid">
 
-      <a class="chapter-card" href="01-bridges.html">
-        <svg class="icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M2 36 L46 36"/>
-          <path d="M8 36 L8 22 Q24 14 40 22 L40 36"/>
-          <path d="M14 36 L14 27"/>
-          <path d="M24 36 L24 18"/>
-          <path d="M34 36 L34 27"/>
-          <path d="M2 42 L46 42"/>
-        </svg>
+      <a class="chapter-card has-stat" href="01-bridges.html">
+        <div class="card-stat text-decline">−3.3<span class="card-stat-pct">%</span></div>
         <div class="num">01 · The Bridges</div>
         <div class="title">Did fewer cars come in?</div>
-        <div class="tease">Yes — about 3 % fewer at every MTA bridge and tunnel. But that only counts the MTA-tolled crossings, not the city-owned East River bridges.</div>
+        <div class="tease">About 3 % fewer vehicles at every MTA bridge and tunnel — but only the MTA-tolled crossings count, not the city-owned East River bridges.</div>
       </a>
 
-      <a class="chapter-card" href="02-taxis.html">
-        <svg class="icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <rect x="6" y="20" width="36" height="14" rx="2"/>
-          <path d="M10 20 L14 12 L34 12 L38 20"/>
-          <circle cx="14" cy="36" r="3"/>
-          <circle cx="34" cy="36" r="3"/>
-          <path d="M14 16 L34 16"/>
-          <rect x="20" y="6" width="8" height="4"/>
-        </svg>
+      <a class="chapter-card has-stat" href="02-taxis.html">
+        <div class="card-stat text-rise">+160<span class="card-stat-pct">%</span></div>
         <div class="num">02 · The Taxis</div>
-        <div class="title">Where did the rides actually go?</div>
-        <div class="tease">Yellow-cab pickups jumped almost everywhere. The biggest growth was a few miles outside Manhattan — not right at the toll.</div>
+        <div class="title">Where did the rides go?</div>
+        <div class="tease">The median taxi zone roughly doubled its pickups. The biggest growth was a few miles <em>outside</em> the cordon, not right at the boundary.</div>
       </a>
 
-      <a class="chapter-card" href="03-modes.html">
-        <svg class="icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <rect x="8" y="8" width="32" height="28" rx="3"/>
-          <circle cx="16" cy="32" r="3"/>
-          <circle cx="32" cy="32" r="3"/>
-          <path d="M8 22 L40 22"/>
-          <rect x="12" y="13" width="10" height="6"/>
-          <rect x="26" y="13" width="10" height="6"/>
-          <path d="M14 40 L18 36"/>
-          <path d="M34 40 L30 36"/>
-        </svg>
+      <a class="chapter-card has-stat" href="03-modes.html">
+        <div class="card-stat text-rise">+9<span class="card-stat-pct">%</span></div>
         <div class="num">03 · The Modes</div>
         <div class="title">Did people switch to transit?</div>
-        <div class="tease">Total trips into Manhattan went <em>up</em>, not down. A small slice — about a percent — moved from cars to buses.</div>
+        <div class="tease">Total trips into Manhattan went <em>up</em>, not down. The mode mix tilted ~1.3 pp from bridges onto buses.</div>
       </a>
 
-      <a class="chapter-card" href="04-air.html">
-        <svg class="icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M8 18 Q14 14 20 18 Q26 22 32 18 Q38 14 44 18"/>
-          <path d="M6 26 Q12 22 18 26 Q24 30 30 26 Q36 22 42 26"/>
-          <path d="M10 34 Q16 30 22 34 Q28 38 34 34 Q40 30 46 34"/>
-        </svg>
+      <a class="chapter-card has-stat" href="04-air.html">
+        <div class="card-stat text-decline">−22<span class="card-stat-pct">%</span></div>
         <div class="num">04 · The Air</div>
-        <div class="title">Did the air actually get cleaner?</div>
-        <div class="tease">Soot inside the toll zone dropped about 22 %. A satellite says smog over Manhattan dropped too. The numbers are wobbly, but consistent.</div>
+        <div class="title">Did the air get cleaner?</div>
+        <div class="tease">Soot inside the cordon fell sharply. A satellite says smog over Manhattan dropped too. Two instruments, same direction.</div>
       </a>
 
-      <a class="chapter-card" href="05-twist.html">
-        <svg class="icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <circle cx="24" cy="24" r="18"/>
-          <path d="M24 12 L24 24 L32 30"/>
-          <path d="M24 4 L24 8"/>
-          <path d="M44 24 L40 24"/>
-          <path d="M24 44 L24 40"/>
-          <path d="M4 24 L8 24"/>
-        </svg>
+      <a class="chapter-card has-stat" href="05-twist.html">
+        <div class="card-stat text-decline">+9 / +19</div>
         <div class="num">05 · The Twist</div>
         <div class="title">Was it really the toll?</div>
-        <div class="tease">Mostly — no. The same patterns show up at night when the toll is mostly off. Recovery from COVID is doing most of the work.</div>
+        <div class="tease">Mostly — no. The same patterns show up at night when the toll is mostly off. Most of the geography isn't the cordon's doing.</div>
       </a>
 
-      <a class="chapter-card" href="verdict.html">
-        <svg class="icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M10 8 L10 38 L24 32 L38 38 L38 8 L24 14 Z"/>
-          <path d="M24 14 L24 32"/>
-        </svg>
+      <a class="chapter-card has-stat" href="verdict.html">
+        <div class="card-stat" style="font-size: clamp(28px, 3.5vw, 40px); letter-spacing: -0.02em;">5 hold up<br>3 didn't</div>
         <div class="num">Verdict</div>
         <div class="title">What it actually did</div>
-        <div class="tease">The toll did real things — fewer cars, cleaner air, more buses. But the bigger story was already in motion before it switched on.</div>
+        <div class="tease">Real findings, walked-back ones, and the honest takeaway: amplified, not originated.</div>
       </a>
 
     </div>
