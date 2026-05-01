@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>05 · The Twist — Congestion Map</title>
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body class="theme-night">
+
+<header class="chapter-nav">
+  <a href="index.html">← Cover</a>
+  <div class="links">
+    <a href="01-bridges.html">01 Bridges</a>
+    <a href="02-taxis.html">02 Taxis</a>
+    <a href="03-modes.html">03 Modes</a>
+    <a href="04-air.html">04 Air</a>
+    <a href="05-twist.html" class="active">05 Twist</a>
+    <a href="verdict.html">Verdict</a>
+  </div>
+</header>
+
+<main>
+
+  <section class="wrap-narrow">
+    <div class="hero">
+      <div class="eyebrow">Chapter 05 · The Twist</div>
+      <h1 style="font-size: var(--t-display); margin-bottom: var(--s-4);">Was it really the toll?</h1>
+      <p class="lede">Bridge entries fell. Taxi pickups rose where I didn't expect them. The CBD got busier. The air got cleaner. Every dataset so far is consistent with a policy that worked. I went back to the taxi data to check whether the cordon was actually <em>causing</em> the spillover pattern. The answer surprised me.</p>
+    </div>
+  </section>
+
+  <section class="wrap-narrow section">
+    <div class="section-eyebrow">A natural experiment, built into the policy itself</div>
+    <h2>Compare the hours when the toll is on to the hours when it's mostly off</h2>
+    <p>The cordon toll isn't the same all day. During peak hours — weekdays from 5 AM to 9 PM, weekends from 9 AM to 9 PM — driving in costs $9. During off-peak, the toll drops by 75 percent, to $2.25. So if the toll is the thing producing the spillover pattern outside Manhattan, the pattern should be <strong>strongest when the toll is full price</strong>, and <strong>weakest when it's basically off</strong>.</p>
+    <p>To test that, I split the taxi trips into peak and off-peak hours and ran the same neighborhood-by-neighborhood analysis on each separately. Same 237 zones, same method — just different times of day. Inner Manhattan should stay flat in both. The outer-borough fringe should glow brighter at peak than at off-peak. That's the prediction.</p>
+  </section>
+
+  <section class="wrap-narrow section">
+    <div class="section-eyebrow">The result didn't go the way I expected</div>
+    <h2>Off-peak is the stronger pattern, not the weaker one</h2>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-3); margin-top: var(--s-4);">
+      <div class="fragment" style="margin: 0; max-width: none;">
+        <img src="poster_assets/08_gwr_peak_coeff.svg" alt="Map of how strongly distance from the cordon predicts pickup growth during peak hours, when the toll is fully active.">
+        <div class="caption" style="text-align: center;">Peak hours · toll fully active ($9)</div>
+      </div>
+      <div class="fragment" style="margin: 0; max-width: none;">
+        <img src="poster_assets/09_gwr_offpeak_coeff.svg" alt="Map of how strongly distance from the cordon predicts pickup growth during off-peak hours, when the toll is discounted 75 percent.">
+        <div class="caption" style="text-align: center;">Off-peak · toll mostly off ($2.25)</div>
+      </div>
+    </div>
+    <p style="margin-top: var(--s-4);">Look at the two maps side by side. The off-peak map (right) has <em>deeper</em> reds in outer Brooklyn, Queens, and Staten Island. On average, every additional mile from the cordon adds about <strong>+9 percentage points</strong> of pickup growth at peak — and about <strong>+19 percentage points</strong> off-peak. Off-peak is more than twice as strong.</p>
+
+    <div class="bignum" style="margin-top: var(--s-5);">
+      <div class="label">Effect of distance on pickup growth · peak vs off-peak</div>
+      <div class="value text-decline">+9 vs +19</div>
+      <div class="caption">When the toll is mostly off, the spatial spillover pattern is <em>stronger</em>, not weaker. That's the opposite of what we'd expect if the toll were the cause.</div>
+    </div>
+  </section>
+
+  <section class="wrap-narrow section">
+    <div class="section-eyebrow">What it actually means</div>
+    <h2>Most of the geography is something else</h2>
+    <p>If the cordon were the main thing producing the outer-borough taxi spillover, off-peak should be flatter than peak. It isn't. The pattern survives — gets stronger, in fact — at the times when the toll is essentially off. Which says most of what we're seeing on those maps isn't really about the cordon at all.</p>
+    <p>What it probably <em>is</em> about: post-pandemic taxi recovery (which has been happening for years and skews late-night and outward), continued growth in airport pickups, and outer-borough demand that was already on its way up before January 5, 2025. Plus the long, slow story of yellow cabs reaching further out as Uber and Lyft eat into their core market.</p>
+    <p>The cordon contributes something on top of all that. But it's the addition, not the engine.</p>
+  </section>
+
+  <section class="wrap-narrow section">
+    <div class="section-eyebrow">Isolating just the cordon</div>
+    <h2>Subtracting the part that isn't the toll</h2>
+    <p>If most of the spatial pattern is happening at all hours, we can subtract it out. For every neighborhood, take its peak-hour growth-with-distance number, subtract the off-peak one, and what's left is the slice that <em>only</em> happens when the toll is on. That difference is what we can credibly call the cordon's own contribution to the geography.</p>
+    <div class="fragment">
+      <img src="poster_assets/10_gwr_dd_coeff.svg" alt="Map of the cordon-attributable change in the pickup-versus-distance relationship — what happens during tolled hours that does not happen off-peak.">
+      <div class="caption">The cordon's own contribution to the local distance pattern</div>
+    </div>
+    <p>The map is much paler than the previous two — most of the bright color was already there off-peak. What's left averages about <strong>−10 percentage points per mile</strong>, and is mostly negative. Translation: during tolled hours, the relationship between distance and pickup growth gets <em>flatter</em>, not steeper. The cordon is doing real work — but its job is dampening the long-distance spillover, not creating it.</p>
+    <p>That's a meaningful effect. It's also a small slice of what the all-hours map was showing.</p>
+  </section>
+
+  <section class="wrap-narrow section">
+    <div class="section-eyebrow">Same shape, different dataset</div>
+    <h2>The transit data shows the same null</h2>
+    <p>If a peak-hour cordon were really driving the changes, weekday rush-hour transit should have surged harder than weekend transit. It didn't. Subway grew 8.5 % on weekdays and 10.4 % on weekends. LIRR grew about 11 % on weekdays and 13 % on weekends. Bridges and tunnels were nearly flat both. Several modes actually grew <em>more</em> on weekends — the opposite of a peak-binding signature.</p>
+    <p>It's the same shape as the off-peak taxi result, in a completely different dataset. Whatever's shaping the post-cordon patterns isn't concentrated in the hours the toll is on.</p>
+  </section>
+
+  <section class="wrap-narrow section">
+    <div class="section-eyebrow">What this changes about the story</div>
+    <h2>The real cordon effect is small, real, and specific</h2>
+    <p>So the cordon's actual contribution to the spatial taxi spillover — once we subtract everything that was happening anyway — is roughly <strong>10 percentage points per mile</strong> of distance-flattening during tolled hours. That's a meaningful, real, statistically significant effect. It's also a small slice of the +32 % outer-borough peak that the all-hours map showed.</p>
+    <p>The cordon amplified a redistribution that was already in motion. It didn't start it. The honest answer to "where did the traffic go?" turns out to be <strong>"mostly to the places it was already heading — with a small policy-induced tilt on top."</strong></p>
+  </section>
+
+  <section class="wrap-narrow section">
+    <p class="italic-display" style="font-size: 22px; line-height: 1.45; max-width: 38ch; color: var(--night-ink);">
+      Five datasets. Real but modest cordon effects on each. A bigger story underneath all of them. So what does the verdict look like?
+    </p>
+    <div style="margin-top: var(--s-5);">
+      <a href="verdict.html" class="label-mono" style="border-bottom: 1px solid currentColor; padding-bottom: 4px; color: var(--decline-soft);">
+        Continue → Verdict
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="grid">
+    <div>
+      <h4>Source</h4>
+      <p>NYC TLC yellow-taxi trip records · MTA daily ridership</p>
+    </div>
+    <div>
+      <h4>Method</h4>
+      <p>GWR (mgwr 2.x, adaptive bisquare, AICc bandwidth) fit separately on peak / off-peak regimes; difference-in-differences at every zone</p>
+    </div>
+    <div>
+      <h4>Caveats</h4>
+      <p><a href="caveats.html">DD assumes shared non-toll trends across regimes →</a></p>
+    </div>
+    <div>
+      <h4>Code</h4>
+      <p><a href="https://github.com/ErmaSwartz/congestionmap">github.com/ErmaSwartz/congestionmap</a></p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

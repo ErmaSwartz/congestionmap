@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>04 · The Air — Congestion Map</title>
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<header class="chapter-nav">
+  <a href="index.html">← Cover</a>
+  <div class="links">
+    <a href="01-bridges.html">01 Bridges</a>
+    <a href="02-taxis.html">02 Taxis</a>
+    <a href="03-modes.html">03 Modes</a>
+    <a href="04-air.html" class="active">04 Air</a>
+    <a href="05-twist.html">05 Twist</a>
+    <a href="verdict.html">Verdict</a>
+  </div>
+</header>
+
+<main>
+
+  <section class="wrap-narrow">
+    <div class="hero">
+      <div class="eyebrow">Chapter 04 · The Air</div>
+      <h1 style="font-size: var(--t-display); margin-bottom: var(--s-4);">If fewer vehicles came in, did the air actually get cleaner?</h1>
+      <p class="lede">Bridge entries fell. Yellow-cab pickups outside the cordon rose. The CBD got busier overall, but a small slice of share moved from cars to buses. The cordon should have left a fingerprint somewhere else: in the air over Manhattan. Two datasets — surface monitors and a satellite — say it did.</p>
+    </div>
+  </section>
+
+  <section class="wrap-narrow section">
+    <div class="section-eyebrow">What you can see from space</div>
+    <h2>Tropospheric NO₂ over the cordon, 2019 – 2025</h2>
+    <div class="fragment" style="max-width: 880px;">
+      <video autoplay muted loop playsinline style="width: 100%; display: block; border-radius: 2px;">
+        <source src="figures/aq/no2_anomaly_timelapse_web.mp4" type="video/mp4">
+      </video>
+      <div class="caption">Sentinel-5P TROPOMI NO₂ anomaly over NYC · 2019 – 2025 · daily 13:30 local overpass, cloud-filtered</div>
+    </div>
+    <p style="margin-top: var(--s-4);">The Sentinel-5P satellite measures tropospheric nitrogen-dioxide column density — basically, how much NO₂ is sitting in a vertical column of air over each ~5-kilometer pixel. NO₂ is a near-real-time signature of combustion, and in NYC it's overwhelmingly traffic. The animation above is the <em>anomaly</em> — each frame's value relative to the long-term average for that month — so what you're watching is the deviation from normal, not the raw level. <strong style="color: var(--ink); font-weight: 500;">Pink means more NO₂ than normal; green means less.</strong></p>
+    <p>The cordon polygon is only one or two TROPOMI pixels across, so the satellite can't resolve block-level patterns. But over the cordon, month after month in early 2025, the anomaly trends green.</p>
+    <p style="font-style: italic; color: var(--muted); font-size: 14px;">A note on time-of-day: the satellite passes over NYC once a day, around 1:30 PM local time. Every frame in the animation is a midday reading. We can't see whether NO₂ patterns differ between rush hour and the middle of the night from this dataset — the satellite simply isn't there at those times. The off-peak vs. peak question gets answered later in the analysis using the taxi data, which is granular enough to do that cut.</p>
+  </section>
+
+  <section class="wrap-narrow section">
+    <div class="section-eyebrow">The headline</div>
+    <div class="bignum">
+      <div class="label">TROPOMI NO₂ over the cordon · Jan – Apr 2024 vs 2025</div>
+      <div class="value text-decline">−23.5%</div>
+      <div class="caption">Naive year-over-year change in mean tropospheric NO₂ column density inside the congestion zone polygon.</div>
+    </div>
+    <p>That's the simple before-after number. Most of it is real; some of it is part of a longer downward trend that started years before the cordon turned on. To isolate just the part that's reasonably attributable to the toll, I compared the cordon's drop against a control area — the rest of the NYC bounding box, minus a five-mile buffer around the cordon — and subtracted each region's pre-existing trend.</p>
+
+    <div class="bignum" style="margin-top: var(--s-5);">
+      <div class="label">Cordon-attributable drop · vs outer-NYC control, after subtracting trend</div>
+      <div class="value text-decline">−20.1%</div>
+      <div class="caption">Smog over the cordon fell about twenty percent <em>more</em> than over the outer boroughs, even after taking out the trend that was already pushing both downward. The 95 % confidence interval ([−67 %, +25 %]) is wide because the cordon is small in satellite pixels.</div>
+    </div>
+
+    <p>The point estimate is clean and large. The confidence interval is wide because the cordon is small (one or two pixels across), the post-treatment window is short (four months), and TROPOMI's daily values are noisy — cloud cover, wind, sensor-sampling variation all add scatter. The estimate is consistent with a substantial cordon-attributable air-quality improvement, but the satellite alone can't reject "no effect."</p>
+  </section>
+
+  <section class="wrap-narrow section">
+    <div class="section-eyebrow">PM2.5 from the ground</div>
+    <h2>Soot inside the zone fell sharply</h2>
+    <p>The satellite gives us the big-picture view of NO₂ from above. For PM2.5 — the fine soot from combustion that's most relevant to people's lungs — we need to look at street level. NYC's Community Air Survey (NYCCAS) runs about 10 PM2.5 monitors stationed around the cordon, the boroughs, and across the city. Each station took roughly hourly readings through 2024 and 2025.</p>
+
+    <table class="mode-share-table" style="margin-top: var(--s-3);">
+      <thead>
+        <tr>
+          <th>Where the station is</th>
+          <th class="numeric">2024 mean (µg/m³)</th>
+          <th class="numeric">2025 mean</th>
+          <th class="numeric">Change</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Inside the cordon (5 stations)</td><td class="numeric">8.83</td><td class="numeric">6.82</td><td class="numeric text-decline">−22.6 %</td></tr>
+        <tr><td>Just outside, 0 – ¼ mi (1 station)</td><td class="numeric">8.00</td><td class="numeric">6.03</td><td class="numeric text-decline">−24.6 %</td></tr>
+        <tr><td>3 – 5 mi from cordon (1 station)</td><td class="numeric">6.23</td><td class="numeric">6.01</td><td class="numeric text-decline">−3.5 %</td></tr>
+        <tr><td>5+ mi away (3 stations)</td><td class="numeric">7.65</td><td class="numeric">6.23</td><td class="numeric text-decline">−18.5 %</td></tr>
+      </tbody>
+    </table>
+
+    <div class="bignum" style="margin-top: var(--s-5);">
+      <div class="label">PM2.5 attributable to the cordon · vs faraway control stations</div>
+      <div class="value text-decline">−21.8%</div>
+      <div class="caption">After subtracting whatever trend was already underway, soot inside the cordon dropped about twenty-two percent more than at stations five-plus miles away. 95 % confidence interval: [−47.7 %, −0.9 %].</div>
+    </div>
+
+    <p>This is the strongest single number in the air chapter — the one whose confidence interval doesn't cross zero. It says: <strong>even after subtracting the part that was probably going to happen anyway, PM2.5 inside the cordon fell roughly twenty percent more than it did at stations five-plus miles away.</strong> The cordon did real work, and lungs in Manhattan got a measurable benefit.</p>
+    <p>Two reasons to read this carefully, though. First, PM2.5 is heavily weather-driven — temperature, wind direction, and storms all swing it in ways that have nothing to do with cars. Second, and more important: <strong>NYCCAS recalibrated its PM2.5 correction factors on June 10, 2024</strong>. That's halfway through the pre-treatment window we're comparing against. So part of the apparent drop is the cordon, and part is the measuring instrument changing partway through the experiment. We can't separate them cleanly with this dataset alone.</p>
+  </section>
+
+  <section class="wrap-narrow section">
+    <div class="section-eyebrow">A note on EPA</div>
+    <h2>Why this isn't EPA's data</h2>
+    <p>The federal EPA also runs PM2.5 monitors across NYC — eight active stations during this window. The natural question is: do they tell the same story?</p>
+    <p>It turns out we can't ask. <strong>The closest EPA PM2.5 monitor is in Brooklyn, 2.8 miles from the cordon. The closest one in Manhattan is up in Harlem, almost 4 miles away.</strong> None of the EPA stations are inside the cordon, and none are within a mile of its boundary. The federal regulatory network was designed to track regional air quality across counties, not to capture what's happening in a slice of midtown that a city congestion toll would target.</p>
+    <p>So this chapter rests on two instruments instead of three: NYCCAS surface PM2.5 (with its calibration caveat), and TROPOMI satellite NO₂ (with its broad-pixel caveat). The story isn't weakened by the EPA gap so much as defined by it — what the cordon does at city-block scale is a question the federal monitors weren't built to answer.</p>
+  </section>
+
+  <section class="wrap-narrow section">
+    <div class="section-eyebrow">Two instruments, two pollutants</div>
+    <h2>Both point the same way</h2>
+
+    <svg viewBox="0 0 720 280" width="100%" style="margin: var(--s-3) 0; max-width: 720px; display: block;" role="img" aria-label="Bar chart comparing the cordon-attributable change in NYCCAS PM2.5 and TROPOMI NO2. Both negative.">
+      <!-- vertical zero axis -->
+      <line x1="240" y1="40" x2="240" y2="240" stroke="rgba(26,26,26,0.4)" stroke-width="1"/>
+      <text x="240" y="260" font-family="JetBrains Mono, monospace" font-size="10" fill="#8A7E6E" text-anchor="middle" letter-spacing="0.12em">0%</text>
+
+      <!-- scale ticks (negative side, every 20%) -->
+      <line x1="200" y1="40" x2="200" y2="240" stroke="rgba(26,26,26,0.06)"/>
+      <text x="200" y="260" font-family="JetBrains Mono, monospace" font-size="10" fill="#8A7E6E" text-anchor="middle">−20%</text>
+      <line x1="160" y1="40" x2="160" y2="240" stroke="rgba(26,26,26,0.06)"/>
+      <text x="160" y="260" font-family="JetBrains Mono, monospace" font-size="10" fill="#8A7E6E" text-anchor="middle">−40%</text>
+      <line x1="120" y1="40" x2="120" y2="240" stroke="rgba(26,26,26,0.06)"/>
+      <text x="120" y="260" font-family="JetBrains Mono, monospace" font-size="10" fill="#8A7E6E" text-anchor="middle">−60%</text>
+      <!-- positive side -->
+      <line x1="280" y1="40" x2="280" y2="240" stroke="rgba(26,26,26,0.06)"/>
+      <text x="280" y="260" font-family="JetBrains Mono, monospace" font-size="10" fill="#8A7E6E" text-anchor="middle">+20%</text>
+
+      <!-- NYCCAS PM2.5 row -->
+      <text x="14" y="92" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="0.12em" fill="#1A1A1A">NYCCAS PM2.5</text>
+      <text x="14" y="106" font-family="Inter, sans-serif" font-size="11" font-style="italic" fill="#8A7E6E">surface · ground stations</text>
+      <!-- bar: -21.8% from 0, scale: 2px per percent (so 21.8 = ~44px) -->
+      <rect x="196.4" y="80" width="43.6" height="22" fill="#E5337A"/>
+      <text x="190" y="95" font-family="DM Serif Display, serif" font-size="20" fill="#1A1A1A" text-anchor="end">−21.8%</text>
+      <!-- CI whisker: [-47.7, -0.9] => 240 - 47.7*2 = 144.6 to 240 - 0.9*2 = 238.2 -->
+      <line x1="144.6" y1="91" x2="238.2" y2="91" stroke="#1A1A1A" stroke-width="1"/>
+      <line x1="144.6" y1="84" x2="144.6" y2="98" stroke="#1A1A1A" stroke-width="1"/>
+      <line x1="238.2" y1="84" x2="238.2" y2="98" stroke="#1A1A1A" stroke-width="1"/>
+
+      <!-- TROPOMI NO2 row -->
+      <text x="14" y="172" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="0.12em" fill="#1A1A1A">TROPOMI NO₂</text>
+      <text x="14" y="186" font-family="Inter, sans-serif" font-size="11" font-style="italic" fill="#8A7E6E">satellite · column density</text>
+      <!-- bar: -20.1% from 0, ~40px -->
+      <rect x="199.8" y="160" width="40.2" height="22" fill="#E5337A" opacity="0.65"/>
+      <text x="190" y="175" font-family="DM Serif Display, serif" font-size="20" fill="#1A1A1A" text-anchor="end">−20.1%</text>
+      <!-- CI whisker: [-67, +25.5] => 240 - 67*2 = 106 to 240 + 25.5*2 = 291 -->
+      <line x1="106" y1="171" x2="291" y2="171" stroke="#1A1A1A" stroke-width="1"/>
+      <line x1="106" y1="164" x2="106" y2="178" stroke="#1A1A1A" stroke-width="1"/>
+      <line x1="291" y1="164" x2="291" y2="178" stroke="#1A1A1A" stroke-width="1"/>
+
+      <!-- titles + labels -->
+      <text x="14" y="22" font-family="DM Serif Display, serif" font-style="italic" font-size="15" fill="#1A1A1A">Cordon-attributable change · 95% confidence interval shown</text>
+
+      <!-- legend -->
+      <g transform="translate(380, 220)">
+        <rect x="0" y="0" width="14" height="8" fill="#E5337A"/>
+        <text x="20" y="8" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="0.12em" fill="#8A7E6E">POINT ESTIMATE</text>
+        <line x1="160" y1="4" x2="200" y2="4" stroke="#1A1A1A" stroke-width="1"/>
+        <line x1="160" y1="0" x2="160" y2="8" stroke="#1A1A1A" stroke-width="1"/>
+        <line x1="200" y1="0" x2="200" y2="8" stroke="#1A1A1A" stroke-width="1"/>
+        <text x="208" y="8" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="0.12em" fill="#8A7E6E">95% CI</text>
+      </g>
+    </svg>
+
+    <p style="font-style: italic; color: var(--muted); font-size: 14px; margin-top: var(--s-2); max-width: 56ch;">Surface PM2.5 (city-run ground monitors near and far from the cordon) and tropospheric NO₂ (a satellite over the same area). Two different pollutants. Two different instruments. Two different ways of measuring "Manhattan's air." Both come back at roughly twenty percent below where they would have been without the cordon.</p>
+
+    <p style="margin-top: var(--s-4);">The PM2.5 estimate is more precise — its confidence interval doesn't cross zero. The TROPOMI estimate is wider — its CI does cross zero, because the cordon spans only one or two satellite pixels and four months of post-treatment data isn't a lot to work with. Either one, on its own, you might dismiss as noise. <strong>Both at once, pointing the same way, at the same magnitude — that's harder to explain by chance.</strong></p>
+
+    <p>Whatever the cordon did or didn't do to traffic — and the rest of this site complicates that question considerably — the air over Manhattan in early 2025 was measurably cleaner than the trend would have predicted. That matters even if everything else is messier. PM2.5 specifically is one of the most consequential pollutants for asthma, cardiovascular disease, and premature mortality.</p>
+  </section>
+
+  <section class="wrap-narrow section">
+    <p class="italic-display" style="font-size: 22px; line-height: 1.45; max-width: 38ch; color: var(--ink);">
+      Bridges, taxis, transit, and now air all line up with a cordon that did real work in its first months. So the natural last question is whether all of this is <em>actually</em> the toll's doing, or something else.
+    </p>
+    <div style="margin-top: var(--s-5);">
+      <a href="05-twist.html" class="label-mono" style="border-bottom: 1px solid currentColor; padding-bottom: 4px; color: var(--decline);">
+        Continue → Chapter 05 · The Twist
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="grid">
+    <div>
+      <h4>Sources</h4>
+      <p>Sentinel-5P TROPOMI satellite · NYCCAS surface PM2.5</p>
+    </div>
+    <div>
+      <h4>Method</h4>
+      <p>Trend-projected before-after comparison · stations near the cordon vs stations five-plus miles away · 1000-resample confidence intervals</p>
+    </div>
+    <div>
+      <h4>Caveats</h4>
+      <p><a href="caveats.html">NYCCAS recalibration · single Bronx NO₂ station · TROPOMI pixel size →</a></p>
+    </div>
+    <div>
+      <h4>Code</h4>
+      <p><a href="https://github.com/ErmaSwartz/congestionmap">github.com/ErmaSwartz/congestionmap</a></p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -3,626 +3,292 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NYC Congestion Pricing: Spatial Spillover (GWR)</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600;700&display=swap');
-
-  :root {
-    --powder-petal: #f7e1d7;
-    --dust-grey: #dedbd2;
-    --iron-grey: #4a5759;
-    --cherry-blossom: #edafb8;
-    --cherry-blossom-deep: #d88a96;
-    --ash-grey: #b0c4b1;
-    --ash-grey-deep: #8aaa8b;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    font-family: 'Inter', -apple-system, sans-serif;
-    background: var(--powder-petal);
-    color: var(--iron-grey);
-  }
-
-  /* ── FIGURE STAGE (full-screen fixed background) ── */
-  #figure-stage {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 40px;
-    z-index: 0;
-    background: var(--powder-petal);
-    pointer-events: none;
-  }
-
-  .figure-frame {
-    position: absolute;
-    inset: 40px 40px 40px 45%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transform: scale(0.985);
-    transition: opacity 0.7s ease, transform 0.7s ease;
-    pointer-events: none;
-  }
-
-  .figure-frame.active {
-    opacity: 1;
-    transform: scale(1);
-  }
-
-  .figure-frame img {
-    max-width: 100%;
-    max-height: 100%;
-    width: auto;
-    height: auto;
-    object-fit: contain;
-    filter: drop-shadow(0 8px 24px rgba(74, 87, 89, 0.10));
-  }
-
-  .figure-caption {
-    position: absolute;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: var(--iron-grey);
-    opacity: 0.45;
-    text-align: center;
-    white-space: nowrap;
-  }
-
-  /* ── SCROLL CONTAINER (overlays the figure) ── */
-  #scroll-container {
-    position: relative;
-    z-index: 10;
-  }
-
-  .step {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    padding: 40px;
-  }
-
-  .step-content {
-    background: rgba(222, 219, 210, 0.92);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(74, 87, 89, 0.10);
-    border-radius: 16px;
-    padding: 36px 40px;
-    max-width: 460px;
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
-  }
-
-  .step.active .step-content {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .step-number {
-    font-family: 'DM Serif Display', serif;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: var(--cherry-blossom-deep);
-    opacity: 0.7;
-    margin-bottom: 12px;
-  }
-
-  .step-content h2 {
-    font-family: 'DM Serif Display', serif;
-    font-size: 26px;
-    font-weight: 400;
-    margin-bottom: 16px;
-    line-height: 1.3;
-    color: var(--iron-grey);
-  }
-
-  .step-content p {
-    font-size: 15px;
-    line-height: 1.7;
-    color: var(--iron-grey);
-    opacity: 0.85;
-    margin-bottom: 12px;
-  }
-
-  .step-content p:last-child { margin-bottom: 0; }
-
-  .stat {
-    font-family: 'DM Serif Display', serif;
-    font-size: 42px;
-    font-weight: 400;
-    letter-spacing: -1px;
-    margin: 14px 0 4px;
-    line-height: 1;
-  }
-
-  .stat.negative { color: var(--cherry-blossom-deep); }
-  .stat.positive { color: var(--ash-grey-deep); }
-  .stat.neutral  { color: var(--iron-grey); }
-
-  .stat-label {
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: var(--iron-grey);
-    opacity: 0.5;
-    margin-bottom: 4px;
-  }
-
-  .stat-row {
-    display: flex;
-    gap: 24px;
-    margin: 18px 0 8px;
-  }
-  .stat-row .stat { font-size: 32px; margin: 4px 0; }
-
-  .data-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 16px 0 4px;
-    font-size: 13px;
-  }
-  .data-table th {
-    text-align: left;
-    padding: 8px 10px;
-    border-bottom: 1px solid rgba(74, 87, 89, 0.15);
-    color: var(--iron-grey);
-    opacity: 0.5;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-size: 11px;
-  }
-  .data-table td {
-    padding: 7px 10px;
-    border-bottom: 1px solid rgba(74, 87, 89, 0.08);
-    color: var(--iron-grey);
-  }
-  .data-table .neg { color: var(--cherry-blossom-deep); font-weight: 600; }
-  .data-table .pos { color: var(--ash-grey-deep); font-weight: 600; }
-
-  .scroll-hint {
-    color: var(--iron-grey);
-    opacity: 0.4;
-    font-size: 13px;
-    font-style: italic;
-    margin-top: 18px;
-  }
-
-  .source-note {
-    color: var(--iron-grey) !important;
-    opacity: 0.4 !important;
-    font-size: 12px !important;
-    margin-top: 18px !important;
-    line-height: 1.6 !important;
-  }
-
-  .spacer { height: 30vh; }
-
-  /* ── PROGRESS BAR ── */
-  #progress {
-    position: fixed;
-    top: 0; left: 0;
-    height: 3px;
-    background: var(--cherry-blossom-deep);
-    width: 0%;
-    z-index: 100;
-    transition: width 0.1s linear;
-  }
-
-  /* ── ZOOM MODAL ── */
-  .figure-frame.active img {
-    pointer-events: auto;
-    cursor: zoom-in;
-  }
-
-  #zoom-modal {
-    position: fixed;
-    inset: 0;
-    background: rgba(74, 87, 89, 0.92);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    display: none;
-    z-index: 1000;
-    overflow: auto;
-    cursor: zoom-out;
-    padding: 80px 40px 40px;
-  }
-  #zoom-modal.visible { display: block; }
-
-  #zoom-content {
-    min-height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  #zoom-img {
-    max-width: 100%;
-    max-height: 88vh;
-    width: auto;
-    height: auto;
-    background: var(--powder-petal);
-    border-radius: 8px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
-    cursor: zoom-in;
-    transition: transform 0.15s ease;
-  }
-  #zoom-img.actual {
-    max-width: none;
-    max-height: none;
-    cursor: zoom-out;
-  }
-
-  #zoom-close {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: rgba(247, 225, 215, 0.95);
-    border: 1px solid rgba(74, 87, 89, 0.15);
-    color: var(--iron-grey);
-    font-family: 'DM Serif Display', serif;
-    font-size: 26px;
-    line-height: 1;
-    cursor: pointer;
-    z-index: 1001;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    transition: transform 0.15s ease;
-  }
-  #zoom-close:hover { transform: scale(1.08); }
-
-  #zoom-hint {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    color: rgba(247, 225, 215, 0.7);
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    z-index: 1001;
-    pointer-events: none;
-    text-align: center;
-  }
-
-  /* ── RESPONSIVE ── */
-  @media (max-width: 900px) {
-    .figure-frame { inset: 20px; }
-    .step { padding: 30px 24px; }
-    .step-content { max-width: 100%; }
-  }
-</style>
+<title>Congestion Map · NYC's 2025 cordon, where the traffic moved</title>
+<meta name="description" content="A spatial investigation of NYC's January 2025 congestion charge — bridges, taxis, transit, and air quality, four months in.">
+<link rel="stylesheet" href="assets/styles.css">
 </head>
-<body>
+<body class="theme-night">
 
-<div id="progress"></div>
+<!-- ── ID STRIP ────────────────────────────────────────────── -->
+<header class="id-strip">
+  <div style="display: flex; align-items: center; gap: 10px;">
+    <span class="id-tick" aria-hidden="true"></span>
+    <span>Congestion Map · v1.0</span>
+  </div>
+  <div style="text-align: center; color: var(--night-faint);">A spatial investigation · Spring 2026</div>
+  <div class="id-coords">40.7536°N · −73.9832°W</div>
+</header>
 
-<!-- ── ZOOM MODAL ── -->
-<div id="zoom-modal" role="dialog" aria-modal="true" aria-hidden="true">
-  <button id="zoom-close" aria-label="Close zoom view" type="button">×</button>
-  <div id="zoom-content">
-    <img id="zoom-img" src="" alt="">
-  </div>
-  <div id="zoom-hint">Click image to toggle actual size · Esc to close</div>
-</div>
+<main>
 
-<!-- ── FIGURE STAGE ── -->
-<div id="figure-stage">
-  <div class="figure-frame" data-fig="0">
-    <img src="poster_assets/06_bridge_entries.svg" alt="Bridge & tunnel entry change">
-    <div class="figure-caption">Title</div>
-  </div>
-  <div class="figure-frame" data-fig="1">
-    <img src="poster_assets/06_bridge_entries.svg" alt="MTA bridge & tunnel entry change Jan–Apr 2024 vs 2025">
-    <div class="figure-caption">Fig. 06 — MTA bridge & tunnel entries</div>
-  </div>
-  <div class="figure-frame" data-fig="2">
-    <img src="poster_assets/02_pct_change.png" alt="Percent change in pickups by taxi zone">
-    <div class="figure-caption">Fig. 02 — % change in yellow-taxi pickups, by zone</div>
-  </div>
-  <div class="figure-frame" data-fig="3">
-    <img src="poster_assets/05_distance_bands.svg" alt="Distance bands from the congestion zone">
-    <div class="figure-caption">Fig. 05 — Concentric distance bands from the cordon</div>
-  </div>
-  <div class="figure-frame" data-fig="4">
-    <img src="poster_assets/07_band_bar_chart.svg" alt="Pickup change by distance band">
-    <div class="figure-caption">Fig. 07 — Pickup change by distance band</div>
-  </div>
-  <div class="figure-frame" data-fig="5">
-    <img src="poster_assets/11_gwr_dd_comparison.svg" alt="Peak vs off-peak OLS and GWR R² comparison">
-    <div class="figure-caption">Fig. 11 — Peak vs off-peak: OLS and GWR R²</div>
-  </div>
-  <div class="figure-frame" data-fig="6">
-    <img src="poster_assets/08_gwr_peak_coeff.png" alt="GWR distance coefficient — peak hours">
-    <div class="figure-caption">Fig. 08 — Local distance coefficient (GWR β), peak hours</div>
-  </div>
-  <div class="figure-frame" data-fig="7">
-    <img src="poster_assets/08_gwr_peak_coeff.png" alt="GWR distance coefficient — peak hours">
-    <div class="figure-caption">Fig. 08 — GWR β, peak hours</div>
-  </div>
-  <div class="figure-frame" data-fig="8">
-    <img src="poster_assets/09_gwr_offpeak_coeff.svg" alt="GWR distance coefficient — off-peak hours">
-    <div class="figure-caption">Fig. 09 — GWR β, off-peak hours</div>
-  </div>
-  <div class="figure-frame" data-fig="9">
-    <img src="poster_assets/10_gwr_dd_coeff.svg" alt="GWR difference-in-differences distance coefficient">
-    <div class="figure-caption">Fig. 10 — GWR β, difference-in-differences</div>
-  </div>
-  <div class="figure-frame" data-fig="10">
-    <img src="poster_assets/11_gwr_dd_comparison.svg" alt="GWR DD vs OLS comparison">
-    <div class="figure-caption">Fig. 11 — DD model fit comparison</div>
-  </div>
-  <div class="figure-frame" data-fig="11">
-    <img src="poster_assets/03_local_r2.png" alt="Local R² of the GWR model">
-    <div class="figure-caption">Fig. 03 — Local R² (where the model fits)</div>
-  </div>
-  <div class="figure-frame" data-fig="12">
-    <img src="poster_assets/10_gwr_dd_coeff.svg" alt="Toll-attributable distance gradient (peak − off-peak)">
-    <div class="figure-caption">Fig. 10 — The cordon-attributable component (peak − off-peak)</div>
-  </div>
-</div>
-
-<!-- ── STORY ── -->
-<div id="scroll-container">
-
-  <div class="step" data-step="0">
-    <div class="step-content">
-      <div class="step-number">A spatial study</div>
-      <h2>NYC Congestion Pricing:<br>Where Does the Traffic Go?</h2>
-      <p>On <strong>January 5, 2025</strong>, New York City switched on the first cordon-style congestion charge in the United States — covering Manhattan south of 60th Street.</p>
-      <p>Traffic doesn't disappear when its price goes up. It moves. The question this project asks is <em>where</em>, and how unevenly.</p>
-      <p class="scroll-hint">Scroll to follow the analysis ↓</p>
+  <!-- ── TITLE ─────────────────────────────────────────────── -->
+  <section class="wrap">
+    <div class="title-block">
+      <div class="label-mono" style="margin-bottom: var(--s-3);">What happened when NYC started charging drivers to enter Manhattan</div>
+      <div class="project-name">Where did<br>the traffic <span class="accent">go?</span></div>
+      <div class="project-sub">A look at NYC's congestion toll — four months in, across the bridges, the taxis, the subways, and the air.</div>
     </div>
-  </div>
 
-  <div class="step" data-step="1">
-    <div class="step-content">
-      <div class="step-number">01 · The intake side</div>
-      <h2>Vehicle entries fell at almost every crossing</h2>
-      <div class="stat-label">MTA bridge &amp; tunnel inflow, Jan–Apr 2025 vs 2024</div>
-      <div class="stat negative">−3.25%</div>
-      <p>Seven of nine MTA crossings declined. The Verrazzano-Narrows fell 8.7% and Marine Parkway 8.5%. Only Henry Hudson rose, at +2.6%.</p>
-      <table class="data-table">
-        <tr><th>Crossing</th><th>Change</th></tr>
-        <tr><td>Verrazzano-Narrows</td><td class="neg">−8.7%</td></tr>
-        <tr><td>Marine Parkway</td><td class="neg">−8.5%</td></tr>
-        <tr><td>Queens Midtown Tunnel</td><td class="neg">−4.8%</td></tr>
-        <tr><td>Throgs Neck</td><td class="neg">−3.7%</td></tr>
-        <tr><td>Henry Hudson</td><td class="pos">+2.6%</td></tr>
-      </table>
+    <!-- coord/metadata strip -->
+    <div class="coord-row">
+      <div><span class="coord-key">WHERE ▸</span> <span class="value">Manhattan, south of 60th St</span></div>
+      <div><span class="coord-key">WHEN ▸</span> <span class="value">Started Jan 5, 2025</span></div>
+      <div><span class="coord-key">COMPARED TO ▸</span> <span class="value">Same months in 2024</span></div>
     </div>
-  </div>
+  </section>
 
-  <div class="step" data-step="2">
-    <div class="step-content">
-      <div class="step-number">02 · The raw outcome</div>
-      <h2>But pickups grew almost everywhere</h2>
-      <p>Aggregating <strong>89.6 million</strong> yellow-taxi trips to <strong>243 taxi zones</strong> (237 in the regime-split GWR, after a per-regime volume filter), the picture flips. Median pickup change is <strong>+160%</strong>.</p>
-      <p>Only five zones (in pink) actually declined. Everywhere else, pickups rose — but unevenly. This is the substrate the model has to explain.</p>
+  <!-- ── FRAMING ────────────────────────────────────────────── -->
+  <section class="wrap-narrow" style="padding-top: var(--s-7);">
+    <div class="tech-divider">▸ Start here</div>
+
+    <p style="font-family: var(--font-display); font-size: var(--t-body-lg); line-height: 1.6; color: var(--night-soft); max-width: 56ch; margin-bottom: var(--s-3);">
+      On <strong style="color: var(--night-ink); font-weight: 500;">January 5, 2025</strong>, New York City became the first U.S. city to charge drivers a toll just for entering part of downtown. If you drove a car into Manhattan below 60th Street, you paid $9 during the day and $2.25 at night. The idea was to push fewer cars onto the streets, more people onto the subway, and cleaner air into everyone's lungs.
+    </p>
+
+    <p style="font-family: var(--font-display); font-size: var(--t-body-lg); line-height: 1.6; color: var(--night-soft); max-width: 56ch; margin-bottom: var(--s-3);">
+      Four months in, I wanted to know what actually changed. Did fewer cars come into Manhattan? Did the taxi traffic just shift somewhere else? Did people switch to the subway? Did the air get noticeably cleaner? Was any of it really because of the toll?
+    </p>
+
+    <p style="font-family: var(--font-display); font-size: var(--t-body-lg); line-height: 1.6; color: var(--night-soft); max-width: 56ch;">
+      <strong style="color: var(--night-ink); font-weight: 500;">The short answer is more interesting than yes or no.</strong> The cordon did real work — but a lot of what people are giving it credit for was already in motion before it switched on. Here's how I got there.
+    </p>
+  </section>
+
+  <!-- ── TIMELINE STRIP ─────────────────────────────────────── -->
+  <section class="wrap-narrow" style="padding-top: var(--s-3);">
+    <div class="timeline">
+      <div class="endcap" style="left: 0;">2024</div>
+      <div class="endcap" style="right: 0;">2025</div>
+
+      <div class="axis">
+        <div class="pre-band"  style="left: 1.4%;  width: 32%;"></div>
+        <div class="post-band" style="left: 51.4%; width: 32%;"></div>
+        <div class="marker" style="left: 50%;"></div>
+
+        <div class="label top"    style="left: 17%; transform: translateX(-50%);">Pre window<span class="accent">Jan 5 → Apr 30 · 2024</span></div>
+        <div class="label top"    style="left: 67%; transform: translateX(-50%);">Post window<span class="accent">Jan 5 → Apr 30 · 2025</span></div>
+        <div class="label bottom" style="left: 50%; transform: translateX(-50%);">▼ Cordon on<span class="accent" style="color: var(--decline);">2025-01-05</span></div>
+      </div>
     </div>
-  </div>
+  </section>
 
-  <div class="step" data-step="3">
-    <div class="step-content">
-      <div class="step-number">03 · A first cut</div>
-      <h2>Concentric rings around the cordon</h2>
-      <p>Before reaching for a model, slice the city into distance bands measured outward from the cordon edge.</p>
-      <p>Each zone gets the distance from its centroid to the nearest point on the Congestion Relief Zone, in EPSG:2263 — the projection NYC defaults to.</p>
-    </div>
-  </div>
+  <!-- ── DATASETS ───────────────────────────────────────────── -->
+  <section class="wrap" style="padding-top: var(--s-5);">
+    <div class="tech-divider">▸ What I looked at</div>
 
-  <div class="step" data-step="4">
-    <div class="step-content">
-      <div class="step-number">04 · The ring story</div>
-      <h2>A boundary "dead zone" — and a 3–5 mile peak</h2>
-      <div class="stat-row">
-        <div>
-          <div class="stat-label">0 – ¼ mi</div>
-          <div class="stat negative">−1.6%</div>
-        </div>
-        <div>
-          <div class="stat-label">3 – 5 mi</div>
-          <div class="stat positive">+37%</div>
+    <p style="font-family: var(--font-display); font-size: 16px; line-height: 1.6; color: var(--night-soft); max-width: 56ch; margin-bottom: var(--s-4);">
+      Five different sources, each picking up a different piece of the picture:
+    </p>
+
+    <div class="datasets-grid">
+      <div class="dataset-chip">
+        <div class="route-bar"></div>
+        <div class="body">
+          <div class="source">Yellow taxis</div>
+          <div class="name">Every yellow-cab ride in NYC</div>
+          <div class="count">89.6 million trips · 243 neighborhoods</div>
         </div>
       </div>
-      <p>The narrow strip just outside the cordon is the <em>only</em> band of any width that declined — drivers staying back from the boundary.</p>
-      <p>The strongest growth lands 3–5 miles out: Long Island City, Williamsburg, Park Slope, the South Bronx — transit-accessible neighborhoods just beyond the toll.</p>
-    </div>
-  </div>
-
-  <div class="step" data-step="5">
-    <div class="step-content">
-      <div class="step-number">05 · Why a global model fails</div>
-      <h2>One slope can't tell this story</h2>
-      <div class="stat-row">
-        <div>
-          <div class="stat-label">OLS R² (peak)</div>
-          <div class="stat neutral">0.51</div>
-        </div>
-        <div>
-          <div class="stat-label">GWR R² (peak)</div>
-          <div class="stat positive">0.76</div>
+      <div class="dataset-chip">
+        <div class="route-bar"></div>
+        <div class="body">
+          <div class="source">Bridges &amp; tunnels</div>
+          <div class="name">Cars crossing into NYC</div>
+          <div class="count">Nine MTA crossings · daily counts</div>
         </div>
       </div>
-      <p>A global OLS reports a clean −5.3 %/mile distance-decay during tolled hours (p &lt; 0.001), and a much weaker −3.3 %/mile when the toll is essentially off (p = 0.16). It explains about half the variance in pickup change either way.</p>
-      <p>The scatter is too wide for any single line. The other half is spatial — distance behaves differently depending on <em>where</em> you stand.</p>
+      <div class="dataset-chip">
+        <div class="route-bar"></div>
+        <div class="body">
+          <div class="source">Transit ridership</div>
+          <div class="name">Subway, bus, commuter rail</div>
+          <div class="count">Seven modes · 2020 to today</div>
+        </div>
+      </div>
+      <div class="dataset-chip">
+        <div class="route-bar"></div>
+        <div class="body">
+          <div class="source">Air sensors</div>
+          <div class="name">Pollution at street level</div>
+          <div class="count">14 PM2.5 stations · 4 NO₂ stations</div>
+        </div>
+      </div>
+      <div class="dataset-chip">
+        <div class="route-bar"></div>
+        <div class="body">
+          <div class="source">Satellite</div>
+          <div class="name">Smog seen from space</div>
+          <div class="count">Daily images of NYC's air</div>
+        </div>
+      </div>
     </div>
-  </div>
+  </section>
 
-  <div class="step" data-step="6">
-    <div class="step-content">
-      <div class="step-number">06 · The headline finding</div>
-      <h2>The distance effect flips sign across the city</h2>
-      <div class="stat-label">Local distance coefficient, range across 237 zones (peak)</div>
-      <div class="stat neutral">−39 to +176</div>
-      <p>Geographically Weighted Regression (mgwr, adaptive bisquare kernel, bw = 48) fits a separate local slope at every zone.</p>
-      <p>Inner Manhattan and the Hudson waterfront read near-zero or slightly negative — pickups are up almost everywhere there, regardless of distance. Outer Brooklyn, Queens, the Bronx, and Staten Island read strongly positive: the further from the cordon, the more pickups grew.</p>
-      <p><strong>119 of 237 zones (50%)</strong> have a coefficient that is statistically distinguishable from zero.</p>
+  <!-- ── HEADLINE NUMBERS ───────────────────────────────────── -->
+  <section class="wrap" style="padding-top: var(--s-5);">
+    <div class="tech-divider">▸ Four numbers that tell the story</div>
+
+    <div class="headline-grid">
+      <div class="cell">
+        <div class="key">▸ Cars crossing in</div>
+        <div class="num dec">−3.3%</div>
+        <div class="desc">A small but real drop at every MTA crossing the toll affects.</div>
+      </div>
+      <div class="cell">
+        <div class="key">▸ Yellow-cab rides</div>
+        <div class="num">+160%</div>
+        <div class="desc">The typical neighborhood saw cab pickups go <em>up</em>, not down.</div>
+      </div>
+      <div class="cell">
+        <div class="key">▸ Total trips into Manhattan</div>
+        <div class="num">+9%</div>
+        <div class="desc">Counting cars, taxis, subway, bus — the city got <em>busier</em>, not quieter.</div>
+      </div>
+      <div class="cell">
+        <div class="key">▸ Pollution inside the zone</div>
+        <div class="num dec">−22%</div>
+        <div class="desc">The clearest sign the toll changed something — a real drop in soot.</div>
+      </div>
     </div>
-  </div>
+  </section>
 
-  <div class="step" data-step="7">
-    <div class="step-content">
-      <div class="step-number">07 · Time of day · peak</div>
-      <h2>Peak hours look like the all-hours field</h2>
-      <p>Re-running GWR on peak-hour pickups isolates the commute window, when the toll is most expensive and the cordon is bindingly active.</p>
-      <p>The coefficient field looks remarkably similar to the all-hours version: inner Manhattan stays near zero or slightly negative, outer boroughs stay strongly positive. The expected sharpening when the toll is most expensive does not materialize. The cordon is producing the spatial pattern, but only a slice of it.</p>
+  <!-- ── THE FIVE QUESTIONS ─────────────────────────────────── -->
+  <section class="wrap" style="padding-top: var(--s-5);">
+    <div class="tech-divider">▸ The five questions everyone keeps asking</div>
+
+    <div class="questions">
+      <div class="question">
+        <div class="num">01</div>
+        <div class="text">Did fewer cars actually come into Manhattan?</div>
+        <a class="ref" href="01-bridges.html">▸ The Bridges</a>
+      </div>
+      <div class="question">
+        <div class="num">02</div>
+        <div class="text">Where did the traffic go instead?</div>
+        <a class="ref" href="02-taxis.html">▸ The Taxis</a>
+      </div>
+      <div class="question">
+        <div class="num">03</div>
+        <div class="text">Did people switch to the subway and the bus?</div>
+        <a class="ref" href="03-modes.html">▸ The Modes</a>
+      </div>
+      <div class="question">
+        <div class="num">04</div>
+        <div class="text">Did the air get noticeably cleaner?</div>
+        <a class="ref" href="04-air.html">▸ The Air</a>
+      </div>
+      <div class="question">
+        <div class="num">05</div>
+        <div class="text">Was it really the toll — or was something else going on?</div>
+        <a class="ref" href="05-twist.html">▸ The Twist</a>
+      </div>
     </div>
-  </div>
+  </section>
 
-  <div class="step" data-step="8">
-    <div class="step-content">
-      <div class="step-number">08 · Time of day · off-peak</div>
-      <h2>Off-peak: the surprise</h2>
-      <p>In off-peak hours the toll is discounted by 75%, so the cordon's price signal is weak. The expected outcome is a softer field with smaller magnitudes. The actual result is the opposite: mean local β is +19, twice the peak value, and GWR R² is 0.77, slightly higher than peak.</p>
-      <p>When the cordon is essentially off, distance from it predicts pickup change <em>more</em> steeply than when it is on. Something other than the toll is producing the geography of spillover. The most likely candidates are post-pandemic taxi recovery weighted toward late-night airport service and outer-borough demand growth that was already underway.</p>
+  <!-- ── CHAPTER CARDS ──────────────────────────────────────── -->
+  <section class="wrap" style="padding-top: var(--s-7);">
+    <div class="tech-divider">▸ Six chapters · read in order, or jump</div>
+
+    <div class="chapter-grid">
+
+      <a class="chapter-card" href="01-bridges.html">
+        <svg class="icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M2 36 L46 36"/>
+          <path d="M8 36 L8 22 Q24 14 40 22 L40 36"/>
+          <path d="M14 36 L14 27"/>
+          <path d="M24 36 L24 18"/>
+          <path d="M34 36 L34 27"/>
+          <path d="M2 42 L46 42"/>
+        </svg>
+        <div class="num">01 · The Bridges</div>
+        <div class="title">Did fewer cars come in?</div>
+        <div class="tease">Yes — about 3 % fewer at every MTA bridge and tunnel. But that only counts some of the cars and none of the free crossings.</div>
+      </a>
+
+      <a class="chapter-card" href="02-taxis.html">
+        <svg class="icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="6" y="20" width="36" height="14" rx="2"/>
+          <path d="M10 20 L14 12 L34 12 L38 20"/>
+          <circle cx="14" cy="36" r="3"/>
+          <circle cx="34" cy="36" r="3"/>
+          <path d="M14 16 L34 16"/>
+          <rect x="20" y="6" width="8" height="4"/>
+        </svg>
+        <div class="num">02 · The Taxis</div>
+        <div class="title">Where did the rides actually go?</div>
+        <div class="tease">Yellow-cab pickups jumped almost everywhere. The biggest growth was a few miles outside Manhattan — not right at the toll.</div>
+      </a>
+
+      <a class="chapter-card" href="03-modes.html">
+        <svg class="icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="8" y="8" width="32" height="28" rx="3"/>
+          <circle cx="16" cy="32" r="3"/>
+          <circle cx="32" cy="32" r="3"/>
+          <path d="M8 22 L40 22"/>
+          <rect x="12" y="13" width="10" height="6"/>
+          <rect x="26" y="13" width="10" height="6"/>
+          <path d="M14 40 L18 36"/>
+          <path d="M34 40 L30 36"/>
+        </svg>
+        <div class="num">03 · The Modes</div>
+        <div class="title">Did people switch to transit?</div>
+        <div class="tease">Total trips into Manhattan went <em>up</em>, not down. A small slice — about a percent — moved from cars to buses.</div>
+      </a>
+
+      <a class="chapter-card" href="04-air.html">
+        <svg class="icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M8 18 Q14 14 20 18 Q26 22 32 18 Q38 14 44 18"/>
+          <path d="M6 26 Q12 22 18 26 Q24 30 30 26 Q36 22 42 26"/>
+          <path d="M10 34 Q16 30 22 34 Q28 38 34 34 Q40 30 46 34"/>
+        </svg>
+        <div class="num">04 · The Air</div>
+        <div class="title">Did the air actually get cleaner?</div>
+        <div class="tease">Soot inside the toll zone dropped about 22 %. A satellite says smog over Manhattan dropped too. The numbers are wobbly, but consistent.</div>
+      </a>
+
+      <a class="chapter-card" href="05-twist.html">
+        <svg class="icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="24" cy="24" r="18"/>
+          <path d="M24 12 L24 24 L32 30"/>
+          <path d="M24 4 L24 8"/>
+          <path d="M44 24 L40 24"/>
+          <path d="M24 44 L24 40"/>
+          <path d="M4 24 L8 24"/>
+        </svg>
+        <div class="num">05 · The Twist</div>
+        <div class="title">Was it really the toll?</div>
+        <div class="tease">Mostly — no. The same patterns show up at night when the toll is mostly off. Recovery from COVID is doing most of the work.</div>
+      </a>
+
+      <a class="chapter-card" href="verdict.html">
+        <svg class="icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M10 8 L10 38 L24 32 L38 38 L38 8 L24 14 Z"/>
+          <path d="M24 14 L24 32"/>
+        </svg>
+        <div class="num">Verdict</div>
+        <div class="title">What it actually did</div>
+        <div class="tease">The toll did real things — fewer cars, cleaner air, more buses. But the bigger story was already in motion before it switched on.</div>
+      </a>
+
     </div>
-  </div>
+  </section>
 
-  <div class="step" data-step="9">
-    <div class="step-content">
-      <div class="step-number">09 · Robustness</div>
-      <h2>Difference-in-differences, locally</h2>
-      <p>To isolate the toll's own contribution from broader 2024-to-2025 trends, the two regimes are differenced at every zone: β(peak) − β(off-peak). Anything affecting both regimes equally — secular taxi recovery, weather, shared seasonal drift — drops out. What remains is the cordon-attributable component of the local distance gradient.</p>
-      <p>The differenced field is much weaker than either single-regime field. The mean is −9.9 percentage points per mile, and the field is mostly negative across the city. At the global level, the toll adds approximately 2 percentage points per mile of additional distance-decay during tolled hours, a real and statistically significant effect but a modest part of the broader spatial pattern.</p>
-    </div>
-  </div>
+  <!-- ── PROJECT NOTE / SCOPE ───────────────────────────────── -->
+  <section class="wrap-narrow" style="padding-top: var(--s-7);">
+    <div class="tech-divider">▸ Things this project can't see</div>
+    <p style="font-family: var(--font-display); font-style: italic; font-size: 17px; line-height: 1.6; color: var(--night-soft); max-width: 56ch;">
+      Yellow taxi data doesn't include Uber and Lyft. Bridge counts don't include the free East River bridges (Brooklyn, Manhattan, Williamsburg, Queensboro). The closest air monitor with a working pollution sensor is in the Bronx, not Manhattan. So when we talk about "fewer cars" or "cleaner air," we're really talking about <em>some</em> cars and <em>some</em> air. <a href="caveats.html" style="color: var(--decline-soft); border-bottom: 1px solid var(--decline-soft);">Full list of what we can't see →</a>
+    </p>
+  </section>
 
-  <div class="step" data-step="10">
-    <div class="step-content">
-      <div class="step-number">10 · Model fit</div>
-      <h2>GWR lifts R² in both regimes by the same amount</h2>
-      <p>Comparing OLS and GWR side by side for each regime, GWR raises R² from 0.51 to 0.76 in the peak regime and from 0.45 to 0.77 in off-peak. Letting the slope vary in space recovers a substantial amount of explanatory power that no single OLS slope can capture.</p>
-      <p>The improvement is essentially the same magnitude in both regimes. The spatial-heterogeneity story works equally well whether the toll is on or off, which is the central reason to interpret the cordon's contribution as additive rather than dominant.</p>
-    </div>
-  </div>
+</main>
 
-  <div class="step" data-step="11">
-    <div class="step-content">
-      <div class="step-number">11 · Where the model fails</div>
-      <h2>Local R² names the next investigation</h2>
-      <div class="stat-label">Mean local R² · max local R²</div>
-      <div class="stat neutral">0.51 · 0.87</div>
-      <p>The fit peaks on the southern and outer-borough fringe — Rockaways, southwestern Brooklyn, Staten Island — where distance and baseline volume genuinely explain most of what is happening.</p>
-      <p>It collapses below 0.20 in upper Manhattan and the central Bronx. Those zones are driven by something other than distance to the cordon: income, car ownership, road class, free-crossing proximity, PLUTO land use. They are the targets for round two.</p>
-    </div>
-  </div>
+<!-- ── FOOTER STRIP ──────────────────────────────────────────── -->
+<footer class="id-strip" style="border-bottom: 0; border-top: 1px solid var(--night-rule); margin-top: var(--s-7);">
+  <div>Erma Swartz · M.S. Urban Planning &amp; Design</div>
+  <div style="text-align: center; color: var(--night-faint);">Spring 2026 · ASA Final</div>
+  <div class="id-coords"><a href="https://github.com/ErmaSwartz/congestionmap" style="color: inherit; border-bottom: 0;">github.com/ErmaSwartz/congestionmap ↗</a></div>
+</footer>
 
-  <div class="step" data-step="12">
-    <div class="step-content">
-      <div class="step-number">12 · Takeaway</div>
-      <h2>The cordon redistributes — heterogeneously</h2>
-      <p>Bridge entries down 3.25%. Pickups up almost everywhere, with the strongest growth 3 to 5 miles from the cordon. A global slope of −5.3 %/mile during tolled hours that hides a local range from −39 to +176.</p>
-      <p>Congestion pricing produces a measurable additional distance-decay, but the broader spillover pattern was already in motion: yellow-taxi demand was redistributing toward outer boroughs whether or not the cordon went on. The policy amplifies a dynamic rather than originating it. The fringe and outer-borough zones that absorbed the most demand are where a redistributive-equity analysis of the policy should look next.</p>
-      <p class="source-note">Data: NYC TLC yellow-taxi trip records (89.6M trips, Jan–Apr 2024 vs 2025); MTA Bridges &amp; Tunnels daily plaza traffic; NYC DOT Congestion Relief Zone polygon. All spatial work in EPSG:2263.<br>Methods: mgwr 2.x, adaptive bisquare kernel, bandwidth 50 (AICc). Code: github.com/ermaswartz/congestionmap</p>
-    </div>
-  </div>
-
-  <div class="spacer"></div>
-</div>
-
-<script>
-const frames = document.querySelectorAll('.figure-frame');
-const steps = document.querySelectorAll('.step');
-const progress = document.getElementById('progress');
-
-let currentStep = -1;
-
-function setActive(step) {
-  if (step === currentStep) return;
-  currentStep = step;
-  frames.forEach(f => {
-    f.classList.toggle('active', parseInt(f.dataset.fig) === step);
-  });
-}
-
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    const step = parseInt(entry.target.dataset.step);
-    if (entry.isIntersecting && entry.intersectionRatio > 0.4) {
-      entry.target.classList.add('active');
-      setActive(step);
-    } else {
-      entry.target.classList.remove('active');
-    }
-  });
-}, { threshold: [0.4] });
-
-steps.forEach(el => observer.observe(el));
-
-// progress bar
-window.addEventListener('scroll', () => {
-  const max = document.body.scrollHeight - window.innerHeight;
-  progress.style.width = (window.scrollY / max * 100) + '%';
-}, { passive: true });
-
-// init
-setTimeout(() => {
-  steps[0].classList.add('active');
-  setActive(0);
-}, 200);
-
-// ── ZOOM MODAL ──
-const zoomModal = document.getElementById('zoom-modal');
-const zoomImg = document.getElementById('zoom-img');
-const zoomClose = document.getElementById('zoom-close');
-
-function openZoom(src, alt) {
-  zoomImg.src = src;
-  zoomImg.alt = alt || '';
-  zoomImg.classList.remove('actual');
-  zoomModal.classList.add('visible');
-  zoomModal.setAttribute('aria-hidden', 'false');
-  document.body.style.overflow = 'hidden';
-  zoomModal.scrollTop = 0;
-  zoomModal.scrollLeft = 0;
-}
-
-function closeZoom() {
-  zoomModal.classList.remove('visible');
-  zoomModal.setAttribute('aria-hidden', 'true');
-  document.body.style.overflow = '';
-  zoomImg.classList.remove('actual');
-}
-
-document.querySelectorAll('.figure-frame img').forEach(img => {
-  img.addEventListener('click', e => {
-    if (!img.closest('.figure-frame').classList.contains('active')) return;
-    e.stopPropagation();
-    openZoom(img.src, img.alt);
-  });
-});
-
-zoomImg.addEventListener('click', e => {
-  e.stopPropagation();
-  zoomImg.classList.toggle('actual');
-});
-
-zoomModal.addEventListener('click', closeZoom);
-zoomClose.addEventListener('click', e => { e.stopPropagation(); closeZoom(); });
-
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape' && zoomModal.classList.contains('visible')) closeZoom();
-});
-</script>
 </body>
 </html>

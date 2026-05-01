@@ -535,6 +535,165 @@ h1, h2, h3 {
   transition-duration: 0.01ms !important;
 }
 
+/* ── STORY VOCABULARY (Act 1+) ─────────────────────────────── */
+
+/* Color tokens — vocabulary, not decoration. */
+.text-decline { color: var(--decline); }
+.text-rise    { color: var(--increase); }
+.text-ink     { color: var(--ink); }
+.text-muted   { color: var(--muted); }
+
+/* Type utilities */
+.font-display { font-family: var(--font-display); }
+.font-mono    { font-family: var(--font-mono); }
+
+.label-mono {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.italic-display {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+}
+
+/* Story chart container — paper background, generous breathing room */
+.story-chart {
+  background: var(--bg);
+  margin: var(--s-4) 0;
+  width: 100%;
+}
+
+.story-chart-title {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 19px;
+  font-weight: 400;
+  line-height: 1.3;
+  color: var(--ink);
+  margin-bottom: var(--s-2);
+  max-width: 38ch;
+  letter-spacing: -0.005em;
+}
+
+.story-chart-caption {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--muted);
+  margin-top: var(--s-2);
+  max-width: 56ch;
+}
+
+.story-legend {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin: 4px 0 var(--s-2);
+}
+.story-legend .swatch {
+  display: inline-block;
+  width: 14px;
+  height: 8px;
+  border-radius: 1px;
+  background: var(--ink);
+}
+.story-legend .swatch.faint { opacity: 0.45; }
+
+.hover-readout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  align-items: baseline;
+  margin-top: 4px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+.hover-readout strong { font-weight: 500; color: var(--ink); margin-right: 4px; }
+.hover-readout .num { font-variant-numeric: tabular-nums; }
+
+/* Act 1 — big headline number + caption */
+.headline-number {
+  font-family: var(--font-display);
+  font-size: clamp(72px, 10vw, 140px);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  margin: var(--s-3) 0 var(--s-1);
+}
+.headline-caption {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  max-width: 42ch;
+  line-height: 1.5;
+}
+
+/* Mode-share table */
+.mode-share-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: var(--s-3) 0;
+  font-family: var(--font-body);
+  font-size: 14px;
+}
+.mode-share-table th {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: left;
+  padding: 12px 14px 10px;
+  border-bottom: 1px solid rgba(26, 26, 26, 0.18);
+}
+.mode-share-table th.numeric { text-align: right; }
+.mode-share-table td {
+  padding: 16px 14px;
+  border-bottom: 1px solid rgba(26, 26, 26, 0.06);
+  color: var(--ink);
+}
+.mode-share-table td.numeric {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+.mode-share-table td.delta { font-weight: 500; }
+.mode-share-table tr:last-child td { border-bottom: 0; }
+
+/* Act 1 thesis line under section number */
+.thesis-line {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(22px, 2.4vw, 30px);
+  line-height: 1.25;
+  color: var(--ink);
+  max-width: 30ch;
+  margin: var(--s-2) 0 var(--s-4);
+  letter-spacing: -0.01em;
+}
+
+/* Bridge line between acts */
+.bridge-line {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 19px;
+  line-height: 1.4;
+  color: var(--ink);
+  max-width: 42ch;
+  margin-top: var(--s-5);
+}
+
 /* ── MAPLIBRE OVERRIDES ────────────────────────────────────── */
 
 .maplibregl-canvas:focus { outline: none; }

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>02 · The Taxis — Congestion Map</title>
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<header class="chapter-nav">
+  <a href="index.html">← Cover</a>
+  <div class="links">
+    <a href="01-bridges.html">01 Bridges</a>
+    <a href="02-taxis.html" class="active">02 Taxis</a>
+    <a href="03-modes.html">03 Modes</a>
+    <a href="04-air.html">04 Air</a>
+    <a href="05-twist.html">05 Twist</a>
+    <a href="verdict.html">Verdict</a>
+  </div>
+</header>
+
+<main>
+
+  <section class="wrap-narrow">
+    <div class="hero">
+      <div class="eyebrow">Chapter 02 · The Taxis</div>
+      <h1 style="font-size: var(--t-display); margin-bottom: var(--s-4);">If fewer vehicles came in, where did the trips go?</h1>
+      <p class="lede">The MTA crossings tell us about vehicles arriving from outside Manhattan. Yellow taxis tell us where people who are already moving around the city are <em>going</em>. Looking at 89 million yellow-cab trips before and after the cordon, the second story is more interesting than the first.</p>
+    </div>
+  </section>
+
+  <section class="wrap-narrow section">
+    <div class="section-eyebrow">The number that broke my framing</div>
+    <div class="bignum">
+      <div class="label">Median yellow-taxi pickup change · per zone · Jan – Apr</div>
+      <div class="value text-rise">+160%</div>
+      <div class="caption">The median NYC taxi zone saw pickups roughly two-and-a-half times what it had in early 2024. Most zones grew, and many grew by a lot.</div>
+    </div>
+    <p>This number is unintuitive, and that's mostly because it's a median across <strong>225 zones of wildly different sizes</strong>. Tiny zones with low baselines — empty cul-de-sacs, mostly-residential corners, lightly-served airport tails — can swing several hundred percent off a small base. The median is dominated by them.</p>
+    <p>The honest question, then, is: did taxi traffic <em>actually</em> grow citywide?</p>
+    <div class="bignum" style="margin-top: var(--s-5);">
+      <div class="label">Citywide volume-weighted change · all yellow-cab pickups</div>
+      <div class="value text-rise">+16.5%</div>
+      <div class="caption">Across all 225 zones, weighted by absolute trip counts. Yellow-taxi pickups did rise — substantially, but not "doubled."</div>
+    </div>
+  </section>
+
+  <section class="wrap-narrow section">
+    <div class="section-eyebrow">Where the growth lives</div>
+    <h2>The increase grows with distance from the cordon</h2>
+    <p>I sliced the city into concentric distance bands measured outward from the cordon edge — boundary, near, mid, far — and counted pickups in each.</p>
+
+    <table class="mode-share-table" style="margin-top: var(--s-5);">
+      <thead>
+        <tr>
+          <th>Distance from cordon</th>
+          <th class="numeric">Pickups, before</th>
+          <th class="numeric">Pickups, after</th>
+          <th class="numeric">Change</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Inside the cordon</td><td class="numeric">7.45 M</td><td class="numeric">8.57 M</td><td class="numeric text-rise">+15.0 %</td></tr>
+        <tr><td>0 – ¼ mi (boundary)</td><td class="numeric">4,149</td><td class="numeric">4,315</td><td class="numeric text-rise">+4.0 %</td></tr>
+        <tr><td>¼ – 1 mi</td><td class="numeric">2.15 M</td><td class="numeric">2.39 M</td><td class="numeric text-rise">+11.4 %</td></tr>
+        <tr><td>1 – 3 mi</td><td class="numeric">1.84 M</td><td class="numeric">2.16 M</td><td class="numeric text-rise">+17.5 %</td></tr>
+        <tr><td>3 – 5 mi</td><td class="numeric">558 k</td><td class="numeric">736 k</td><td class="numeric text-rise">+31.9 %</td></tr>
+        <tr><td>5+ mi</td><td class="numeric">686 k</td><td class="numeric">914 k</td><td class="numeric text-rise">+33.2 %</td></tr>
+      </tbody>
+    </table>
+
+    <p style="margin-top: var(--s-4);">Two things stand out. First, <strong>every band grew</strong> — there's no "dispersion just outside the cordon," and no boundary band where pickups fell. Second, the <strong>boundary band itself grew the least</strong> (only +4 %), while the bands further from the cordon grew by 30 % or more. Whatever the policy did, it did not scatter taxi pickups along the cordon edge. It accelerated them in the outer-borough fringe.</p>
+  </section>
+
+  <section class="wrap-narrow section">
+    <div class="section-eyebrow">The map</div>
+    <h2>Pickups grew almost everywhere — but unevenly</h2>
+    <div class="fragment">
+      <img src="poster_assets/02_pct_change.svg" alt="Choropleth of NYC taxi zones colored by percent change in yellow-taxi pickups, 2024 vs 2025. Most zones are shades of green showing growth, with the strongest growth in outer-borough zones.">
+      <div class="caption">Figure 02 — % change in yellow-taxi pickups, by zone (Jan – Apr 2024 vs 2025)</div>
+    </div>
+    <p>Almost every zone reads in shades of green. Only four zones stayed in the red, and three of them are <strong>airport zones</strong> — LaGuardia, Newark, and East Elmhurst — where yellow taxis are losing market share to for-hire vehicles regardless of any policy. The fourth is Central Park, where pickup volume is small and noisy. The "decline" story isn't the cordon's. The growth story is everywhere else.</p>
+  </section>
+
+  <section class="wrap-narrow section">
+    <div class="section-eyebrow">Why one number wasn't enough</div>
+    <h2>The relationship changes from neighborhood to neighborhood</h2>
+    <p>The first thing I tried was the simplest possible answer: fit one slope to the whole city. How much does pickup growth change for every additional mile from the cordon? The number that came back was roughly <strong>−5 percentage points per mile</strong> during the tolled hours: on average, the farther from the cordon, the smaller the increase.</p>
+    <p>That number explained about half the pattern. Just half. The other half wasn't about distance at all — it was about <em>where in the city</em> you were measuring.</p>
+    <div class="fragment">
+      <img src="poster_assets/01_gwr_dist_coeff.svg" alt="Map of NYC taxi zones colored by how strongly pickup change responds to distance from the cordon. Inner Manhattan reads near zero or slightly negative; outer Brooklyn, Queens, the Bronx, and Staten Island read strongly positive.">
+      <div class="caption">Local "distance effect" on yellow-taxi pickup growth — by zone</div>
+    </div>
+    <p>So I let the model fit a different answer in every neighborhood. (The technique is called Geographically Weighted Regression — basically, instead of one slope for the whole city, you get one slope for every taxi zone, calculated from nearby observations.) The result is the map above. Each zone's color tells you how strongly distance from the cordon predicts pickup growth <em>in that specific neighborhood</em>.</p>
+    <p>The range is wild: from <strong>−39 to +176</strong> across the 243 zones. Lower Manhattan and the Hudson waterfront read near zero, or slightly negative. Outer Brooklyn, Queens, the Bronx, and Staten Island read strongly positive — the farther from the cordon, the more pickups grew there. Roughly half of all zones (137) show effects clearly distinguishable from zero. The other half are smaller and noisier.</p>
+    <p>A single number can't represent that. From here on, the investigation has to be local.</p>
+  </section>
+
+  <section class="wrap-narrow section">
+    <div class="section-eyebrow">What this number can and can't tell us</div>
+    <h2>Yellow cabs are one slice of the city's traffic</h2>
+    <p>Everything in this chapter is yellow-taxi pickups only. The dataset does not include <strong>for-hire vehicles</strong> — Uber, Lyft, Via — which outnumber yellow cabs by roughly four to one in NYC. Some of the growth in outer-borough zones may be yellow cabs reaching further to capture fares that the FHV fleet would have served. That looks like spillover here; it's partly a supply-side response by drivers, not just a demand-side response by passengers.</p>
+    <p>It also doesn't tell us anything about <em>private cars</em> — the actual target of the cordon toll. For that, we need other datasets.</p>
+  </section>
+
+  <section class="wrap-narrow section">
+    <p class="italic-display" style="font-size: 22px; line-height: 1.45; max-width: 38ch; color: var(--ink);">
+      Yellow-taxi pickups grew almost everywhere, and grew the most outside the cordon. But yellow cabs are a fraction of NYC's traffic. Did the trips that <em>weren't</em> taxis go up too?
+    </p>
+    <div style="margin-top: var(--s-5);">
+      <a href="03-modes.html" class="label-mono" style="border-bottom: 1px solid currentColor; padding-bottom: 4px; color: var(--decline);">
+        Continue → Chapter 03 · The Modes
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="grid">
+    <div>
+      <h4>Source</h4>
+      <p>NYC TLC Yellow-Taxi Trip Records<br>89.6 M trips · Jan – Apr 2024 vs 2025</p>
+    </div>
+    <div>
+      <h4>Method</h4>
+      <p>OLS distance-decay · GWR (mgwr 2.x, adaptive bisquare, AICc bandwidth)</p>
+    </div>
+    <div>
+      <h4>Caveats</h4>
+      <p><a href="caveats.html">What this can and can't tell us →</a></p>
+    </div>
+    <div>
+      <h4>Code</h4>
+      <p><a href="https://github.com/ErmaSwartz/congestionmap">github.com/ErmaSwartz/congestionmap</a></p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

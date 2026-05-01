@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>03 · The Modes — Congestion Map</title>
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<header class="chapter-nav">
+  <a href="index.html">← Cover</a>
+  <div class="links">
+    <a href="01-bridges.html">01 Bridges</a>
+    <a href="02-taxis.html">02 Taxis</a>
+    <a href="03-modes.html" class="active">03 Modes</a>
+    <a href="04-air.html">04 Air</a>
+    <a href="05-twist.html">05 Twist</a>
+    <a href="verdict.html">Verdict</a>
+  </div>
+</header>
+
+<main>
+
+  <section class="wrap-narrow">
+    <div class="hero">
+      <div class="eyebrow">Chapter 03 · The Modes</div>
+      <h1 style="font-size: var(--t-display); margin-bottom: var(--s-4);">Did people switch modes — or just take more trips?</h1>
+      <p class="lede">If the cordon worked the way its supporters expected, drivers would shift to transit. Vehicle counts would fall and ridership would rise by roughly the same amount. The MTA's daily ridership data tells a different story.</p>
+    </div>
+  </section>
+
+  <section class="wrap-narrow section">
+    <div class="section-eyebrow">The number that reframed the project</div>
+    <div class="bignum">
+      <div class="label">Total daily trips into the CBD · Jan – Apr 2024 vs 2025</div>
+      <div class="value text-rise">+8.94%</div>
+      <div class="caption">Across the seven modes the MTA tracks continuously — subway, bus, LIRR, Metro-North, Staten Island Railway, Access-A-Ride, and bridge-and-tunnel vehicle counts — total daily trips into the CBD <em>rose</em> by nearly nine percent. The CBD got busier, not quieter.</div>
+    </div>
+    <p>5.51 million daily trips in early 2024. 6.01 million in early 2025. About <strong>493,000 more trips per day</strong>. The cordon did not eliminate movement into Manhattan. It did not even hold the line on growth.</p>
+    <p>What it did do is show up in the <em>composition</em> of those trips.</p>
+  </section>
+
+  <section class="wrap-narrow section">
+    <div class="section-eyebrow">The mode shift</div>
+    <h2>Bridges and tunnels lost share. Buses gained it.</h2>
+    <table class="mode-share-table" style="margin-top: var(--s-3);">
+      <thead>
+        <tr>
+          <th>Mode</th>
+          <th class="numeric">2024 share</th>
+          <th class="numeric">2025 share</th>
+          <th class="numeric">Change (pp)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="text-decline">Bridges &amp; tunnels (vehicle entries)</td><td class="numeric">16.05 %</td><td class="numeric">14.78 %</td><td class="numeric text-decline">−1.26 pp</td></tr>
+        <tr><td>Subway</td><td class="numeric">57.32 %</td><td class="numeric">57.46 %</td><td class="numeric text-faint">+0.14 pp</td></tr>
+        <tr><td>Bus</td><td class="numeric">19.62 %</td><td class="numeric">20.61 %</td><td class="numeric text-rise">+0.98 pp</td></tr>
+        <tr><td>Commuter rail + paratransit</td><td class="numeric">7.01 %</td><td class="numeric">7.14 %</td><td class="numeric text-faint">+0.14 pp</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top: var(--s-4);">About <strong>1.3 percentage points of share</strong> moved from the bridges and tunnels to the rest of the mix, and almost all of that landed on <strong>buses</strong>. Subway barely moved its share — it grew 9 % in absolute terms, but the rest of the modes grew right alongside it. Commuter rail and paratransit shifted by sub-percentage-point amounts.</p>
+    <p>This is the entire mode-shift effect of NYC's congestion pricing in its first four months: real, measurable, and modest.</p>
+  </section>
+
+  <section class="wrap-narrow section">
+    <div class="section-eyebrow">The full daily picture</div>
+    <h2>Most modes were already growing</h2>
+    <div class="fragment">
+      <img src="figures/modes/08_mode_share_area.png" alt="Stacked area chart of daily ridership across all MTA modes from 2021 through April 2026, with a vertical line marking the start of congestion pricing on January 5 2025. Subway is the dominant band; bus, LIRR, Metro-North, and bridge counts are smaller bands. Most bands are visibly growing across the entire window.">
+      <div class="caption">Daily ridership and bridge entries · 2021 – 2026 · vertical line marks Jan 5 2025</div>
+    </div>
+    <p>You can see the cordon line in the chart. You cannot see a regime change at it. Subway, bus, LIRR, and Metro-North were all on a steady post-pandemic recovery curve — which means the obvious framing ("transit ridership went up, the cordon worked") needs more care.</p>
+  </section>
+
+  <section class="wrap-narrow section">
+    <div class="section-eyebrow">The honest version</div>
+    <h2>What's policy, and what's recovery?</h2>
+    <p>If a mode was already growing 10 % a year, and it grows 10 % across the cordon line, that's not a policy effect — it's the trend continuing. To isolate what the cordon actually changed, I fit a <strong>linear trend</strong> on each mode's pre-treatment same-period ridership (2022, 2023, and 2024 Jan – Apr) and projected what 2025 would have been if the trend had continued. Then I compared observed 2025 to that projection.</p>
+
+    <table class="mode-share-table" style="margin-top: var(--s-4);">
+      <thead>
+        <tr>
+          <th>Mode</th>
+          <th class="numeric">Naive Δ (2024 → 2025)</th>
+          <th class="numeric">Trend-adjusted Δ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Bus</td><td class="numeric">+14.4 %</td><td class="numeric text-rise">+13.0 %</td></tr>
+        <tr><td>AAR</td><td class="numeric">+24.5 %</td><td class="numeric text-rise">+6.1 %</td></tr>
+        <tr><td>Subway</td><td class="numeric">+9.2 %</td><td class="numeric text-decline">−2.3 %</td></tr>
+        <tr><td>BT (vehicles)</td><td class="numeric">+0.4 %</td><td class="numeric text-decline">−2.3 %</td></tr>
+        <tr><td>SIR</td><td class="numeric">+5.7 %</td><td class="numeric text-decline">−3.1 %</td></tr>
+        <tr><td>LIRR</td><td class="numeric">+11.6 %</td><td class="numeric text-decline">−5.9 %</td></tr>
+        <tr><td>MNR</td><td class="numeric">+8.4 %</td><td class="numeric text-decline">−10.0 %</td></tr>
+      </tbody>
+    </table>
+
+    <p style="margin-top: var(--s-4);">Once you subtract recovery, the picture compresses dramatically. <strong>Bus is the only mode with a clean positive surprise</strong> — about 13 % above what its trend would have predicted. (And bus ridership is volatile enough that I'd read this as suggestive rather than precise — the pre-treatment trend fit on bus has an R² of just 0.11.)</p>
+    <p>BT vehicles are about 2.3 % <em>below</em> trend, which is consistent with the cordon doing real work on the inflow side. Everything else — Subway, LIRR, Metro-North, Staten Island Railway — actually <em>under-shot</em> its trend. The numbers that look like a mode-shift triumph in naive form are mostly recovery momentum that was already in motion.</p>
+    <p>The one exception is bus. If the cordon caused any single thing to happen, it caused buses to fill up faster than the trend would have predicted.</p>
+  </section>
+
+  <section class="wrap-narrow section">
+    <div class="section-eyebrow">Why buses specifically?</div>
+    <h2>The clue is in <em>which</em> mode grew</h2>
+    <p>Of the seven modes, buses are the one that clearly grew faster than the underlying recovery trend would predict. Subway barely moved its share. That's worth pausing on. If the toll were producing a clean "people switched from cars to the train" story, you'd expect subway share to jump. It didn't.</p>
+    <p>The likeliest explanation is that the people who actually switched aren't people who were already on the subway — they're people who weren't using transit at all. Specifically: residents of outer-borough neighborhoods that aren't well served by the subway in the first place. Parts of southern Brooklyn, eastern Queens, the central Bronx, Staten Island, the Rockaways. Places where driving is often the default, because the subway either doesn't go there or requires a long multi-transfer trip.</p>
+    <p>For a driver in one of those neighborhoods, the toll changes the math. The bus that runs nearby was always there; it just wasn't worth taking when driving in was free. With a $9 toll, the bus suddenly is.</p>
+    <p>That guess lines up with several other things in the data: the bridges that lost the most cars (Verrazzano-Narrows, Marine Parkway) are the ones serving exactly those transit-poor neighborhoods. The taxi-spillover pattern peaks three to five miles outside the cordon, which is roughly the same outer-borough fringe. And the mode-share shift, small as it is, lands almost entirely on buses rather than the subway.</p>
+    <p>It's a suggestion, not a proof. We can't see individual riders or know where they came from. But the pattern of <em>which</em> mode grew, <em>where</em> the spillover landed, and <em>which</em> bridges quietest is consistent with one specific story: the toll nudged outer-borough drivers onto the bus.</p>
+  </section>
+
+  <section class="wrap-narrow section">
+    <div class="section-eyebrow">A longer look</div>
+    <h2>Same story over a 16-month window</h2>
+    <p>The headline numbers above use the matched <strong>Jan – Apr</strong> window in 2024 and 2025. We have data running through April 2026, though, so I also ran the comparison over a longer window — the full 16 months after the toll switched on, against the matched 16-month window before it. That removes the seasonal-matching constraint and gives a wider view of whether the shift held up.</p>
+
+    <table class="mode-share-table" style="margin-top: var(--s-3);">
+      <thead>
+        <tr>
+          <th>Mode</th>
+          <th class="numeric">4-month change</th>
+          <th class="numeric">16-month change</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Bus</td><td class="numeric">+14.4 %</td><td class="numeric text-rise">+7.5 %</td></tr>
+        <tr><td>Subway</td><td class="numeric">+9.2 %</td><td class="numeric text-rise">+4.2 %</td></tr>
+        <tr><td>LIRR</td><td class="numeric">+11.6 %</td><td class="numeric text-rise">+8.1 %</td></tr>
+        <tr><td>MNR</td><td class="numeric">+8.4 %</td><td class="numeric text-rise">+6.3 %</td></tr>
+        <tr><td>BT (vehicles)</td><td class="numeric">+0.4 %</td><td class="numeric text-decline">−1.1 %</td></tr>
+        <tr><td>AAR</td><td class="numeric">+24.5 %</td><td class="numeric text-rise">+26.3 %</td></tr>
+      </tbody>
+    </table>
+
+    <p style="margin-top: var(--s-4);">The numbers <em>compress</em> over the longer window — exactly what you'd expect if the four-month headline was riding partly on a seasonal recovery momentum that flattens out as the window grows. Bridge-and-tunnel vehicles, on the other hand, actually get <em>more negative</em> over 16 months: the small initial drop persisted instead of fading. AAR continues to grow at its own structural rate, regardless of window. The directional story holds, but the headlines are shaped by which window you pick.</p>
+  </section>
+
+  <section class="wrap-narrow section">
+    <p class="italic-display" style="font-size: 22px; line-height: 1.45; max-width: 38ch; color: var(--ink);">
+      Trips into the CBD grew. Mode share tilted modestly toward transit. But the CBD getting busier should also have shown up somewhere else: the air.
+    </p>
+    <div style="margin-top: var(--s-5);">
+      <a href="04-air.html" class="label-mono" style="border-bottom: 1px solid currentColor; padding-bottom: 4px; color: var(--decline);">
+        Continue → Chapter 04 · The Air
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="grid">
+    <div>
+      <h4>Source</h4>
+      <p>MTA Daily Ridership and Traffic<br>2020 – 2026 (used 2022 – 2025)</p>
+    </div>
+    <div>
+      <h4>Method</h4>
+      <p>Linear trend projection on 2022/23/24 same-period means; bootstrap CIs on DD attempts</p>
+    </div>
+    <div>
+      <h4>Caveats</h4>
+      <p><a href="caveats.html">What this can and can't tell us →</a></p>
+    </div>
+    <div>
+      <h4>Code</h4>
+      <p><a href="https://github.com/ErmaSwartz/congestionmap">github.com/ErmaSwartz/congestionmap</a></p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
