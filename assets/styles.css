@@ -362,13 +362,101 @@ a:hover { opacity: 0.6; }
   margin: var(--s-7) auto;
   overflow: hidden;
   border-radius: 2px;
-  max-width: 880px;
+  max-width: 1100px;
 }
-.fragment img {
+.fragment img,
+.fragment video {
   width: 100%;
   height: auto;
   display: block;
   filter: contrast(1.05);
+  cursor: zoom-in;
+  transition: transform var(--d-fast) var(--ease);
+}
+.fragment img:hover { transform: scale(1.005); }
+
+/* "stack on narrow" pair pattern — used on the twist page */
+.fragment-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-3);
+  max-width: 1280px;
+  margin: var(--s-5) auto;
+}
+.fragment-pair > .fragment {
+  margin: 0;
+  max-width: none;
+}
+@media (max-width: 900px) {
+  .fragment-pair { grid-template-columns: 1fr; }
+}
+
+/* ── Zoom modal (click any map to enlarge) ─────────────────── */
+#zoom-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(31, 24, 20, 0.94);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: none;
+  z-index: 1000;
+  overflow: auto;
+  cursor: zoom-out;
+  padding: 60px 40px;
+}
+#zoom-modal.visible { display: block; }
+#zoom-content {
+  min-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#zoom-img {
+  max-width: 100%;
+  max-height: 88vh;
+  width: auto;
+  height: auto;
+  background: var(--paper);
+  border-radius: 2px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  cursor: zoom-in;
+}
+#zoom-img.actual {
+  max-width: none;
+  max-height: none;
+  cursor: zoom-out;
+}
+#zoom-close {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 0;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#zoom-hint {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(244, 229, 210, 0.6);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  z-index: 1001;
+  pointer-events: none;
 }
 .fragment .caption {
   font-family: var(--font-mono);

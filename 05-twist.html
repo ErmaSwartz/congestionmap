@@ -38,25 +38,29 @@
     <p>To test that, I split the taxi trips into peak and off-peak hours and ran the same neighborhood-by-neighborhood analysis on each separately. Same 237 zones, same method, just different times of day. Inner Manhattan should stay flat in both. The outer-borough fringe should glow brighter at peak than at off-peak. That's the prediction.</p>
   </section>
 
-  <section class="wrap-narrow section">
-    <div class="section-eyebrow">The result didn't go the way I expected</div>
-    <h2>Off-peak is the stronger pattern, not the weaker one</h2>
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-3); margin-top: var(--s-4);">
-      <div class="fragment" style="margin: 0; max-width: none;">
+  <section class="wrap section">
+    <div class="wrap-narrow" style="margin: 0 auto;">
+      <div class="section-eyebrow">The result didn't go the way I expected</div>
+      <h2>Off-peak is the stronger pattern, not the weaker one</h2>
+    </div>
+    <div class="fragment-pair">
+      <div class="fragment">
         <img src="poster_assets/08_gwr_peak_coeff.svg" alt="Map of how strongly distance from the cordon predicts pickup growth during peak hours, when the toll is fully active.">
-        <div class="caption" style="text-align: center;">Peak hours · toll fully active ($9)</div>
+        <div class="caption" style="text-align: center;">Peak hours · toll fully active ($9) · click to enlarge</div>
       </div>
-      <div class="fragment" style="margin: 0; max-width: none;">
+      <div class="fragment">
         <img src="poster_assets/09_gwr_offpeak_coeff.svg" alt="Map of how strongly distance from the cordon predicts pickup growth during off-peak hours, when the toll is discounted 75 percent.">
-        <div class="caption" style="text-align: center;">Off-peak · toll mostly off ($2.25)</div>
+        <div class="caption" style="text-align: center;">Off-peak · toll mostly off ($2.25) · click to enlarge</div>
       </div>
     </div>
-    <p style="margin-top: var(--s-4);">Look at the two maps side by side. The off-peak map (right) has <em>deeper</em> reds in outer Brooklyn, Queens, and Staten Island. On average, every additional mile from the cordon adds about <strong>+9 percentage points</strong> of pickup growth at peak, and about <strong>+19 percentage points</strong> off-peak. Off-peak is more than twice as strong.</p>
+    <div class="wrap-narrow" style="margin: 0 auto;">
+      <p style="margin-top: var(--s-4);">Look at the two maps side by side. The off-peak map (right) has <em>deeper</em> reds in outer Brooklyn, Queens, and Staten Island. On average, every additional mile from the cordon adds about <strong>+9 percentage points</strong> of pickup growth at peak, and about <strong>+19 percentage points</strong> off-peak. Off-peak is more than twice as strong.</p>
 
-    <div class="bignum" style="margin-top: var(--s-5);">
-      <div class="label">Effect of distance on pickup growth · peak vs off-peak</div>
-      <div class="value text-decline">+9 vs +19</div>
-      <div class="caption">When the toll is mostly off, the spatial spillover pattern is <em>stronger</em>, not weaker. That's the opposite of what we'd expect if the toll were the cause.</div>
+      <div class="bignum" style="margin-top: var(--s-5);">
+        <div class="label">Effect of distance on pickup growth · peak vs off-peak</div>
+        <div class="value text-decline">+9 vs +19</div>
+        <div class="caption">When the toll is mostly off, the spatial spillover pattern is <em>stronger</em>, not weaker. That's the opposite of what we'd expect if the toll were the cause.</div>
+      </div>
     </div>
   </section>
 
@@ -129,5 +133,6 @@
   </div>
 </footer>
 
+<script src="assets/zoom.js" defer></script>
 </body>
 </html>

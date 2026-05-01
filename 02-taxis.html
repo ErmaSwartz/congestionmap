@@ -74,28 +74,36 @@
     <p style="margin-top: var(--s-4);">Two things stand out. First, <strong>every band grew</strong>, there's no "dispersion just outside the cordon," and no boundary band where pickups fell. Second, the <strong>boundary band itself grew the least</strong> (only +4 %), while the bands further from the cordon grew by 30 % or more. Whatever the policy did, it did not scatter taxi pickups along the cordon edge. It accelerated them in the outer-borough fringe.</p>
   </section>
 
-  <section class="wrap-narrow section">
-    <div class="section-eyebrow">The map</div>
-    <h2>Pickups grew almost everywhere, but unevenly</h2>
+  <section class="wrap section">
+    <div class="wrap-narrow" style="margin: 0 auto;">
+      <div class="section-eyebrow">The map</div>
+      <h2>Pickups grew almost everywhere, but unevenly</h2>
+    </div>
     <div class="fragment">
       <img src="poster_assets/02_pct_change.svg" alt="Choropleth of NYC taxi zones colored by percent change in yellow-taxi pickups, 2024 vs 2025. Most zones are shades of green showing growth, with the strongest growth in outer-borough zones.">
-      <div class="caption">Figure 02, % change in yellow-taxi pickups, by zone (Jan – Apr 2024 vs 2025)</div>
+      <div class="caption">% change in yellow-taxi pickups, by zone (Jan – Apr 2024 vs 2025) · click to enlarge</div>
     </div>
-    <p>Almost every zone reads in shades of green. Only four zones stayed in the red, and three of them are <strong>airport zones</strong>, LaGuardia, Newark, and East Elmhurst, where yellow taxis are losing market share to for-hire vehicles regardless of any policy. The fourth is Central Park, where pickup volume is small and noisy. The "decline" story isn't the cordon's. The growth story is everywhere else.</p>
+    <div class="wrap-narrow" style="margin: var(--s-4) auto 0;">
+      <p>Almost every zone reads in shades of green. Only four zones stayed in the red, and three of them are <strong>airport zones</strong>, LaGuardia, Newark, and East Elmhurst, where yellow taxis are losing market share to for-hire vehicles regardless of any policy. The fourth is Central Park, where pickup volume is small and noisy. The "decline" story isn't the cordon's. The growth story is everywhere else.</p>
+    </div>
   </section>
 
-  <section class="wrap-narrow section">
-    <div class="section-eyebrow">Why one number wasn't enough</div>
-    <h2>The relationship changes from neighborhood to neighborhood</h2>
-    <p>The first thing I tried was the simplest possible answer: fit one slope to the whole city. How much does pickup growth change for every additional mile from the cordon? The number that came back was roughly <strong>−5 percentage points per mile</strong> during the tolled hours: on average, the farther from the cordon, the smaller the increase.</p>
-    <p>That number explained about half the pattern. Just half. The other half wasn't about distance at all, it was about <em>where in the city</em> you were measuring.</p>
+  <section class="wrap section">
+    <div class="wrap-narrow" style="margin: 0 auto;">
+      <div class="section-eyebrow">Why one number wasn't enough</div>
+      <h2>The relationship changes from neighborhood to neighborhood</h2>
+      <p>The first thing I tried was the simplest possible answer: fit one slope to the whole city. How much does pickup growth change for every additional mile from the cordon? The number that came back was roughly <strong>−5 percentage points per mile</strong> during the tolled hours: on average, the farther from the cordon, the smaller the increase.</p>
+      <p>That number explained about half the pattern. Just half. The other half wasn't about distance at all, it was about <em>where in the city</em> you were measuring.</p>
+    </div>
     <div class="fragment">
       <img src="poster_assets/01_gwr_dist_coeff.svg" alt="Map of NYC taxi zones colored by how strongly pickup change responds to distance from the cordon. Inner Manhattan reads near zero or slightly negative; outer Brooklyn, Queens, the Bronx, and Staten Island read strongly positive.">
-      <div class="caption">Local "distance effect" on yellow-taxi pickup growth, by zone</div>
+      <div class="caption">Local "distance effect" on yellow-taxi pickup growth, by zone · click to enlarge</div>
     </div>
-    <p>So I let the model fit a different answer in every neighborhood. (The technique is called Geographically Weighted Regression, basically, instead of one slope for the whole city, you get one slope for every taxi zone, calculated from nearby observations.) The result is the map above. Each zone's color tells you how strongly distance from the cordon predicts pickup growth <em>in that specific neighborhood</em>.</p>
-    <p>The range is wild: from <strong>−39 to +176</strong> across the 243 zones. Lower Manhattan and the Hudson waterfront read near zero, or slightly negative. Outer Brooklyn, Queens, the Bronx, and Staten Island read strongly positive, the farther from the cordon, the more pickups grew there. Roughly half of all zones (137) show effects clearly distinguishable from zero. The other half are smaller and noisier.</p>
-    <p>A single number can't represent that. From here on, the investigation has to be local.</p>
+    <div class="wrap-narrow" style="margin: var(--s-4) auto 0;">
+      <p>So I let the model fit a different answer in every neighborhood. (The technique is called Geographically Weighted Regression. Instead of one slope for the whole city, you get one slope for every taxi zone, calculated from nearby observations.) The result is the map above. Each zone's color tells you how strongly distance from the cordon predicts pickup growth <em>in that specific neighborhood</em>.</p>
+      <p>The range is wild: from <strong>−39 to +176</strong> across the 243 zones. Lower Manhattan and the Hudson waterfront read near zero, or slightly negative. Outer Brooklyn, Queens, the Bronx, and Staten Island read strongly positive, the farther from the cordon, the more pickups grew there. Roughly half of all zones (137) show effects clearly distinguishable from zero. The other half are smaller and noisier.</p>
+      <p>A single number can't represent that. From here on, the investigation has to be local.</p>
+    </div>
   </section>
 
   <section class="wrap-narrow section">
@@ -140,5 +148,6 @@
   </div>
 </footer>
 
+<script src="assets/zoom.js" defer></script>
 </body>
 </html>
