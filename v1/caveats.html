@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caveats · What this analysis can and can't tell us, Congestion Map</title>
+<meta name="description" content="Every dataset on the Congestion Map site has a scope. This page lays out the caveats: yellow taxis are not for-hire vehicles, MTA bridges aren't East River bridges, NYCCAS recalibrated mid-window, EPA monitors aren't close enough to the cordon.">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<div style="background:#1F1814;color:#F4E5D2;border-bottom:1px solid rgba(244,229,210,0.18);padding:10px 24px;font-family:'JetBrains Mono','SF Mono',Menlo,monospace;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;text-align:center;">Archived · v1.0 · <a href="../index.html" style="color:#ECA0BD;border-bottom:1px solid currentColor;">See the current version of this analysis →</a></div>
+
+
+<header class="chapter-nav">
+  <a href="index.html">← Cover</a>
+  <div class="links">
+    <a href="01-bridges.html">01 Bridges</a>
+    <a href="02-taxis.html">02 Taxis</a>
+    <a href="03-modes.html">03 Modes</a>
+    <a href="04-air.html">04 Air</a>
+    <a href="05-twist.html">05 Twist</a>
+    <a href="verdict.html">Verdict</a>
+  </div>
+</header>
+
+<main>
+
+  <section class="wrap-narrow">
+    <div class="hero">
+      <div class="eyebrow">A page of honest disclosures</div>
+      <h1 style="font-size: var(--t-display); margin-bottom: var(--s-4);">What this analysis can, and can't, tell us.</h1>
+      <p class="lede">Every number on this site has a scope. Some are clean, some are noisy, some shouldn't be read as causal at all. This page lays out what each dataset measures, what it doesn't measure, and which claims are weaker than the headlines might suggest.</p>
+    </div>
+  </section>
+
+  <section class="wrap-narrow section">
+    <div class="section-eyebrow">Yellow-taxi data</div>
+    <h2>It's only yellow cabs.</h2>
+    <p>The taxi analysis uses 89.6 million yellow-cab trip records from the NYC Taxi &amp; Limousine Commission. It doesn't include Uber, Lyft, or Via, and those for-hire fleets are <em>bigger</em> than yellow cabs by trip volume in NYC. Some of the outer-borough pickup growth in Chapter 02 may be yellow cabs reaching further into outer boroughs to capture fares the for-hire fleets would otherwise serve. In the data that looks like spillover; in real life it's partly drivers responding to a shrinking yellow-cab market.</p>
+    <p>The dataset also doesn't include private cars, vans, trucks, or buses. None of the per-band numbers in Chapter 02 say anything about those modes.</p>
+  </section>
+
+  <section class="wrap-narrow section">
+    <div class="section-eyebrow">Bridge &amp; tunnel data</div>
+    <h2>It's mixed-vehicle, and only the MTA's crossings.</h2>
+    <p>The MTA's count includes every vehicle that crosses one of its nine tolled plazas, cars, taxis, vans, trucks, intercity buses. The headline <strong>−3.25 %</strong> means "three percent fewer vehicles of any kind at those crossings," not specifically "three percent fewer cars."</p>
+    <p>The four East River bridges, Brooklyn, Manhattan, Williamsburg, and Queensboro, are <strong>city-owned and not in the MTA's dataset</strong>. They don't have plaza-style toll counters of their own. (Drivers using them to enter the cordon zone still pay the congestion charge, the toll is collected by camera, not at a bridge plaza.) They're also the most likely place a driver would shift to if they wanted to enter Manhattan north of 60th Street and avoid both the cordon zone and the MTA tunnels. Without those counts, we're seeing only one side of the substitution.</p>
+  </section>
+
+  <section class="wrap-narrow section">
+    <div class="section-eyebrow">Multi-modal MTA data</div>
+    <h2>Most of the apparent growth is post-pandemic recovery.</h2>
+    <p>Subway, bus, LIRR, Metro-North, and the rest were all on a steep recovery curve through 2022, 2023, and 2024, they were getting their riders back after COVID. So a simple 2024-vs-2025 comparison shows growth that was going to happen anyway. The trend-adjusted numbers in Chapter 03 try to subtract that out, but the projection isn't perfect.</p>
+    <p>The bus number is the shakiest one. Bus ridership fell from 2023 to 2024 and then jumped in 2025, so a line drawn through three years doesn't really fit. The +13 % above-trend bus growth is the right answer from the method, but the method itself doesn't have a lot to grip onto for buses specifically.</p>
+    <p>The cleanest comparison would be against a mode the toll <em>shouldn't</em> affect, like Access-A-Ride paratransit. But AAR grew 24.5 % on its own (more people are eligible than before, the population is aging), so it can't act as a flat baseline. We had to use trend projection instead.</p>
+  </section>
+
+  <section class="wrap-narrow section">
+    <div class="section-eyebrow">PM2.5 data</div>
+    <h2>The measuring instrument changed mid-experiment.</h2>
+    <p>The PM2.5 numbers come from NYCCAS, New York City's network of about 10 air monitors stationed inside, near, and far from the cordon. The cordon-attributable drop is <strong>−21.8 %</strong>, with a confidence interval that doesn't cross zero. On its face, the cleanest causal estimate in the project.</p>
+    <p>The catch: NYCCAS <strong>recalibrated its measurement correction factors on June 10, 2024</strong>, halfway through the pre-treatment window. The pre-2024 data was collected with one calibration, the post-2025 data with another. That's a known measurement bias across exactly the comparison we're making, and we can't fully separate "the cordon caused this" from "the instrument changed." Both could be true simultaneously.</p>
+    <p>PM2.5 is also more weather-driven than other pollutants. Temperature, wind direction, and storms swing it independent of any local change.</p>
+  </section>
+
+  <section class="wrap-narrow section">
+    <div class="section-eyebrow">EPA monitors</div>
+    <h2>The federal network doesn't have a station close enough to the cordon.</h2>
+    <p>The federal EPA Air Quality System runs ground-level monitors across NYC, and we tried to use them to give us an alternative read on both PM2.5 and NO₂. It didn't work, for both pollutants, the closest station is well outside the cordon.</p>
+    <p>For PM2.5, EPA has eight active NYC monitors. The closest one is in Brooklyn, 2.8 miles from the cordon. The closest in Manhattan is up in Harlem, almost 4 miles away. None inside, none within a mile of the boundary. For NO₂, the closest active station is Pelham Parkway in the Bronx, about 5 miles from the cordon. None in Manhattan.</p>
+    <p>The federal network was built for regional regulatory monitoring across counties, not for measuring what happens in a sub-borough congestion zone. So neither EPA dataset can credibly answer the cordon question. The air chapter rests on NYCCAS surface PM2.5 (with the calibration caveat above) plus TROPOMI satellite NO₂, two instruments that <em>can</em> see the cordon, with their own different limitations.</p>
+  </section>
+
+  <section class="wrap-narrow section">
+    <div class="section-eyebrow">TROPOMI satellite NO₂</div>
+    <h2>The cordon is one or two pixels across.</h2>
+    <p>Sentinel-5P TROPOMI measures NO₂ in a vertical column above each ~5-kilometer pixel, so it's looking at "how much NO₂ is in the air above this part of the city," not "how much NO₂ there is at street level." The two are correlated for traffic-driven NO₂, but not identical.</p>
+    <p>The cordon polygon is only one or two satellite pixels wide. So the satellite can tell us cordon-vs-outer-borough, but not "Lower East Side vs. Hell's Kitchen." The estimated drop of <strong>−20.1 %</strong> is the cordon-vs-control comparison, but the bootstrap confidence interval is wide ([−67 %, +25 %]) and crosses zero. With only a couple of pixels and four months of post-treatment data, the satellite alone can't rule out chance, even though the point estimate is large and consistent with the surface result.</p>
+  </section>
+
+  <section class="wrap-narrow section">
+    <div class="section-eyebrow">The peak-vs-off-peak comparison</div>
+    <h2>The Chapter 05 result rests on one big assumption.</h2>
+    <p>Chapter 05 isolates the cordon's specific effect by comparing the peak-hour spatial pattern against the off-peak one and subtracting. That works <em>if</em> peak and off-peak hours share the same non-toll trends, same recovery curve, same weather, same yellow-cab-vs-rideshare dynamics. If anything has its own peak-vs-off-peak structure unrelated to the toll (late-night airport demand recovering differently than commute demand, for example), the comparison would partially attribute that to the cordon.</p>
+    <p>The roughly 10-percentage-points-per-mile cordon-attributable flattening of the spatial pattern should be read as approximately right, with this assumption priced in.</p>
+  </section>
+
+  <section class="wrap-narrow section">
+    <div class="section-eyebrow">Methodology</div>
+    <h2>Same four months, every year.</h2>
+    <p>All comparisons across the site use matched <strong>Jan 5 – Apr 30</strong> calendar windows in 2024 and 2025, plus the same window in 2022 and 2023 for trend baselines. An earlier version of the taxi analysis used unmatched windows (full 2024 vs all post-Jan-5 2025 data) which produced slightly different magnitudes, most notably a small <em>decline</em> at the cordon boundary that disappears under the proper matched comparison. This site uses corrected matched-window numbers throughout.</p>
+  </section>
+
+  <section class="wrap-narrow section">
+    <div class="section-eyebrow">What this project would need next</div>
+    <h2>For a sharper answer.</h2>
+    <ul style="font-family: var(--font-display); font-size: var(--t-body-lg); line-height: 1.55; color: var(--ink-soft); margin-left: var(--s-3); margin-bottom: var(--s-3);">
+      <li style="margin-bottom: var(--s-2);">For-hire-vehicle records (Uber, Lyft, Via) to capture the larger fleet</li>
+      <li style="margin-bottom: var(--s-2);">East River bridge counts so we can see the free-crossing substitution</li>
+      <li style="margin-bottom: var(--s-2);">An EPA air monitor inside Manhattan, near or in the cordon</li>
+      <li style="margin-bottom: var(--s-2);">A PM2.5 baseline that doesn't span the NYCCAS calibration change</li>
+      <li style="margin-bottom: var(--s-2);">Subway-station-level entry data, instead of just system-wide totals</li>
+      <li style="margin-bottom: var(--s-2);">A comparison city, somewhere similar in size and density that didn't impose a toll, to act as a true control</li>
+      <li style="margin-bottom: var(--s-2);">A longer post-treatment window, most of these numbers would tighten dramatically with twelve months instead of four</li>
+    </ul>
+  </section>
+
+  <section class="wrap-narrow section">
+    <p class="italic-display" style="font-size: 22px; line-height: 1.45; max-width: 38ch; color: var(--ink);">
+      Honest about the data is honest about the conclusion. The cordon did real work; the magnitudes are smaller than the headlines suggest; and the bigger redistribution was already in motion. All three of those statements are true at once.
+    </p>
+    <div style="margin-top: var(--s-5); display: flex; gap: var(--s-4);">
+      <a href="index.html" class="label-mono" style="border-bottom: 1px solid currentColor; padding-bottom: 4px; color: var(--decline);">← Cover</a>
+      <a href="verdict.html" class="label-mono" style="border-bottom: 1px solid currentColor; padding-bottom: 4px; color: var(--decline);">← Verdict</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="grid">
+    <div>
+      <h4>Author</h4>
+      <p>Erma Swartz · Spring 2026<br>M.S. Urban Planning &amp; Design</p>
+    </div>
+    <div>
+      <h4>Sources</h4>
+      <p>NYC TLC · MTA Bridges &amp; Tunnels · MTA Daily Ridership · NYCCAS · Sentinel-5P TROPOMI</p>
+    </div>
+    <div>
+      <h4>Code</h4>
+      <p><a href="https://github.com/ErmaSwartz/congestionmap">github.com/ErmaSwartz/congestionmap</a></p>
+    </div>
+    <div>
+      <h4>Suggested citation</h4>
+      <p>Swartz, E. (2026). <em>Congestion Map: Spatial &amp; multi-modal investigation of NYC's 2025 cordon.</em> Final project, Spring 2026.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/zoom.js" defer></script>
+</body>
+</html>

@@ -3,145 +3,80 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Did fewer cars enter Manhattan after congestion pricing? · 01 · The Bridges</title>
-<meta name="description" content="MTA bridge and tunnel entries fell 3.25% in the first four months of NYC's congestion charge, but only seven of nine crossings dropped, and the city-owned East River bridges aren't in the dataset.">
+<title>01 · The Bridges — Did fewer cars come in? · Congestion Map</title>
+<meta name="description" content="MTA bridge & tunnel volume dropped 1.3% in the real comparison; the 2024-vs-2023 placebo year showed +0.45%. The cordon-attributable difference is −1.75 percentage points, just clearing zero.">
 <link rel="stylesheet" href="assets/styles.css">
 </head>
 <body>
 
 <header class="chapter-nav">
-  <a href="index.html">← Cover</a>
+  <a href="index.html">← Congestion Map</a>
   <div class="links">
     <a href="01-bridges.html" class="active">01 Bridges</a>
-    <a href="02-taxis.html">02 Taxis</a>
-    <a href="03-modes.html">03 Modes</a>
-    <a href="04-air.html">04 Air</a>
-    <a href="05-twist.html">05 Twist</a>
-    <a href="verdict.html">Verdict</a>
+    <a href="02-transit.html">02 Transit</a>
+    <a href="03-air.html">03 Air</a>
+    <a href="04-spillover.html">04 Spillover</a>
+    <a href="05-verdict.html">05 Verdict</a>
   </div>
 </header>
 
 <main>
 
   <section class="wrap-narrow">
-    <div class="hero" style="min-height: auto; padding: var(--s-7) 0 var(--s-5);">
+    <div class="hero" style="min-height: auto; padding: var(--s-7) 0 var(--s-4);">
       <div class="eyebrow">Chapter 01 · The Bridges</div>
-      <h1 style="font-size: var(--t-display-sm); margin-bottom: var(--s-4); max-width: 24ch; line-height: 1.05;">Did fewer cars actually come into Manhattan?</h1>
-      <p class="lede" style="max-width: 50ch;">If the toll worked the way its supporters hoped, you'd see it first at the bridges and tunnels, fewer drivers crossing in. The MTA counts every vehicle at nine of those crossings, every day. Here's what those counts say.</p>
+      <h1 style="max-width: 24ch;">Did fewer cars come in?</h1>
 
-      <div class="bignum" style="margin-top: var(--s-4); margin-bottom: 0;">
-        <div class="label">Vehicles into NYC at MTA bridges &amp; tunnels · Jan – Apr 2024 vs 2025</div>
-        <div class="value text-decline" style="font-size: clamp(72px, 9vw, 120px);">−3.25%</div>
-        <div class="caption">A small but real drop, and the cleanest single piece of evidence in this whole project that the toll did something.</div>
+      <div class="bignum" style="margin-top: var(--s-4);">
+        <div class="label">Cordon-attributable change · MTA bridges &amp; tunnels · DiD</div>
+        <div class="value text-decline">−1.75 pp</div>
+        <div class="caption">Real-comparison drop minus placebo drift. 95% bootstrap CI: [−3.33, −0.12].</div>
       </div>
     </div>
   </section>
 
-  <section class="wrap-narrow section">
-    <div class="section-eyebrow">The pattern</div>
-    <h2>Seven of nine crossings declined</h2>
-    <p>The two that fell hardest, the <strong>Verrazzano-Narrows</strong> (down nearly 9 %) and the <strong>Marine Parkway</strong>, both serve commutes from South Brooklyn and the Rockaways. The only crossing that grew was the <strong>Henry Hudson</strong>, way up on Manhattan's West Side, far enough from the toll zone that some drivers may have rerouted to use it instead.</p>
+  <section class="wrap">
+    <figure class="fragment" style="max-width: 1100px; margin: var(--s-3) auto var(--s-5);">
+      <img src="figures/v2/bridges_real_vs_placebo.png" alt="Bar chart of vehicles per day at MTA bridges and tunnels, comparing pre and post for the real (Oct 2023–Dec 2024 vs Jan 2025–Mar 2026) and placebo (2023 vs 2024) windows. Real shows a small drop; placebo is flat-to-slightly-up.">
+      <figcaption>MTA Bridges &amp; Tunnels, daily means with bootstrap 95% CIs. Real comparison drops 1.3%; placebo year rises 0.45%; the cordon-attributable difference is −1.75 pp.</figcaption>
+    </figure>
+  </section>
 
-    <aside style="margin-top: var(--s-5); padding: var(--s-3) var(--s-4); border-left: 2px solid var(--decline); font-family: var(--font-display); font-style: italic; font-size: 18px; line-height: 1.5; color: var(--ink); max-width: 52ch;">
-      The Henry Hudson rose 2.6 %, the lone outlier on the upside. It's the only MTA crossing far enough north of 60th Street to plausibly serve as a workaround for the cordon. That makes the rise interesting: it looks like a substitution effect, not noise.
-    </aside>
+  <section class="wrap-narrow section">
+    <p>Real comparison: <strong>−1.3%</strong> change in vehicles per day, across all nine MTA crossings. Placebo: <strong>+0.45%</strong> — basically flat. The placebo says traffic was on a slight upward drift on its own. The real comparison reverses that drift. Subtract one from the other and you get the cordon's signature on the bridges.</p>
+
+    <div class="callout">
+      The cordon-attributable difference clears zero, just barely. A small effect, defensible but not bulletproof.
+    </div>
+
+    <p>That qualifier matters. Tighten the window to a strictly 12-month real-vs-placebo (2025 vs 2024) and the DiD shrinks to <strong>+0.18 pp</strong> with a CI of [−1.4, +1.8] — straddling zero. Read this chapter as "small, real-ish, at the edge of detectability." Not as a cornerstone result, and not as nothing.</p>
+
+    <h3 style="margin-top: var(--s-5);">The bridges aren't where most of the effect lives.</h3>
+    <p>The headline coverage of the cordon — fewer cars at the bridges — is the easiest claim to make and the smallest one to defend. A ~1% reduction in MTA crossings is hard to feel walking around midtown. The next chapter is where the policy did most of its work.</p>
   </section>
 
   <section class="wrap section">
-    <div class="wrap-narrow" style="margin: 0 auto;">
-      <div class="section-eyebrow">By crossing</div>
-      <h2>Which bridges actually moved</h2>
+    <div class="wrap-narrow" style="margin: 0 auto var(--s-3);">
+      <div class="section-eyebrow">Forward look</div>
+      <h2 style="margin-bottom: var(--s-3);">Bridges vs transit, side by side.</h2>
+      <p>If the cordon barely moved the bridges, where did the policy's effect actually land? A preview of Chapter 02:</p>
     </div>
-    <div class="fragment" style="max-width: 1100px;">
-      <img src="poster_assets/06_bridge_entries.svg" alt="Map of NYC's nine MTA-tolled crossings, showing each as a graduated symbol whose size scales with pre-period volume and color shows the percent change in 2025 vs 2024. Seven of nine crossings declined; the Verrazzano-Narrows and Marine Parkway show the steepest drops.">
-      <div class="caption">MTA bridges &amp; tunnels, symbol size = pre-period volume, color = change in entries · same months, 2024 vs 2025</div>
-    </div>
-
-    <div class="wrap-narrow" style="margin: var(--s-5) auto 0;">
-      <table class="bridge-table" aria-describedby="bridge-table-cap">
-        <caption id="bridge-table-cap">Vehicles entering NYC at each MTA-tolled crossing, January–April 2025 vs. same months in 2024.</caption>
-        <thead>
-          <tr>
-            <th scope="col">Crossing</th>
-            <th scope="col">Visualized change</th>
-            <th scope="col" class="numeric">Change</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>Verrazzano-Narrows</strong><span class="route">Brooklyn ⇄ Staten Island</span></td>
-            <td class="bar-cell"><span class="bar bar-neg" style="width: 87%;"></span></td>
-            <td class="numeric text-decline">−8.7%</td>
-          </tr>
-          <tr>
-            <td><strong>Marine Parkway</strong><span class="route">Brooklyn ⇄ Rockaways</span></td>
-            <td class="bar-cell"><span class="bar bar-neg" style="width: 85%;"></span></td>
-            <td class="numeric text-decline">−8.5%</td>
-          </tr>
-          <tr>
-            <td><strong>Queens Midtown Tunnel</strong><span class="route">Queens ⇄ Manhattan</span></td>
-            <td class="bar-cell"><span class="bar bar-neg" style="width: 48%;"></span></td>
-            <td class="numeric text-decline">−4.8%</td>
-          </tr>
-          <tr>
-            <td><strong>Throgs Neck</strong><span class="route">Bronx ⇄ Queens</span></td>
-            <td class="bar-cell"><span class="bar bar-neg" style="width: 37%;"></span></td>
-            <td class="numeric text-decline">−3.7%</td>
-          </tr>
-          <tr>
-            <td><strong>RFK / Triborough</strong><span class="route">Queens ⇄ Bronx ⇄ Manhattan</span></td>
-            <td class="bar-cell"><span class="bar bar-neg" style="width: 22%;"></span></td>
-            <td class="numeric text-decline">−2.2%</td>
-          </tr>
-          <tr>
-            <td><strong>Cross Bay</strong><span class="route">Queens ⇄ Rockaways</span></td>
-            <td class="bar-cell"><span class="bar bar-neg" style="width: 15%;"></span></td>
-            <td class="numeric text-decline">−1.5%</td>
-          </tr>
-          <tr>
-            <td><strong>Hugh L. Carey Tunnel</strong><span class="route">Brooklyn ⇄ Manhattan</span></td>
-            <td class="bar-cell"><span class="bar bar-neg" style="width: 3%;"></span></td>
-            <td class="numeric text-decline">−0.3%</td>
-          </tr>
-          <tr>
-            <td><strong>Bronx-Whitestone</strong><span class="route">Bronx ⇄ Queens</span></td>
-            <td class="bar-cell"><span class="bar bar-pos" style="width: 7%;"></span></td>
-            <td class="numeric text-rise">+0.7%</td>
-          </tr>
-          <tr>
-            <td><strong>Henry Hudson</strong><span class="route">Manhattan ⇄ Bronx (west)</span></td>
-            <td class="bar-cell"><span class="bar bar-pos" style="width: 26%;"></span></td>
-            <td class="numeric text-rise">+2.6%</td>
-          </tr>
-        </tbody>
-      </table>
-      <p class="label-mono" style="margin-top: var(--s-2);">Data: <a href="https://new.mta.info/agency/bridges-and-tunnels/about/operations/traffic-statistics" rel="noopener">MTA Bridges &amp; Tunnels Daily Traffic Statistics</a> · bar length is proportional to absolute % change · 0% line at center</p>
-    </div>
+    <figure class="fragment" style="max-width: 1100px;">
+      <img src="figures/v2/transit_vs_bridges.png" alt="Comparison chart placing the bus DiD next to the bridges DiD. Bus +10 pp; bridges −1.75 pp; the modal-shift effect dwarfs the vehicle-reduction effect.">
+      <figcaption>Cordon-attributable changes side-by-side. The bus DiD is several times larger than the bridges DiD.</figcaption>
+    </figure>
   </section>
 
   <section class="wrap-narrow section">
-    <div class="section-eyebrow">What this number can't tell us</div>
-    <h2>Three things to keep in mind</h2>
-
-    <h3 style="margin-top: var(--s-4);">It counts every vehicle, not just cars.</h3>
-    <p>The MTA's number includes cars, taxis, trucks, vans, intercity buses, anything paying a toll at those nine plazas. So "3 % fewer" means "3 % fewer vehicles of any kind," not specifically "3 % fewer cars." A truck swap or a bus schedule change is in there too.</p>
-
-    <h3 style="margin-top: var(--s-4);">It misses the East River bridges.</h3>
-    <p>Four of the busiest crossings into Manhattan, the Brooklyn, Manhattan, Williamsburg, and Queensboro, are <strong>city-owned, not MTA-owned</strong>. They don't have toll plazas of their own and don't show up in this dataset. (To be clear: vehicles using them to enter the cordon zone <em>do</em> pay the congestion charge, there's just no separate bridge toll, and no MTA plaza counting them.) That's a problem, because if a driver used to take the Queens Midtown Tunnel and now takes the Queensboro Bridge to enter Manhattan north of 60th Street, the MTA's data would show a tunnel decline. That looks like "fewer cars," but the cars haven't actually disappeared, they've just moved over.</p>
-
-    <h3 style="margin-top: var(--s-4);">It doesn't tell us what happened next.</h3>
-    <p>If you're a driver who didn't make a trip you would have made before, where did you end up instead? On the subway? On a bus? At home? Stuck on a bridge in Queens? The bridge counts don't say. To answer that, we have to look at the other modes.</p>
+    <div class="section-eyebrow">What I can't see</div>
+    <p>Three quick caveats. The MTA's count is mixed-vehicle (cars, taxis, vans, trucks, intercity buses) — "1.3% fewer vehicles" is not "1.3% fewer cars." The four city-owned East River bridges aren't in the dataset, so substitution onto free crossings is partly invisible. And per-plaza counts stopped after April 2025; from May 2025 forward this analysis uses the aggregate daily total. <a href="caveats.html">Full caveats →</a></p>
   </section>
 
   <section class="wrap-narrow section">
-    <p class="italic-display" style="font-size: 22px; line-height: 1.45; max-width: 40ch; color: var(--ink);">
-      Fewer vehicles came in, but only the kinds the MTA tracks, and only at the nine crossings it charges a toll on. To know what really happened, we have to look at where everyone else went.
-    </p>
-
-    <a href="02-taxis.html" class="next-card" style="margin-top: var(--s-5);">
+    <a href="02-transit.html" class="next-card">
       <div class="next-card-eyebrow">Continue · Chapter 02</div>
-      <div class="next-card-title">The Taxis</div>
-      <div class="next-card-tease">Where the pickups went, and why they grew the most where you'd least expect.</div>
+      <div class="next-card-title">The Transit</div>
+      <div class="next-card-tease">Where the trips went. Buses absorbed most of the modal shift; subway gained too.</div>
       <div class="next-card-arrow">→</div>
     </a>
   </section>
@@ -151,16 +86,16 @@
 <footer class="site-footer">
   <div class="grid">
     <div>
-      <h4>What's the data</h4>
-      <p>MTA Bridges &amp; Tunnels<br>Daily counts of every vehicle crossing</p>
+      <h4>The data</h4>
+      <p>MTA Bridges &amp; Tunnels<br>Daily counts at nine tolled crossings, Oct 2023 – Mar 2026</p>
     </div>
     <div>
-      <h4>What's compared</h4>
-      <p>Jan 5 – Apr 30 in 2024<br>vs same dates in 2025</p>
+      <h4>The comparison</h4>
+      <p>Real: 458 pre-days vs 451 post-days<br>Placebo: 2023 vs 2024 (no policy)</p>
     </div>
     <div>
-      <h4>What we can't see</h4>
-      <p><a href="caveats.html">Things this analysis misses →</a></p>
+      <h4>What I can't see</h4>
+      <p><a href="caveats.html">Full caveats →</a></p>
     </div>
     <div>
       <h4>The code</h4>

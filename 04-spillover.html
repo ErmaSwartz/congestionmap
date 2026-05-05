@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>04 · The Spillover That Wasn't · Congestion Map</title>
+<meta name="description" content="The most-feared side effect — that displaced commuters would shift to yellow taxis at the cordon edge — didn't materialize. Yellow-taxi pickups rose uniformly across distance bands. Four predictions tested, four rejected.">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<header class="chapter-nav">
+  <a href="index.html">← Congestion Map</a>
+  <div class="links">
+    <a href="01-bridges.html">01 Bridges</a>
+    <a href="02-transit.html">02 Transit</a>
+    <a href="03-air.html">03 Air</a>
+    <a href="04-spillover.html" class="active">04 Spillover</a>
+    <a href="05-verdict.html">05 Verdict</a>
+  </div>
+</header>
+
+<main>
+
+  <section class="wrap-narrow">
+    <div class="hero" style="min-height: auto; padding: var(--s-7) 0 var(--s-4);">
+      <div class="eyebrow">Chapter 04 · The Spillover That Wasn't</div>
+      <h1 style="max-width: 28ch;">The side effect that didn't happen.</h1>
+
+      <div class="bignum" style="margin-top: var(--s-4);">
+        <div class="label">Yellow-taxi spillover · spatial gradient with distance from cordon</div>
+        <div class="value text-placebo">Not detected</div>
+        <div class="caption">Inside cordon DiD: <strong>+6.4 pp</strong>. 0–1 mi DiD: <strong>+6.7 pp</strong>. Statistically indistinguishable.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <figure class="fragment" style="max-width: 1100px; margin: var(--s-3) auto var(--s-5);">
+      <img src="figures/v2/taxi_null_finding.png" alt="Yellow-taxi DiD by distance band. Inner bands are roughly flat; outer bands are large but reflect low-baseline airport and outer-borough zones, not a cordon-edge spillover.">
+      <figcaption>Yellow-taxi DiD by distance from cordon. The inner bands show no monotonic gradient.</figcaption>
+    </figure>
+  </section>
+
+  <section class="wrap-narrow section">
+    <p>The most concrete pre-policy fear was simple. Drivers facing a $9 toll would park outside the cordon and grab a yellow cab in. That predicts a spatial gradient: strong taxi growth at the edge, weaker farther out. So I grouped the 263 NYC taxi zones into bands by distance from the cordon and ran the same real-vs-placebo DiD on each.</p>
+
+    <div class="callout">
+      Four predictions tested, four rejected.
+    </div>
+
+    <p>Inner bands are flat against each other (+6.4 inside, +6.7 at 0–1 mi, +13.1 at 1–3 mi). The 1–3 mi band is higher, not lower, than the cordon edge — opposite of the gradient prediction. Past 3 miles the DiD numbers explode (+93 pp, +117 pp), but those bands are dominated by airports and outer-borough zones with tiny pre-toll baselines. Long-running yellow-fleet clawback against rideshare, not a cordon edge effect.</p>
+  </section>
+
+  <section class="wrap section">
+    <div class="wrap-narrow" style="margin: 0 auto var(--s-3);">
+      <h2 style="margin-bottom: var(--s-3);">Inner bands vs the full distance range.</h2>
+      <p>The substitution hypothesis predicted concentration at the edge. The data shows the opposite: inner bands are essentially flat, and the dramatic outer-band growth is unrelated to the cordon.</p>
+    </div>
+    <div class="fragment-pair" style="max-width: 1280px;">
+      <figure class="fragment">
+        <img src="figures/v2/taxi_real_vs_placebo_inner_bands.png" alt="Yellow-taxi DiD for the inner three bands (inside cordon, 0–1 mi, 1–3 mi). The bars are similar height; no gradient with distance.">
+        <figcaption>Inner bands only. Inside, 0–1 mi, 1–3 mi — no spatial gradient.</figcaption>
+      </figure>
+      <figure class="fragment">
+        <img src="figures/v2/taxi_real_vs_placebo_borough.png" alt="Yellow-taxi pickups, real vs placebo, broken out by borough. The pattern is similar across boroughs, not concentrated at the cordon edge.">
+        <figcaption>Borough-level view. The rise is broadly distributed, not edge-concentrated.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="wrap-narrow section">
+    <h3>The null is the finding.</h3>
+    <p>I'll be careful with this — nulls are easy to over- and under-claim. <strong>What the data does say:</strong> the modal substitution hypothesis predicted a particular spatial pattern. That pattern is not present. <strong>What the data does not say:</strong> "no one switched to a taxi." Some people clearly did. The point is the geographic signal the substitution hypothesis required isn't there.</p>
+    <div class="callout">
+      The most-feared side effect didn't materialize. The cordon did not shove its traffic onto yellow cabs at the edge.
+    </div>
+  </section>
+
+  <section class="wrap-narrow section">
+    <div class="section-eyebrow">What I can't see</div>
+    <p>The big one: yellow-taxi data does not include Uber and Lyft. FHV trip records weren't available at zone resolution within this analysis's timeframe, and FHV is now substantially larger than yellow taxi by trip volume in NYC. The "spillover not detected" finding is specific to <strong>yellow taxis</strong>. If displaced commuters substituted onto rideshare in a cordon-edge pattern, this analysis can't see it. Two reasons not to over-worry: both modes compete for similar dispatch, so yellow should have caught a fraction of any such effect (and didn't); and the bus DiD in Chapter 02 is exactly where you'd expect substitution to land if drivers were giving up the door-to-door private trip — and it's strong. <a href="caveats.html">Full caveats →</a></p>
+  </section>
+
+  <section class="wrap-narrow section">
+    <a href="05-verdict.html" class="next-card">
+      <div class="next-card-eyebrow">Continue · Chapter 05</div>
+      <div class="next-card-title">Verdict</div>
+      <div class="next-card-tease">Three real findings, one walked-back, one null. The cordon worked through modal shift, not displacement.</div>
+      <div class="next-card-arrow">→</div>
+    </a>
+    <a href="03-air.html" class="prev-link">← Previous · The Air</a>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="grid">
+    <div>
+      <h4>The data</h4>
+      <p>NYC TLC yellow-taxi trip records<br>~190M trips, 263 zones, Oct 2023 – Mar 2026</p>
+    </div>
+    <div>
+      <h4>The comparison</h4>
+      <p>Real: 458 pre-days vs 451 post-days<br>Placebo: 2023 vs 2024 (no policy)<br>Airports excluded</p>
+    </div>
+    <div>
+      <h4>What I can't see</h4>
+      <p><a href="caveats.html">Full caveats →</a></p>
+    </div>
+    <div>
+      <h4>The code</h4>
+      <p><a href="https://github.com/ErmaSwartz/congestionmap">github.com/ErmaSwartz/congestionmap</a></p>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/zoom.js" defer></script>
+</body>
+</html>

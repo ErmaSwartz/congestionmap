@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>05 · Verdict — What the cordon actually did · Congestion Map</title>
+<meta name="description" content="The cordon worked through modal shift, not displacement. Three real findings, one walked-back, one null. It did less than its loudest critics feared and less than its loudest proponents promised.">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<header class="chapter-nav">
+  <a href="index.html">← Congestion Map</a>
+  <div class="links">
+    <a href="01-bridges.html">01 Bridges</a>
+    <a href="02-transit.html">02 Transit</a>
+    <a href="03-air.html">03 Air</a>
+    <a href="04-spillover.html">04 Spillover</a>
+    <a href="05-verdict.html" class="active">05 Verdict</a>
+  </div>
+</header>
+
+<main>
+
+  <section class="wrap-narrow">
+    <div class="hero" style="min-height: auto; padding: var(--s-7) 0 var(--s-4);">
+      <div class="eyebrow">Chapter 05 · Verdict</div>
+      <h1 style="max-width: 24ch;">What the cordon actually did.</h1>
+
+      <div class="bignum" style="margin-top: var(--s-4);">
+        <div class="label">Three real findings · one walked-back · one null</div>
+        <div class="value text-ink" style="font-size: clamp(36px, 4.5vw, 60px);">Modal shift, not displacement</div>
+        <div class="caption">Less than critics feared. Less than proponents promised. Most of the work landed on transit.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <figure class="fragment" style="max-width: 1100px; margin: var(--s-3) auto var(--s-5);">
+      <img src="figures/v2/centerpiece_modal_shift_and_air.png" alt="Three-panel synthesis: bridges before-and-after with placebo overlay, transit DiD by mode, and the NO₂ anomaly map. The combined view shows the bridges drop is small, the bus rise is large, and the air signal is concentrated over the cordon polygon.">
+      <figcaption>The three findings in one frame. Bridges (left): a small real drop above placebo drift. Transit (middle): bus and subway rising clearly above placebo. Air (right): NO₂ falling further over the cordon than over the rest of NYC.</figcaption>
+    </figure>
+  </section>
+
+  <section class="wrap-narrow section">
+    <div class="callout">
+      The cordon worked through modal shift, not displacement.
+    </div>
+
+    <p>A small reduction in vehicles entering Manhattan via the MTA crossings (<strong>−1.75 pp</strong>). A much larger increase in transit ridership, particularly buses (<strong>+10.0 pp</strong>). A modest but specific NO₂ drop directly over the cordon (<strong>~3 pp</strong>) that the placebo year confirms is not background drift. And no spillover to taxis at the cordon edge.</p>
+
+    <p>The mechanism that fits the four chapters is not "the cordon kept cars off the road." It is "the cordon raised the cost of driving, and the toll revenue funded the bus service that absorbed most of the people who would otherwise have driven." A price plus a substitute, not a wall.</p>
+  </section>
+
+  <section class="wrap-narrow section">
+    <h3>What changed from v1.</h3>
+    <p>The earlier version of this site reported a +160% rise in median taxi-zone pickups and a −22% pollution drop. Both numbers were real in the sense the raw data showed them. Neither survives the placebo year. The taxi growth was largely yellow-fleet clawback against rideshare; the pollution number resolves to the smaller, cleaner ~3 pp cordon-specific NO₂ gap. The "everything got busier" framing gives way to the modal-shift story.</p>
+
+    <h3 style="margin-top: var(--s-5);">Two reasons it matters whether the model travels.</h3>
+    <p>First: a corridor without good transit alternatives wouldn't get the big modal-shift number. Most of the cordon's work happened through the transit network, not through the toll alone. Second: the absence of taxi spillover suggests substitution onto a worse alternative — a more expensive, more emissions-intensive private trip — was small enough not to swamp the effect. Neither condition is guaranteed elsewhere.</p>
+  </section>
+
+  <section class="wrap-narrow section">
+    <p class="italic-display" style="font-size: 24px; line-height: 1.45; max-width: 42ch; color: var(--space-indigo);">
+      The cordon did real work, of a smaller and more specific kind than its headlines on either side suggested. The work it did landed mostly on the transit it funded — which is the design the policy was sold on, even if the magnitudes are quieter than the messaging.
+    </p>
+
+    <div style="margin-top: var(--s-5); display: flex; gap: var(--s-4); flex-wrap: wrap;">
+      <a href="index.html" class="label-mono" style="border-bottom: 1px solid currentColor; padding-bottom: 4px; color: var(--dusty-rose);">← Back to cover</a>
+      <a href="caveats.html" class="label-mono" style="border-bottom: 1px solid currentColor; padding-bottom: 4px; color: var(--dusty-rose);">Full caveats →</a>
+      <a href="v1/index.html" class="label-mono" style="border-bottom: 1px solid currentColor; padding-bottom: 4px; color: var(--dusty-rose);">v1 archive →</a>
+    </div>
+    <a href="04-spillover.html" class="prev-link">← Previous · The Spillover That Wasn't</a>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="grid">
+    <div>
+      <h4>Author</h4>
+      <p>Erma Swartz · Spring 2026<br>M.S. Urban Planning &amp; Design</p>
+    </div>
+    <div>
+      <h4>Sources</h4>
+      <p>NYC TLC · MTA Bridges &amp; Tunnels · MTA Daily Ridership · Sentinel-5P TROPOMI</p>
+    </div>
+    <div>
+      <h4>Code</h4>
+      <p><a href="https://github.com/ErmaSwartz/congestionmap">github.com/ErmaSwartz/congestionmap</a></p>
+    </div>
+    <div>
+      <h4>Suggested citation</h4>
+      <p>Swartz, E. (2026). <em>Congestion Map v2: A 15-month look at NYC's 2025 cordon.</em> Final project, Spring 2026.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/zoom.js" defer></script>
+</body>
+</html>
