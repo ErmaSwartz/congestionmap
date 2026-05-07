@@ -2,109 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>02 · The Transit — Where the trips went · Congestion Map</title>
-<meta name="description" content="Bus ridership came in 10.0 percentage points above its placebo trajectory; subway came in 3.9 pp above. Bus is the load-bearing modal-shift result.">
-<link rel="stylesheet" href="assets/styles.css">
+<meta http-equiv="refresh" content="0; url=03-other-findings.html">
+<link rel="canonical" href="03-other-findings.html">
+<title>Redirecting…</title>
 </head>
 <body>
-
-<header class="chapter-nav">
-  <a href="index.html">← Congestion Map</a>
-  <div class="links">
-    <a href="01-bridges.html">01 Bridges</a>
-    <a href="02-transit.html" class="active">02 Transit</a>
-    <a href="03-air.html">03 Air</a>
-    <a href="04-spillover.html">04 Spillover</a>
-    <a href="05-verdict.html">05 Verdict</a>
-  </div>
-</header>
-
-<main>
-
-  <section class="wrap-narrow">
-    <div class="hero" style="min-height: auto; padding: var(--s-7) 0 var(--s-4);">
-      <div class="eyebrow">Chapter 02 · The Transit</div>
-      <h1 style="max-width: 24ch;">Where did the trips go?</h1>
-
-      <div class="bignum" style="margin-top: var(--s-4);">
-        <div class="label">Cordon-attributable change · DiD vs placebo year</div>
-        <div class="value text-ink">+10.0 pp <span style="color: var(--lilac-ash); font-size: 0.45em; letter-spacing: 0.04em;">bus</span> · +3.9 pp <span style="color: var(--lilac-ash); font-size: 0.45em; letter-spacing: 0.04em;">subway</span></div>
-        <div class="caption">Bus CI excludes zero ([+4.8, +15.2]). Subway is borderline ([−1.3, +8.6]).</div>
-      </div>
-    </div>
-  </section>
-
-  <section class="wrap">
-    <figure class="fragment" style="max-width: 1100px; margin: var(--s-3) auto var(--s-5);">
-      <img src="figures/v2/transit_modes_did.png" alt="Bar chart of difference-in-differences by transit mode. Bus is +10 percentage points; subway +3.9; LIRR, Metro-North, and Staten Island Railway are negative.">
-      <figcaption>DiD by transit mode (real change minus placebo change), with bootstrap 95% CIs.</figcaption>
-    </figure>
-  </section>
-
-  <section class="wrap-narrow section">
-    <p>Bus ridership rose <strong>5.9%</strong> in the real comparison while <em>falling</em> 4.2% in the placebo year. That is a <strong>+10.0 pp</strong> DiD — the largest cordon-attributable swing in the entire project, and the cleanest. In absolute terms, roughly <strong>65,000 additional bus trips per day</strong> above the placebo trajectory. Subway came in at +3.9 pp — borderline but pointing the same direction, and the largest absolute change of any mode (about 245,000 additional trips/day).</p>
-
-    <div class="callout">
-      The cordon's modal-shift effect is bigger than its vehicle-reduction effect.
-    </div>
-
-    <p>That asymmetry is the headline. A 1% reduction in cars at the bridges is hard to feel. A 6% jump in bus ridership in a year buses were otherwise losing riders is something a transit planner can build around. The mechanism is people getting on the bus, not people staying off the bridge.</p>
-  </section>
-
-  <section class="wrap section">
-    <div class="wrap-narrow" style="margin: 0 auto var(--s-3);">
-      <h2 style="margin-bottom: var(--s-3);">The bigger lift was on transit, not the bridges.</h2>
-    </div>
-    <figure class="fragment" style="max-width: 1100px;">
-      <img src="figures/v2/transit_vs_bridges.png" alt="Comparison chart placing transit DiD next to the bridges DiD. Bus +10; bridges −1.75; the modal-shift effect dwarfs the vehicle-reduction effect.">
-      <figcaption>Cordon-attributable changes side-by-side. The cordon did more to move people <em>onto</em> transit than to keep them <em>off</em> the bridges.</figcaption>
-    </figure>
-  </section>
-
-  <section class="wrap-narrow section">
-    <h3>Suburban rail is recovery saturation, not a cordon effect.</h3>
-    <p>LIRR, Metro-North, and the Staten Island Railway show <em>negative</em> DiDs (−6 to −7 pp). The placebo says each was on a steeper post-pandemic recovery in 2024 than it sustained in 2025 — the recovery was running out of riders to recover. The cordon didn't push commuters onto suburban rail; the rail systems were already running down their post-COVID rebound.</p>
-  </section>
-
-  <section class="wrap-narrow section">
-    <div class="section-eyebrow">What I can't see</div>
-    <p>The bus DiD has a real confound: in June 2025 the MTA rolled out a Queens borough-wide bus redesign and 16 enhanced routes funded by the cordon's own toll revenue. Some fraction of the +10 pp is people responding to <em>more service</em>, not just a higher cost of driving. Mode-shift-induced and service-induced ridership can't be cleanly separated in published data. MTA daily ridership is system-wide totals only — there's no station- or route-level detail to test whether the bus increase concentrates on cordon-adjacent routes. <a href="caveats.html">Full caveats →</a></p>
-  </section>
-
-  <section class="wrap-narrow section">
-    <a href="03-air.html" class="next-card">
-      <div class="next-card-eyebrow">Continue · Chapter 03</div>
-      <div class="next-card-title">The Air</div>
-      <div class="next-card-tease">A satellite view: NO₂ over the cordon dropped, with the rest of NYC dropping less.</div>
-      <div class="next-card-arrow">→</div>
-    </a>
-    <a href="01-bridges.html" class="prev-link">← Previous · The Bridges</a>
-  </section>
-
-</main>
-
-<footer class="site-footer">
-  <div class="grid">
-    <div>
-      <h4>The data</h4>
-      <p>MTA Daily Ridership and Traffic<br>Five modes, daily counts, Oct 2023 – Mar 2026</p>
-    </div>
-    <div>
-      <h4>The comparison</h4>
-      <p>Real: 458 pre-days vs 451 post-days<br>Placebo: 2023 vs 2024 (no policy)</p>
-    </div>
-    <div>
-      <h4>What I can't see</h4>
-      <p><a href="caveats.html">Full caveats →</a></p>
-    </div>
-    <div>
-      <h4>The code</h4>
-      <p><a href="https://github.com/ErmaSwartz/congestionmap">github.com/ErmaSwartz/congestionmap</a></p>
-    </div>
-  </div>
-</footer>
-
-<script src="assets/zoom.js" defer></script>
+<p>This page has moved. Redirecting to <a href="03-other-findings.html">03-other-findings.html</a>.</p>
 </body>
 </html>

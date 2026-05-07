@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Caveats · What this analysis can and can't tell us · Congestion Map</title>
-<meta name="description" content="Every dataset on the Congestion Map site has a scope. This page lays out what each one measures, what it doesn't, and which findings rest on weaker evidence.">
+<meta name="description" content="The scope of every dataset behind the congestion-zone air analysis: what each one measures, what it doesn't, and which findings rest on weaker evidence.">
 <link rel="stylesheet" href="assets/styles.css">
 </head>
 <body>
@@ -12,11 +12,10 @@
 <header class="chapter-nav">
   <a href="index.html">← Congestion Map</a>
   <div class="links">
-    <a href="01-bridges.html">01 Bridges</a>
-    <a href="02-transit.html">02 Transit</a>
-    <a href="03-air.html">03 Air</a>
-    <a href="04-spillover.html">04 Spillover</a>
-    <a href="05-verdict.html">05 Verdict</a>
+    <a href="01-air.html">01 Air</a>
+    <a href="02-methods.html">02 Methods</a>
+    <a href="03-other-findings.html">03 Other Findings</a>
+    <a href="04-verdict.html">04 Verdict</a>
   </div>
 </header>
 
@@ -31,67 +30,72 @@
   </section>
 
   <section class="wrap-narrow section">
-    <div class="section-eyebrow">The biggest gap</div>
-    <h2>No Uber, no Lyft, no FHV at zone resolution.</h2>
-    <p>The taxi spillover analysis (<a href="04-spillover.html">Chapter 04</a>) uses NYC TLC's yellow-taxi trip records. It does not include for-hire-vehicle records — Uber, Lyft, Via — which are now substantially larger than yellow taxis by trip volume in NYC. FHV trip records at zone resolution were not available within the timeframe of this analysis.</p>
-    <p>This matters for the modal substitution null. The hypothesis predicted yellow-taxi pickups would concentrate at the cordon edge. They didn't, and the geometry of the data is good enough to rule that pattern out at the resolution the yellow fleet captures. But it remains possible that displaced commuters substituted onto rideshare in a pattern this analysis cannot see. The honest read of Chapter 04 is "the spatial-gradient version of the substitution hypothesis fails, and the broader hypothesis is unresolved."</p>
+    <div class="section-eyebrow">The satellite's resolution</div>
+    <h2>The satellite sees broad regional patterns, not blocks.</h2>
+    <p>TROPOMI on Sentinel-5P measures the tropospheric column of NO₂ above each ~5×3 km pixel. The congestion zone polygon resolves to about 24 pixels; the rest of NYC has roughly 2,700. That's fine for the zone-vs-rest-of-NYC comparison and for the borough-scale patterns shown in the maps, but it's coarse for any neighborhood-level claim. <strong>What it changes:</strong> the air finding has to be read at the regional scale it was measured at. Block-level interpretations on the maps are unsafe even when the choropleths look detailed.</p>
   </section>
 
   <section class="wrap-narrow section">
-    <div class="section-eyebrow">Bridges &amp; tunnels</div>
-    <h2>Mixed-vehicle counts, only at MTA crossings, with a mid-window data change.</h2>
-    <p>The MTA count includes every vehicle that crosses one of its nine tolled plazas — cars, taxis, vans, trucks, intercity buses. The headline DiD of <strong>−1.75 pp</strong> means "1.75 percentage points fewer vehicles of any kind, beyond placebo drift," not specifically "1.75 pp fewer cars."</p>
-    <p>The four East River bridges (Brooklyn, Manhattan, Williamsburg, Queensboro) are city-owned and not in the MTA dataset. Drivers crossing them to enter the cordon zone still pay the toll — it's collected by camera — but they don't show up in the MTA's plaza counts. So this analysis can see the price effect at the MTA crossings but can't fully resolve substitution onto free crossings.</p>
-    <p>The MTA stopped publishing per-plaza daily counts after April 2025. From May 2025 forward, this analysis uses the aggregate daily total summed across all nine crossings. The headline DiD is robust to that change; per-crossing breakdowns from May 2025 onward are not available.</p>
-    <p>Sensitivity check: a tighter 12-month real-vs-placebo window (Jan–Dec 2025 vs Jan–Dec 2024, instead of the full 15-month real comparison) shrinks the bridges DiD to <strong>+0.18 pp [−1.4, +1.8]</strong> — straddling zero. The bridges finding is at the edge of detectability and should be read as a small effect, defensible but not a cornerstone.</p>
+    <div class="section-eyebrow">The 16-month windows</div>
+    <h2>The analysis uses season-matched windows, not the v1 four-month framing.</h2>
+    <p>The pre window runs January 2023 – April 2024 (16 months). The post window runs January 2025 – April 2026 (16 months). Each contains the Jan–Apr sequence twice, so winter peaks and summer troughs cancel out cleanly. The earlier v1 analysis used a tighter four-month real-vs-placebo window; this version is longer, season-balanced, and produces smaller but more defensible numbers. <strong>What it changes:</strong> several v1 headline numbers don't survive the longer windows. The +160% taxi growth collapses to ~+6 pp; the −22% air number resolves to a smaller, cleaner −3.9 pp zone-attributable signal. The longer windows are the right call but the headlines moved.</p>
   </section>
 
   <section class="wrap-narrow section">
-    <div class="section-eyebrow">Transit ridership</div>
-    <h2>The bus DiD includes a service expansion confound.</h2>
-    <p>The bus DiD of <strong>+10.0 pp</strong> is the largest and cleanest cordon-attributable signal in the project. The CI excludes zero with room to spare. But: in June 2025, midway through the post-period, the MTA rolled out a major service expansion in Queens (a borough-wide redesign) plus 16 enhanced routes funded by congestion-toll revenue. Some fraction of the +10 pp is people responding to <em>more service</em>, not just to a higher cost of driving.</p>
-    <p>Mode-shift-induced and service-induced ridership cannot be cleanly separated with the data MTA publishes. The honest framing: the cordon both raised the cost of driving and improved the alternative; the DiD captures both, and the combination is partly the cordon's policy design working as intended.</p>
-    <p>MTA Daily Ridership is system-wide totals by mode. There is no station-level or route-level detail, so I cannot check whether the bus increase concentrates on cordon-adjacent routes — which would tighten the modal-shift attribution.</p>
-    <p>The negative DiDs on LIRR, Metro-North, and Staten Island Railway (between −6 and −7 pp) are best read as recovery saturation rather than cordon effects. The placebo year shows those modes were on a steeper recovery curve in 2024 than they were able to sustain in 2025. They were running out of riders to recover.</p>
+    <div class="section-eyebrow">One pollutant</div>
+    <h2>NO₂ only — not PM2.5, not ozone, not anything else.</h2>
+    <p>The satellite measures NO₂ — the combustion gas that comes mostly from tailpipes. It does not measure PM2.5 (fine particulate matter), ground-level ozone, or any of the other pollutants that contribute to NYC's air-quality story. NO₂ is a useful proxy for traffic-emission patterns, but it isn't the whole air-quality picture. <strong>What it changes:</strong> a finding that NO₂ dropped over the congestion zone is not the same as a finding that "the air got cleaner" along every dimension. PM2.5 in particular may be moving in the opposite direction in some parts of the city — see the South Bronx caveat below.</p>
   </section>
 
   <section class="wrap-narrow section">
-    <div class="section-eyebrow">Satellite NO₂ (TROPOMI)</div>
-    <h2>It's a column, and the cordon is a few pixels wide.</h2>
-    <p>Sentinel-5P TROPOMI measures the tropospheric column of NO₂ above each ~5 × 3 km pixel. The cordon polygon contains 24 pixels; the rest of NYC has 817. So I can compare cordon vs. rest-of-NYC and cordon vs. borough, but I cannot finely resolve neighborhoods inside the cordon — anything inside is averaged into one signal.</p>
-    <p>NO₂ column is correlated with street-level NO₂, but they are not the same thing. The satellite tells me how much NO₂ sits in the air above the cordon, not what people are breathing at the curb. A health story about pedestrians and cyclists would need surface monitors close to the cordon, which the federal EPA network does not have anywhere in Manhattan.</p>
-    <p>NO₂ is also partly weather-driven. Wind direction, mixing height, and storms all swing the column day-to-day. The 15-month windows on each side smooth most of that out, but the placebo-year null (cordon-vs-rest gap ≈ 0 with no policy in effect) is the load-bearing reassurance that the real-comparison gap is signal, not weather.</p>
+    <div class="section-eyebrow">The South Bronx PM2.5 finding</div>
+    <h2>Ground monitors saw PM2.5 rise where my satellite saw nothing change.</h2>
+    <p>While I was finishing this analysis, Columbia and South Bronx Unite (May 2026) released findings showing PM2.5 rose at 17 of 19 ground monitors in the South Bronx during the congestion zone's first year, with the sharpest increases near major expressways. Truck rerouting around the toll zone is a plausible mechanism for that pattern. <strong>What it changes:</strong> both findings can be true — different pollutants, different instruments, different scales. My satellite analysis can't see neighborhood-block changes that ground sensors can. The fairer summary is that the congestion zone's effects were real, distributionally uneven, and the populations that already bear the heaviest pollution burden may have absorbed costs this analysis can't measure.</p>
   </section>
 
   <section class="wrap-narrow section">
-    <div class="section-eyebrow">Methodology</div>
-    <h2>The placebo design vs. the v1 same-months design.</h2>
-    <p>The earlier v1 analysis used a matched-calendar design: Jan 5 – Apr 30 in 2024 vs the same window in 2025. That is a clean way to control for seasonality, but it cannot separate the cordon's contribution from any non-policy drift — for instance, post-pandemic ridership recovery, fleet electrification, or yellow-taxi market-share clawback against FHV.</p>
-    <p>The v2 design replaces that with a placebo year. The real comparison runs October 2023 – December 2024 (458 days, pre-policy) against January 2025 – March 2026 (451 days, post-policy). The placebo runs 2023 against 2024 — the same calendar comparison structure with no policy in either year. The DiD subtracts the placebo from the real change. Whatever survives is the cordon-attributable signal.</p>
-    <p>Two consequences. First: several v1 numbers shrink dramatically when the placebo subtracts out background trends — most notably the +160% taxi figure, which collapses to roughly +6 pp (and uniform across distance, defeating the substitution hypothesis). Second: the design depends on the assumption that 2024 vs 2023 is a reasonable counterfactual for what 2025 vs 2024 would have looked like without the cordon. If the underlying trend changed shape between those two transitions for non-policy reasons, the DiD partially attributes that change to the cordon. The bridge sensitivity check — tightening the window to 12 months — is the clearest place that assumption shows.</p>
+    <div class="section-eyebrow">The placebo assumption</div>
+    <h2>The DiD assumes the 2024-vs-2023 comparison is a reasonable counterfactual.</h2>
+    <p>The placebo design depends on the assumption that the year-on-year drift between 2023 and 2024 is a reasonable estimate of what would have happened between 2024 and 2025 without the congestion zone. If the underlying trend changed shape between those two transitions for non-policy reasons — a national fleet-turnover shift, a regional weather anomaly, a methodology change in the source data — the DiD partly attributes that change to the policy. <strong>What it changes:</strong> the placebo controls for slow-moving background drift but not for one-off events that hit only the post-period. None has been documented for NYC NO₂ in 2025, but the assumption is structural to the analysis and worth naming.</p>
+  </section>
+
+  <section class="wrap-narrow section">
+    <div class="section-eyebrow">Bus service expansion confound</div>
+    <h2>The bus DiD is partly a service-expansion story, not pure mode shift.</h2>
+    <p>The bus DiD of <strong>+10.0 pp</strong> is the largest transit signal in the project, but in June 2025 — midway through the post-period — the MTA rolled out a major service expansion in Queens (a borough-wide redesign) plus 16 enhanced routes citywide funded by congestion-toll revenue. Some unknown share of the +10 pp is people responding to <em>more service</em>, not just to a higher cost of driving. <strong>What it changes:</strong> the bus number captures the policy design working as intended (toll plus better alternatives) but it's not a clean estimate of pure behavioral mode shift. Subway's cleaner +3.9 pp is the better number for the latter.</p>
+  </section>
+
+  <section class="wrap-narrow section">
+    <div class="section-eyebrow">No FHV / Uber / Lyft</div>
+    <h2>Yellow taxis only — rideshare substitution can't be ruled out.</h2>
+    <p>The taxi-spillover analysis (<a href="03-other-findings.html">Chapter 03</a>) uses NYC TLC's yellow-taxi trip records. It does not include for-hire-vehicle records — Uber, Lyft, Via — which are now substantially larger than yellow taxis by trip volume in NYC. FHV trip records at zone resolution were not available within the project's timeframe. <strong>What it changes:</strong> the modal-substitution-at-the-edge hypothesis fails on yellow taxis, but the broader hypothesis about rideshare is unresolved. Anyone with TLC's full FHV trip files could re-test on Uber and Lyft, and a different result there would be a different paper.</p>
+  </section>
+
+  <section class="wrap-narrow section">
+    <div class="section-eyebrow">Taxi zones as analytical units</div>
+    <h2>NYC taxi zones are imperfect demographic units.</h2>
+    <p>The neighborhood-level analyses in this project use the 263 NYC TLC taxi zones — a geometry drawn for taxi dispatch, not population analysis. A zone may bundle dissimilar neighborhoods together; some zones contain more residents than others by an order of magnitude. <strong>What it changes:</strong> at the satellite's coarse resolution, a finer geometry would give the appearance of precision the data can't actually deliver. Taxi zones are adequate for this scale and consistent with how prior NYC transportation work has aggregated. They wouldn't be adequate for ground-monitor or block-level analysis.</p>
+  </section>
+
+  <section class="wrap-narrow section">
+    <div class="section-eyebrow">Bridges, post-April 2025</div>
+    <h2>The MTA stopped publishing per-plaza counts during the post-period.</h2>
+    <p>The MTA stopped publishing per-plaza daily bridge counts after April 2025. From May 2025 forward, the bridges analysis uses the aggregate daily total summed across all nine MTA crossings. The headline DiD is robust to that change, but per-crossing breakdowns from May 2025 onward are not available. <strong>What it changes:</strong> the bridges story stays at the citywide-aggregate level, which is enough to detect the −1.75 pp signal but rules out questions about which individual crossings absorbed the change.</p>
   </section>
 
   <section class="wrap-narrow section">
     <div class="section-eyebrow">What this project would need next</div>
     <h2>For a sharper answer.</h2>
-    <ul style="font-family: var(--font-display); font-size: var(--t-body-lg); line-height: 1.6; color: var(--dusty-grape); margin-left: var(--s-3); margin-bottom: var(--s-3);">
-      <li style="margin-bottom: var(--s-2);">For-hire-vehicle records (Uber, Lyft, Via) at zone resolution, to test substitution on the larger fleet</li>
-      <li style="margin-bottom: var(--s-2);">Per-plaza MTA bridge counts continued past April 2025</li>
-      <li style="margin-bottom: var(--s-2);">East-River bridge counts (Brooklyn, Manhattan, Williamsburg, Queensboro) so the substitution-onto-free-crossings hypothesis is testable directly</li>
-      <li style="margin-bottom: var(--s-2);">Route-level or station-level MTA ridership, to separate cordon-funded bus service expansion from cordon-induced mode shift</li>
-      <li style="margin-bottom: var(--s-2);">A surface-level air monitor inside Manhattan, near or in the cordon</li>
-      <li style="margin-bottom: var(--s-2);">A second-best comparison city — somewhere similar in size and density that didn't impose a toll — to act as a cross-city control for non-policy trends</li>
-      <li style="margin-bottom: var(--s-2);">A longer post-treatment window (three more years would tighten the borderline CIs in this project considerably)</li>
-    </ul>
+    <p>For-hire-vehicle records at zone resolution, to test substitution on the larger fleet. Surface air monitors inside Manhattan close to the congestion zone, paired with the satellite. PM2.5 and ozone alongside NO₂. Per-plaza MTA bridge counts continued past April 2025. Route-level transit ridership to separate service-expansion effects from mode-shift effects. A second similar city without a toll, as a cross-city control. And, most of all, a longer post-treatment window — three more years would tighten the borderline confidence intervals in this project considerably, and would let the equity question be asked with the time depth it deserves.</p>
   </section>
 
   <section class="wrap-narrow section">
     <p class="italic-display" style="font-size: 22px; line-height: 1.45; max-width: 38ch; color: var(--space-indigo);">
-      Honest about the data is honest about the conclusion. The cordon did real work, of a smaller and more specific kind than headlines on either side suggest. All three of those statements are simultaneously true.
+      Honest about the data is honest about the conclusion. The congestion zone did real work, of a smaller and more specific kind than headlines on either side suggest. All three of those statements are simultaneously true.
     </p>
     <div style="margin-top: var(--s-5); display: flex; gap: var(--s-4); flex-wrap: wrap;">
       <a href="index.html" class="label-mono" style="border-bottom: 1px solid currentColor; padding-bottom: 4px; color: var(--dusty-rose);">← Cover</a>
-      <a href="05-verdict.html" class="label-mono" style="border-bottom: 1px solid currentColor; padding-bottom: 4px; color: var(--dusty-rose);">Verdict →</a>
+      <a href="04-verdict.html" class="label-mono" style="border-bottom: 1px solid currentColor; padding-bottom: 4px; color: var(--dusty-rose);">Verdict →</a>
       <a href="v1/index.html" class="label-mono" style="border-bottom: 1px solid currentColor; padding-bottom: 4px; color: var(--dusty-rose);">v1 archive →</a>
     </div>
   </section>
@@ -106,7 +110,7 @@
     </div>
     <div>
       <h4>Sources</h4>
-      <p>NYC TLC · MTA Bridges &amp; Tunnels · MTA Daily Ridership · Sentinel-5P TROPOMI</p>
+      <p>NYC TLC · MTA Bridges &amp; Tunnels · MTA Daily Ridership · Sentinel-5P TROPOMI · ACS</p>
     </div>
     <div>
       <h4>Code</h4>
@@ -114,7 +118,7 @@
     </div>
     <div>
       <h4>Suggested citation</h4>
-      <p>Swartz, E. (2026). <em>Congestion Map v2: A 15-month look at NYC's 2025 cordon.</em> Final project, Spring 2026.</p>
+      <p>Swartz, E. (2026). <em>Congestion Map v2: NYC's congestion zone and what changed in the air.</em> Final project, Spring 2026.</p>
     </div>
   </div>
 </footer>

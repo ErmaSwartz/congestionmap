@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>03 · Other Findings — Traffic, transit, and spillover · Congestion Map</title>
+<meta name="description" content="Vehicle entries, transit ridership, and tests for taxi spillover during NYC's first sixteen months of congestion pricing.">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<header class="chapter-nav">
+  <a href="index.html">← Congestion Map</a>
+  <div class="links">
+    <a href="01-air.html">01 Air</a>
+    <a href="02-methods.html">02 Methods</a>
+    <a href="03-other-findings.html" class="active">03 Other Findings</a>
+    <a href="04-verdict.html">04 Verdict</a>
+  </div>
+</header>
+
+<main>
+
+  <!-- ── HEADER ──────────────────────────────────────────────── -->
+  <section class="wrap-narrow">
+    <div class="hero" style="min-height: auto; padding: var(--s-7) 0 var(--s-3);">
+      <div class="eyebrow">Chapter 03 · Other Findings</div>
+      <h1 style="max-width: 28ch;">Traffic, transit, and the spillover effects that did — and didn't — appear.</h1>
+      <p class="lede" style="max-width: 56ch;">The air-quality analysis is the clearest finding in this project, but it is not the only pattern examined.</p>
+    </div>
+  </section>
+
+  <!-- ── INTRO ───────────────────────────────────────────────── -->
+  <section class="wrap-narrow section">
+    <p>The analysis also tested whether fewer vehicles entered Manhattan, whether transit ridership increased, and whether congestion-zone avoidance produced spillover taxi demand near the cordon boundary.</p>
+
+    <p>The evidence suggests vehicle entries declined modestly, transit ridership increased unevenly across modes, and the anticipated taxi spillover pattern did not appear in yellow-taxi data.</p>
+  </section>
+
+  <!-- ── BRIDGES ─────────────────────────────────────────────── -->
+  <section class="wrap-narrow section">
+    <h2 style="margin-bottom: var(--s-3);">Vehicle entries into Manhattan</h2>
+
+    <p>MTA bridge and tunnel traffic declined approximately 1.3% during the real comparison window, compared to a slight increase (+0.4%) during the placebo year.</p>
+
+    <div class="stat-callout">
+      <div class="stat-label">Estimated congestion-zone effect</div>
+      <div class="stat-value">−1.75 percentage points</div>
+      <div class="stat-ci">95% CI: [−3.32, −0.18]</div>
+    </div>
+
+    <p>The confidence interval narrowly excludes zero, suggesting a detectable but modest reduction in vehicle entries beyond ordinary year-to-year fluctuation.</p>
+
+    <p>After April 2025, MTA reporting shifted from plaza-level counts to aggregate systemwide totals. That limits the ability to evaluate individual crossings during the later post-policy period, but still permits citywide trend analysis.</p>
+  </section>
+
+  <section class="wrap section">
+    <figure class="fragment" style="max-width: 1100px;">
+      <img src="figures/v2/bridges_real_vs_placebo.png"
+           alt="Bar chart comparing MTA bridge and tunnel volume in the real congestion-zone window against the placebo year."
+           loading="lazy">
+      <figcaption>MTA bridge and tunnel volume, real comparison vs. placebo. The real-window decline (−1.3%) exceeds the placebo-window change (+0.4%) by roughly 1.75 percentage points.</figcaption>
+    </figure>
+  </section>
+
+  <!-- ── TRANSIT ─────────────────────────────────────────────── -->
+  <section class="wrap-narrow section">
+    <h2 style="margin-bottom: var(--s-3);">Transit ridership</h2>
+
+    <div class="stat-callout">
+      <div class="stat-label">Bus ridership change vs. placebo</div>
+      <div class="stat-value">+10 percentage points</div>
+      <div class="stat-ci">95% CI: [+4.8, +15.2]</div>
+    </div>
+
+    <p>Subway ridership also increased modestly (+3.9 percentage points), while LIRR, Metro-North, and Staten Island Railway remained flat or slightly negative relative to the placebo comparison.</p>
+
+    <p>However, the bus result overlaps with major MTA service expansions introduced during the study period, including the Queens bus network redesign and additional enhanced routes citywide. As a result, the observed increase likely reflects a combination of congestion-pricing-related mode shift and improved transit service availability.</p>
+
+    <p>The analysis therefore supports the interpretation that buses absorbed additional ridership demand, but does not isolate how much of that increase resulted directly from the congestion toll itself.</p>
+  </section>
+
+  <section class="wrap section">
+    <figure class="fragment" style="max-width: 1100px;">
+      <img src="figures/v2/transit_modes_did.png"
+           alt="Difference-in-differences chart for five transit modes: bus, subway, LIRR, Metro-North, and Staten Island Railway."
+           loading="lazy">
+      <figcaption>Estimated congestion-zone effect on ridership for five transit modes. Buses and subways increased; commuter-rail modes remained flat or slightly negative against the placebo trajectory.</figcaption>
+    </figure>
+  </section>
+
+  <!-- ── SPILLOVER ───────────────────────────────────────────── -->
+  <section class="wrap-narrow section">
+    <h2 style="margin-bottom: var(--s-3);">Testing for spillover</h2>
+
+    <p>One concern surrounding congestion pricing was that commuters would avoid the toll by switching to transit near the cordon edge, then completing trips into Manhattan using taxis.</p>
+
+    <p>If that behavior occurred at large scale, yellow-taxi pickups should increase disproportionately near congestion-zone boundaries, around major transit hubs, during commute periods, and along hub-to-zone travel corridors. The analysis tested each of those predictions.</p>
+
+    <p>Instead, yellow-taxi pickups increased relatively uniformly across distance bands from the congestion zone, with no strong spatial gradient near the boundary itself. None of the expected spillover signatures appeared consistently in the yellow-taxi data.</p>
+
+    <p>This does not rule out spillover entirely. High-resolution FHV trip records for Uber and Lyft were unavailable at the spatial scale required for equivalent analysis. Different results in rideshare data would remain possible.</p>
+  </section>
+
+  <section class="wrap section">
+    <figure class="fragment" style="max-width: 1100px;">
+      <img src="figures/v2/taxi_null_finding.png"
+           alt="Chart showing yellow-taxi pickup change by distance band from the congestion zone, with no spatial gradient."
+           loading="lazy">
+      <figcaption>Yellow-taxi pickups increased roughly uniformly across distance bands from the congestion zone. The modal-substitution-at-the-edge hypothesis predicts a sharp peak near the boundary; the data does not show one.</figcaption>
+    </figure>
+  </section>
+
+  <!-- ── PROJECT CHANGE ──────────────────────────────────────── -->
+  <section class="wrap-narrow section">
+    <h2 style="margin-bottom: var(--s-3);">Why the project changed</h2>
+
+    <p>An earlier version of this project treated traffic, transit, taxis, and air quality as findings of roughly equal weight. After introducing placebo comparisons and extending the time window, several of those effects became smaller, more conditional, or statistically ambiguous.</p>
+
+    <p>The air-quality signal remained the most spatially coherent and methodologically robust result, so the project was reorganized around that finding. The transportation analyses remain important context, but the evidence supporting them is weaker and more mixed.</p>
+  </section>
+
+  <!-- ── NEXT ────────────────────────────────────────────────── -->
+  <section class="wrap-narrow section">
+    <a href="04-verdict.html" class="next-card">
+      <div class="next-card-eyebrow">Continue · Chapter 04</div>
+      <div class="next-card-title">Verdict</div>
+      <div class="next-card-tease">What the evidence suggests, what remains uncertain, and where the analysis reaches its limits.</div>
+      <div class="next-card-arrow">→</div>
+    </a>
+    <a href="02-methods.html" class="prev-link">← Previous · Methods</a>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="grid">
+    <div>
+      <h4>Data</h4>
+      <p>MTA Daily Ridership and Traffic · NYC TLC yellow-taxi trip records<br>Five transit modes · 263 NYC neighborhoods</p>
+    </div>
+    <div>
+      <h4>Comparison</h4>
+      <p>Real: post-policy window vs. matched pre-policy window<br>Placebo: 2024 vs. 2023</p>
+    </div>
+    <div>
+      <h4>Limitations</h4>
+      <p><a href="caveats.html">Full caveats →</a></p>
+    </div>
+    <div>
+      <h4>Code</h4>
+      <p><a href="https://github.com/ErmaSwartz/congestionmap">github.com/ErmaSwartz/congestionmap</a></p>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/zoom.js" defer></script>
+</body>
+</html>

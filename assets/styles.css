@@ -849,7 +849,215 @@ figcaption {
   margin-top: 2px;
 }
 
-/* ── Reduced motion ────────────────────────────────────────── */
+/* ── Editorial / publication-tone helpers (v2.1) ─────────────── */
+
+/* Key-finding block on homepage and chapter heads */
+.finding-block {
+  margin: var(--s-5) 0 var(--s-3);
+  padding: var(--s-4) 0;
+  border-top: 1px solid var(--almond-silk);
+  border-bottom: 1px solid var(--almond-silk);
+}
+.finding-lead {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(22px, 2.6vw, 30px);
+  line-height: 1.25;
+  letter-spacing: -0.012em;
+  color: var(--space-indigo);
+  margin: 0 0 var(--s-4);
+  max-width: 38ch;
+}
+.finding-row {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: var(--s-3);
+  padding: var(--s-2) 0;
+  align-items: baseline;
+  border-top: 1px dotted var(--almond-silk);
+}
+.finding-row:first-of-type { border-top: 0; padding-top: 0; }
+.finding-row-label {
+  font-family: var(--font-mono);
+  font-size: var(--t-meta);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--lilac-ash);
+}
+.finding-row-body {
+  font-family: var(--font-display);
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--dusty-grape);
+  max-width: 52ch;
+}
+.finding-row-body strong {
+  color: var(--space-indigo);
+  font-weight: 500;
+}
+.finding-footnote {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--lilac-ash);
+  margin-top: var(--s-3);
+  max-width: 56ch;
+}
+@media (max-width: 720px) {
+  .finding-row { grid-template-columns: 1fr; gap: 4px; }
+}
+
+/* Editorial cards — calmer, publication-style chapter list */
+.editorial-cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  margin: var(--s-4) 0 var(--s-5);
+  border-top: 1px solid var(--almond-silk);
+}
+.editorial-card {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: var(--s-4);
+  padding: var(--s-4) 0;
+  border-bottom: 1px solid var(--almond-silk);
+  text-decoration: none;
+  color: var(--space-indigo);
+  border-bottom: 1px solid var(--almond-silk);
+  transition: background var(--d-fast) var(--ease);
+}
+.editorial-card:hover {
+  background: rgba(201, 173, 167, 0.18);
+}
+.editorial-card .num {
+  font-family: var(--font-mono);
+  font-size: var(--t-meta);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--dusty-rose);
+  padding-top: 4px;
+}
+.editorial-card .title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(20px, 2.2vw, 26px);
+  line-height: 1.3;
+  letter-spacing: -0.012em;
+  color: var(--space-indigo);
+  max-width: 52ch;
+}
+@media (max-width: 720px) {
+  .editorial-card { grid-template-columns: 1fr; gap: var(--s-1); }
+}
+
+/* Caveat list — short paragraphs with an inline mono label */
+.caveat-list {
+  margin-top: var(--s-4);
+}
+.caveat-item {
+  padding: var(--s-3) 0;
+  border-top: 1px solid var(--almond-silk);
+}
+.caveat-item:last-of-type { border-bottom: 1px solid var(--almond-silk); }
+.caveat-item .caveat-label {
+  font-family: var(--font-mono);
+  font-size: var(--t-meta);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dusty-rose);
+  margin-bottom: var(--s-1);
+}
+.caveat-item p {
+  font-family: var(--font-display);
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--dusty-grape);
+  max-width: 56ch;
+  margin: 0;
+}
+.caveat-link {
+  margin-top: var(--s-3);
+  font-family: var(--font-mono);
+  font-size: var(--t-meta);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.caveat-link a { color: var(--dusty-rose); border-bottom: 0; }
+
+/* About-this-version expandable */
+.about-version {
+  font-family: var(--font-display);
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--dusty-grape);
+  border-top: 1px solid var(--almond-silk);
+  padding-top: var(--s-3);
+}
+.about-version summary {
+  font-family: var(--font-mono);
+  font-size: var(--t-meta);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--dusty-rose);
+  cursor: pointer;
+  list-style: none;
+  margin-bottom: var(--s-2);
+}
+.about-version summary::-webkit-details-marker { display: none; }
+.about-version summary::after {
+  content: " +";
+  color: var(--lilac-ash);
+}
+.about-version[open] summary::after { content: " −"; }
+.about-version p { max-width: 56ch; margin: 0; }
+
+/* Stat callout — isolated effect size on chapter pages */
+.stat-callout {
+  display: block;
+  margin: var(--s-3) 0;
+  padding: var(--s-3) 0;
+  border-top: 1px solid var(--almond-silk);
+  border-bottom: 1px solid var(--almond-silk);
+  font-family: var(--font-display);
+  max-width: 52ch;
+}
+.stat-callout .stat-label {
+  font-family: var(--font-mono);
+  font-size: var(--t-meta);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--lilac-ash);
+  margin-bottom: var(--s-1);
+}
+.stat-callout .stat-value {
+  font-weight: 500;
+  font-size: clamp(28px, 3.6vw, 42px);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--space-indigo);
+}
+.stat-callout .stat-ci {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: var(--lilac-ash);
+  margin-top: 4px;
+  font-feature-settings: "tnum";
+}
+
+/* Section subhead inside .section blocks */
+.section h4.subhead {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 1.3;
+  margin: var(--s-4) 0 var(--s-2);
+  color: var(--space-indigo);
+  letter-spacing: -0.005em;
+}
+
+/* Reduced motion ───────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

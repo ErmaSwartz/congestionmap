@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Congestion Map · NYC's 2025 cordon, what it actually did</title>
-<meta name="description" content="A 15-month look at NYC's January 2025 congestion charge. Bridges, transit, taxis, and satellite air quality measured against a 2024-vs-2023 placebo year.">
+<title>Congestion Map · What changed in NYC's air after congestion pricing?</title>
+<meta name="description" content="Sixteen months of satellite measurements suggest nitrogen dioxide pollution declined over Manhattan's congestion zone after the January 2025 toll. The improvement exceeded broader citywide trends, but the effect was modest and unevenly distributed.">
 <link rel="stylesheet" href="assets/styles.css">
 </head>
 <body>
@@ -24,166 +24,99 @@
   <!-- ── TITLE ─────────────────────────────────────────────── -->
   <section class="wrap">
     <div class="title-block">
-      <div class="label-mono" style="margin-bottom: var(--s-3);">For New York residents, and the people deciding what comes next</div>
-      <div class="project-name">Where did<br>the cars <span class="accent">go?</span></div>
-      <div class="project-sub">Fifteen months into NYC's congestion toll. What the bridges, transit, taxis, and air actually show — measured against a placebo year where no policy was in effect. <strong>The cordon worked through modal shift, not displacement. It did less than critics feared and less than its proponents promised.</strong></div>
+      <div class="label-mono" style="margin-bottom: var(--s-3);">A spatial investigation of NYC's congestion-pricing program</div>
+      <div class="project-name">What changed in NYC's <span class="accent">air</span><br>after congestion pricing?</div>
+      <div class="project-sub">Sixteen months of satellite measurements suggest nitrogen dioxide pollution declined over Manhattan's congestion zone after the January 2025 toll began. The improvement exceeded broader citywide trends, but the effect was modest and unevenly distributed across neighborhoods.</div>
     </div>
 
-    <!-- coord/metadata strip -->
     <div class="coord-row">
-      <div><span class="coord-key">WHERE ▸</span> <span class="value">Manhattan, south of 60th St</span></div>
-      <div><span class="coord-key">WHEN ▸</span> <span class="value">Started Jan 5, 2025</span></div>
-      <div><span class="coord-key">COMPARED TO ▸</span> <span class="value">A placebo year (2024 vs 2023, no policy in effect)</span></div>
+      <div><span class="coord-key">SCOPE ▸</span> <span class="value">Manhattan, south of 60th St</span></div>
+      <div><span class="coord-key">PERIOD ▸</span> <span class="value">Jan 2023 – Apr 2026, 16-month windows</span></div>
+      <div><span class="coord-key">INSTRUMENT ▸</span> <span class="value">Sentinel-5P TROPOMI · monthly NO₂ grids</span></div>
     </div>
   </section>
 
-  <!-- ── FRAMING ────────────────────────────────────────────── -->
-  <section class="wrap-narrow" style="padding-top: var(--s-6);">
-    <div class="tech-divider">▸ Start here</div>
+  <!-- ── KEY FINDING ─────────────────────────────────────────── -->
+  <section class="wrap-narrow" style="padding-top: var(--s-7); padding-bottom: var(--s-3);">
+    <div class="tech-divider">▸ Key finding</div>
 
-    <p style="font-family: var(--font-display); font-size: var(--t-body-lg); line-height: 1.6; color: var(--dusty-grape); max-width: 56ch; margin-bottom: var(--s-3);">
-      On <strong style="color: var(--space-indigo); font-weight: 500;">January 5, 2025</strong>, New York City became the first U.S. city to charge drivers a toll just for entering part of downtown. Drive into Manhattan below 60th Street, and you paid $9 during the day and $2.25 at night. The promise was fewer cars, more transit, cleaner air. The fear was that traffic would just reroute — onto the bridges that don't charge, into adjacent neighborhoods, into yellow cabs picking up displaced commuters at transit hubs.
-    </p>
+    <div class="finding-block">
+      <p class="finding-lead">Pollution declined more inside the congestion zone than elsewhere in NYC.</p>
 
-    <p style="font-family: var(--font-display); font-size: var(--t-body-lg); line-height: 1.6; color: var(--dusty-grape); max-width: 56ch; margin-bottom: var(--s-3);">
-      More than a year on, I pulled four datasets and asked a sharper question than "did things change?" Most things change for many reasons — weather, fuel prices, post-pandemic recovery, seasonal patterns. To attribute a change to the cordon, you have to compare it against what would have happened anyway.
-    </p>
-
-    <p style="font-family: var(--font-display); font-size: var(--t-body-lg); line-height: 1.6; color: var(--dusty-grape); max-width: 56ch;">
-      So I built a placebo: a 12-month comparison of <strong style="color: var(--space-indigo); font-weight: 500;">2024 vs 2023</strong>, before any policy was in effect. Whatever showed up in the placebo year is background drift. Whatever shows up <em>above</em> the placebo, in the real comparison, is what the cordon plausibly did. <strong style="color: var(--space-indigo); font-weight: 500;">The short answer is that the cordon did real work, but a smaller and more specific kind of work than headline coverage suggests.</strong>
-    </p>
-  </section>
-
-  <!-- ── DATASETS ───────────────────────────────────────────── -->
-  <section class="wrap" style="padding-top: var(--s-5);">
-    <div class="tech-divider">▸ What I looked at</div>
-
-    <p style="font-family: var(--font-display); font-size: 16px; line-height: 1.6; color: var(--dusty-grape); max-width: 56ch; margin-bottom: var(--s-4);">
-      Four sources, each picking up a different piece of the picture.
-    </p>
-
-    <div class="datasets-grid">
-      <div class="dataset-chip">
-        <div class="route-bar"></div>
-        <div class="body">
-          <div class="source">Bridges &amp; tunnels</div>
-          <div class="name">Vehicles crossing into NYC</div>
-          <div class="count">Nine MTA crossings · daily counts · 2023 to 2026</div>
+      <div class="finding-row">
+        <div class="finding-row-label">Observed difference</div>
+        <div class="finding-row-body">
+          Air pollution over the congestion zone fell about <strong>1.9 percentage points</strong> more than the citywide average.
         </div>
       </div>
-      <div class="dataset-chip">
-        <div class="route-bar"></div>
-        <div class="body">
-          <div class="source">Transit ridership</div>
-          <div class="name">Subway, bus, commuter rail</div>
-          <div class="count">Five modes · daily counts</div>
+
+      <div class="finding-row">
+        <div class="finding-row-label">After adjusting for broader atmospheric variation</div>
+        <div class="finding-row-body">
+          The estimated congestion-zone effect increases to roughly <strong>3.9 percentage points</strong>.
         </div>
       </div>
-      <div class="dataset-chip">
-        <div class="route-bar"></div>
-        <div class="body">
-          <div class="source">Yellow taxis</div>
-          <div class="name">Spillover hypothesis test</div>
-          <div class="count">~190 million trips · 263 neighborhoods</div>
-        </div>
-      </div>
-      <div class="dataset-chip">
-        <div class="route-bar"></div>
-        <div class="body">
-          <div class="source">Satellite NO₂</div>
-          <div class="name">Pollution from 800 km up</div>
-          <div class="count">TROPOMI Sentinel-5P · monthly grids · 2022 to 2026</div>
-        </div>
-      </div>
+
+      <p class="finding-footnote">
+        Estimated using a placebo comparison (2024 vs. 2023) to account for year-to-year atmospheric drift unrelated to the toll.
+      </p>
     </div>
   </section>
 
-  <!-- ── HEADLINE NUMBERS ───────────────────────────────────── -->
-  <section class="wrap" style="padding-top: var(--s-5);">
-    <div class="tech-divider">▸ Four findings that tell the story</div>
-
-    <div class="headline-grid">
-      <div class="cell">
-        <div class="key">▸ Cars crossing in</div>
-        <div class="num dec">−1.75 pp</div>
-        <div class="desc">Cordon-attributable drop in MTA bridge &amp; tunnel volume, after subtracting placebo drift. Modest but real.</div>
-      </div>
-      <div class="cell">
-        <div class="key">▸ Bus ridership</div>
-        <div class="num">+10.0 pp</div>
-        <div class="desc">Above its placebo trajectory. Subway also up (+3.9 pp). The cordon's modal-shift effect is bigger than its vehicle-reduction effect.</div>
-      </div>
-      <div class="cell">
-        <div class="key">▸ NO₂ over the cordon</div>
-        <div class="num dec">−9.6%</div>
-        <div class="desc">Satellite-measured. The rest of NYC dropped 6.5%; the cordon-specific gap is 3.1 pp. The placebo year was near-zero.</div>
-      </div>
-      <div class="cell">
-        <div class="key">▸ Yellow-taxi spillover</div>
-        <div class="num placebo">Not detected</div>
-        <div class="desc">No spatial gradient with distance from cordon. The modal substitution hypothesis was tested across four predictions and rejected.</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── CHAPTER CARDS ──────────────────────────────────────── -->
+  <!-- ── CHAPTERS ────────────────────────────────────────────── -->
   <section class="wrap" style="padding-top: var(--s-7);">
-    <div class="tech-divider">▸ Five chapters · read in order, or jump</div>
+    <div class="tech-divider">▸ Chapters</div>
 
-    <div class="chapter-grid">
-
-      <a class="chapter-card has-stat" href="01-bridges.html">
-        <div class="card-stat">−1.75<span class="card-stat-pct">pp</span></div>
-        <div class="num">01 · The Bridges</div>
-        <div class="title">Did fewer cars come in?</div>
-        <div class="tease">Yes — modestly. Bridge &amp; tunnel volume dropped 1.3% in the real comparison, while the placebo year showed +0.4%. The cordon-attributable difference clears zero, just barely.</div>
+    <div class="editorial-cards">
+      <a class="editorial-card" href="01-air.html">
+        <div class="num">01 · The Air</div>
+        <div class="title">How nitrogen dioxide changed across NYC after congestion pricing began.</div>
       </a>
-
-      <a class="chapter-card has-stat" href="02-transit.html">
-        <div class="card-stat">+10 / +3.9</div>
-        <div class="num">02 · The Transit</div>
-        <div class="title">Where did the trips go?</div>
-        <div class="tease">Buses absorbed most of the modal shift. Subway gained too. Suburban rail declined — but it shows up in the placebo year too, so it's recovery saturation, not a cordon effect.</div>
+      <a class="editorial-card" href="02-methods.html">
+        <div class="num">02 · Methods</div>
+        <div class="title">How the satellite analysis, placebo comparison, and neighborhood stratification work.</div>
       </a>
-
-      <a class="chapter-card has-stat" href="03-air.html">
-        <div class="card-stat">−9.6 / −6.5</div>
-        <div class="num">03 · The Air</div>
-        <div class="title">Did the air get cleaner?</div>
-        <div class="tease">NO₂ dropped over the cordon and across NYC, but the cordon got a deeper cut. The placebo year shows what background drift looks like — and it doesn't look like this.</div>
+      <a class="editorial-card" href="03-other-findings.html">
+        <div class="num">03 · Other Findings</div>
+        <div class="title">Traffic, transit, bridge crossings, and spillover effects that did — and didn't — appear.</div>
       </a>
-
-      <a class="chapter-card has-stat" href="04-spillover.html">
-        <div class="card-stat" style="font-size: clamp(28px, 3.5vw, 40px); letter-spacing: -0.02em;">0 gradient</div>
-        <div class="num">04 · Spillover That Wasn't</div>
-        <div class="title">Where it didn't go.</div>
-        <div class="tease">Yellow-taxi pickups rose uniformly across distance bands. Four predictions tested, four rejected. The most-feared side effect didn't materialize.</div>
+      <a class="editorial-card" href="04-verdict.html">
+        <div class="num">04 · Verdict</div>
+        <div class="title">What the evidence suggests, what remains uncertain, and where the analysis reaches its limits.</div>
       </a>
-
-      <a class="chapter-card has-stat" href="05-verdict.html">
-        <div class="card-stat" style="font-size: clamp(26px, 3.2vw, 36px); letter-spacing: -0.02em; line-height: 1.05;">modal shift,<br>not displacement</div>
-        <div class="num">05 · Verdict</div>
-        <div class="title">What it actually did.</div>
-        <div class="tease">Three real findings, one walked-back, one null. The cordon worked, but through a narrower mechanism than its loudest advocates or critics described.</div>
-      </a>
-
     </div>
   </section>
 
-  <!-- ── CAVEATS / SCOPE ────────────────────────────────────── -->
+  <!-- ── WHAT THIS ANALYSIS DOES NOT MEASURE ─────────────────── -->
   <section class="wrap-narrow" style="padding-top: var(--s-7);">
-    <div class="tech-divider">▸ Things this project can't see</div>
-    <p style="font-family: var(--font-display); font-style: italic; font-size: 17px; line-height: 1.6; color: var(--dusty-grape); max-width: 56ch;">
-      Yellow-taxi data doesn't include Uber and Lyft, and FHV trip records weren't available at zone resolution within the timeframe. That's the largest single gap — rideshare substitution is a plausible response that this analysis can't detect. The MTA stopped publishing per-plaza bridge counts after April 2025, so the bridges analysis uses aggregate daily totals from May 2025 forward. The satellite (TROPOMI Sentinel-5P) has a native footprint of about 5×3 km, which limits how finely between-neighborhood differences can be resolved. The bus DiD partly reflects cordon-funded service expansion (Queens redesign + 16 route enhancements, June 2025) — it's not a clean behavioral mode-shift estimate. <a href="caveats.html">Full caveats →</a>
-    </p>
+    <div class="tech-divider">▸ What this analysis does not measure</div>
+
+    <div class="caveat-list">
+      <div class="caveat-item">
+        <div class="caveat-label">Satellite resolution</div>
+        <p>The TROPOMI instrument has a native footprint of roughly 5×3 km. Broad regional patterns are reliable; block-level neighborhood claims are not.</p>
+      </div>
+
+      <div class="caveat-item">
+        <div class="caveat-label">South Bronx PM2.5 findings</div>
+        <p>While this analysis was being completed, Columbia and South Bronx Unite released ground-monitor findings showing PM2.5 — a different pollutant — increased at 17 of 19 South Bronx monitoring sites during the congestion zone's first year, especially near major expressways. Both findings may be true simultaneously; the satellite cannot resolve hyperlocal roadside change.</p>
+      </div>
+
+      <div class="caveat-item">
+        <div class="caveat-label">Rideshare / FHV data</div>
+        <p>Uber, Lyft, and Via trip records were unavailable at zone resolution within this project's timeframe. Possible rideshare substitution effects are therefore not addressed here.</p>
+      </div>
+
+      <p class="caveat-link"><a href="caveats.html">Full caveats →</a></p>
+    </div>
   </section>
 
-  <!-- ── V1 NOTE ────────────────────────────────────────────── -->
-  <section class="wrap-narrow" style="padding-top: var(--s-6); padding-bottom: var(--s-5);">
-    <div class="tech-divider">▸ How this is different from v1</div>
-    <p style="font-family: var(--font-display); font-size: 17px; line-height: 1.6; color: var(--dusty-grape); max-width: 56ch;">
-      An earlier version of this site analyzed the first four months of the policy against the same months in 2024. That comparison showed real effects but couldn't separate the cordon's contribution from background drift. The current analysis runs a 15-month real comparison (Oct 2023 – Mar 2026) against a 12-month placebo (2024 vs 2023, no policy in effect). Several headline numbers moved meaningfully: the +160% taxi growth turns out to be largely background trend; the −22% pollution number resolves to a smaller, cleaner +3.1 pp cordon-specific NO₂ gap; the "everything got busier" framing gives way to a clearer modal-shift story. <a href="v1/index.html">Read the v1 archive →</a>
-    </p>
+  <!-- ── ABOUT THIS VERSION ──────────────────────────────────── -->
+  <section class="wrap-narrow" style="padding-top: var(--s-6); padding-bottom: var(--s-7);">
+    <details class="about-version">
+      <summary>About this version</summary>
+      <p>This version expands an earlier four-month comparison into a season-matched 16-month analysis with a placebo year (2024 vs. 2023) to separate congestion-pricing effects from broader atmospheric drift. <a href="v1/index.html">Read the v1 archive →</a></p>
+    </details>
   </section>
 
 </main>
