@@ -1,0 +1,81 @@
+---
+// Top navigation bar — brand on the left, chapter links on the right.
+// Same on every page.
+import { BASE } from "@/lib/site";
+
+const path = Astro.url.pathname.replace(/\/$/, "");
+const isActive = (href: string) => path === href.replace(/\/$/, "");
+---
+<header class="site-nav" role="banner">
+  <div class="nav-inner">
+    <a href={`${BASE}/`} class="nav-brand">Congestion Map</a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href={`${BASE}/01-air/`} class:list={[isActive(`${BASE}/01-air`) && "active"]}>The Air</a>
+      <a href={`${BASE}/02-methods/`} class:list={[isActive(`${BASE}/02-methods`) && "active"]}>Methods</a>
+      <a href={`${BASE}/03-other-findings/`} class:list={[isActive(`${BASE}/03-other-findings`) && "active"]}>Other Findings</a>
+      <a href={`${BASE}/04-verdict/`} class:list={[isActive(`${BASE}/04-verdict`) && "active"]}>Verdict</a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-nav {
+    border-bottom: 1px solid var(--rule);
+    background: var(--bg);
+  }
+  .nav-inner {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: var(--s-3) var(--gutter);
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s-4);
+  }
+  .nav-brand {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    border-bottom: 0;
+  }
+  .nav-brand:hover { color: var(--zone); }
+  .nav-links {
+    display: flex;
+    gap: var(--s-4);
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  .nav-links a {
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    font-weight: 400;
+    color: var(--ink-muted);
+    border-bottom: 1px solid transparent;
+    padding-bottom: 1px;
+    transition: color var(--d) var(--ease), border-color var(--d) var(--ease);
+  }
+  .nav-links a:hover {
+    color: var(--ink);
+    border-bottom-color: var(--rule);
+  }
+  .nav-links a.active {
+    color: var(--ink);
+    border-bottom-color: var(--zone);
+  }
+  @media (max-width: 720px) {
+    .nav-inner {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--s-2);
+      padding: var(--s-3) var(--gutter);
+    }
+    .nav-links {
+      gap: var(--s-3);
+      flex-wrap: wrap;
+      justify-content: flex-start;
+    }
+    .nav-links a { font-size: 1rem; }
+  }
+</style>

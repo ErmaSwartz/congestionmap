@@ -1,0 +1,63 @@
+---
+interface Props {
+  label: string;             // mono uppercase eyebrow ("OBSERVED")
+  value: string;             // big number ("−1.86 pp")
+  sublabel: string;          // one-line context
+  receipts?: string;         // optional mono receipts line
+  tone?: "improve" | "neutral";
+}
+
+const { label, value, sublabel, receipts, tone = "improve" } = Astro.props;
+---
+<div class={`stat-card stat-tone-${tone}`}>
+  <p class="stat-label">{label}</p>
+  <p class="stat-value">{value}</p>
+  <p class="stat-sublabel">{sublabel}</p>
+  {receipts && <p class="stat-receipts">{receipts}</p>}
+</div>
+
+<style>
+  .stat-card {
+    text-align: center;
+    padding: var(--s-3) var(--s-2);
+  }
+  .stat-label {
+    font-family: var(--font-mono);
+    font-size: var(--t-meta);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 0 0 var(--s-2);
+    text-align: center;
+  }
+  .stat-value {
+    font-family: var(--font-mono);
+    font-size: clamp(2.5rem, 5.5vw, 3.25rem);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--improve);
+    font-feature-settings: "tnum" 1, "lnum" 1;
+    margin: 0 0 var(--s-2);
+    text-align: center;
+  }
+  .stat-tone-neutral .stat-value { color: var(--ink); }
+  .stat-sublabel {
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    line-height: 1.4;
+    color: var(--ink-muted);
+    margin: 0 auto var(--s-1);
+    max-width: 32ch;
+    text-align: center;
+  }
+  .stat-receipts {
+    font-family: var(--font-mono);
+    font-size: var(--t-meta);
+    letter-spacing: 0.04em;
+    color: var(--ink-faint);
+    font-feature-settings: "tnum" 1;
+    margin: var(--s-1) auto 0;
+    text-align: center;
+  }
+</style>

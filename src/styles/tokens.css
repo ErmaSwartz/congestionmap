@@ -1,0 +1,91 @@
+/* ─────────────────────────────────────────────────────────────
+   Design tokens · Congestion Map v3
+   One accent color (--zone) used exclusively to encode the
+   congestion zone in every chart and map. Never decorative.
+   ───────────────────────────────────────────────────────────── */
+:root {
+  /* ── Source palette (raw) ─────────────────────────────────── */
+  --vanilla-cream:  #f2e8cf;
+  --celadon:        #a1cca5;
+  --muted-teal:     #8fb996;
+  --muted-teal-2:   #709775;
+  --sage-green:     #6a994e;
+  --yellow-green:   #a7c957;
+  --hunter-green:   #386641;
+  --hunter-green-2: #415d43;
+  --carbon-black:   #111d13;
+  --terracotta:     #c2664e;            /* warm baked clay — the one accent */
+
+  /* Dark surface — rich walnut/coffee */
+  --walnut:        #2c1d12;            /* primary bg */
+  --walnut-deep:   #1f1610;            /* deeper bg for footer / deep sections */
+  --walnut-rule:   #4a3525;            /* warm taupe — hairlines, visible on dark */
+
+  /* ── Role-mapped tokens ───────────────────────────────────── */
+  /* Surface */
+  --bg:        var(--walnut);
+  --bg-deep:   var(--walnut-deep);
+  --rule:      var(--walnut-rule);
+
+  /* Ink — light foreground on dark bg */
+  --ink:       var(--vanilla-cream);   /* body, headlines — cream on walnut */
+  --ink-muted: var(--celadon);         /* secondary text — celadon green */
+  --ink-faint: var(--muted-teal);      /* labels, axis ticks (passes AA on walnut) */
+
+  /* Semantic accent — the ONE zone color */
+  --zone:       var(--terracotta);     /* the congestion zone */
+  --zone-soft:  #c2664e33;             /* zone fill, ~20% alpha for choropleth fills on dark */
+  --zone-line:  var(--terracotta);     /* zone boundary on maps */
+
+  /* Statistical sign — only on stat-block deltas */
+  --improve:    var(--yellow-green);   /* improvement — bright on dark */
+  --worsen:     var(--terracotta);
+
+  /* Sequential green ramp (light → dark, for choropleth scales) */
+  --green-1:    var(--vanilla-cream);
+  --green-2:    var(--celadon);
+  --green-3:    var(--muted-teal);
+  --green-4:    var(--sage-green);
+  --green-5:    var(--hunter-green);
+  --green-6:    var(--carbon-black);
+
+  /* Mono utility — 75% cream for utility bar text on walnut */
+  --mono-ink:   #f2e8cfbf;
+
+  /* Type families — single serif throughout (Playfair Display) + mono utility */
+  --font-display: "Playfair Display", Georgia, "Times New Roman", serif;
+  --font-text:    "Playfair Display", Georgia, "Times New Roman", serif;
+  --font-mono:    "JetBrains Mono", "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Type scale — bumped for editorial readability on dark walnut.
+     Smallest mono utility now sits at 15px. */
+  --t-meta:    0.9375rem;        /* 15px — mono utility labels (smallest tier) */
+  --t-small:   1rem;             /* 16px — captions, footnotes */
+  --t-body:    1.125rem;         /* 18px — body */
+  --t-lede:    1.375rem;         /* 22px — body lede */
+  --t-h4:      1.625rem;         /* 26px */
+  --t-h3:      2rem;             /* 32px */
+  --t-h2:      2.75rem;          /* 44px */
+  --t-h1:      3.5rem;           /* 56px tablet */
+  --t-h1-lg:   4.75rem;          /* 76px desktop max */
+
+  /* Leading */
+  --lh-tight:  1.05;             /* display */
+  --lh-snug:   1.2;              /* h2, h3 */
+  --lh-body:   1.55;             /* body */
+  --lh-loose:  1.7;              /* small mono */
+
+  /* Spacing — 8pt rhythm */
+  --s-1:  8px;   --s-2:  16px;  --s-3:  24px;  --s-4:  32px;
+  --s-5:  48px;  --s-6:  64px;  --s-7:  96px;  --s-8:  128px;
+
+  /* Layout */
+  --content-max:    1440px;          /* wide grids and figure containers */
+  --content-narrow: 760px;           /* prose column — comfortable reading line */
+  --gutter:         48px;
+  --gutter-lg:      96px;
+
+  /* Motion (subtle only) */
+  --d:      200ms;
+  --ease:   cubic-bezier(0.22, 1, 0.36, 1);
+}

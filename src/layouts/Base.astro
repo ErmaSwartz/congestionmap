@@ -1,0 +1,41 @@
+---
+import "@styles/global.css";
+import SiteNav from "@components/SiteNav.astro";
+import Footer from "@components/Footer.astro";
+
+interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+}
+
+const { title, description, ogImage } = Astro.props;
+const fullTitle = title.endsWith("· Congestion Map") ? title : `${title} · Congestion Map`;
+const desc = description ??
+  "A spatial investigation of NYC's congestion-pricing program and its measurable effect on nitrogen dioxide pollution.";
+const og = ogImage ?? `${import.meta.env.BASE_URL}/og/default.png`;
+---
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={desc} />
+
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={desc} />
+    <meta property="og:image" content={og} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}/favicon.svg`} />
+  </head>
+  <body>
+    <SiteNav />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

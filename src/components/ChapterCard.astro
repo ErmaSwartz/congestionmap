@@ -1,0 +1,88 @@
+---
+interface Props {
+  number: string;        // "01"
+  title: string;         // "The Air"
+  takeaway: string;      // one-line tease
+  href: string;
+  thumbnail?: string;    // optional path under /public/, e.g. "thumbs/air.svg"
+  thumbAlt?: string;
+}
+const { number, title, takeaway, href, thumbnail, thumbAlt } = Astro.props;
+---
+<a class="chapter-card" href={href}>
+  <div class="ch-thumb">
+    {thumbnail ? (
+      <img src={thumbnail} alt={thumbAlt ?? ""} loading="lazy" />
+    ) : (
+      <div class="ch-placeholder" aria-hidden="true"></div>
+    )}
+  </div>
+  <div class="ch-meta">
+    <span class="ch-num">{number}</span>
+    <h3 class="ch-title">{title}</h3>
+    <p class="ch-takeaway">{takeaway}</p>
+  </div>
+</a>
+
+<style>
+  .chapter-card {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: var(--s-3);
+    padding: var(--s-4) var(--s-3) var(--s-3);
+    border-top: 1px solid var(--rule);
+    color: var(--ink);
+    border-bottom: 0;
+    text-align: center;
+    transition: background var(--d) var(--ease), border-color var(--d) var(--ease);
+  }
+  .chapter-card:hover {
+    background: color-mix(in srgb, var(--zone) 6%, transparent);
+    border-top-color: var(--zone);
+  }
+  .ch-thumb {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 120px;
+  }
+  .ch-thumb img {
+    max-height: 120px;
+    width: auto;
+    margin: 0 auto;
+    display: block;
+  }
+  .ch-placeholder {
+    width: 100%;
+    height: 100%;
+    border: 1px dashed var(--rule);
+    border-radius: 2px;
+    background: color-mix(in srgb, var(--ink) 4%, transparent);
+  }
+  .ch-meta { display: grid; gap: var(--s-1); }
+  .ch-num {
+    font-family: var(--font-mono);
+    font-size: var(--t-meta);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--zone);
+  }
+  .ch-title {
+    font-family: var(--font-display);
+    font-size: 1.625rem;
+    font-weight: 500;
+    line-height: 1.15;
+    color: var(--ink);
+    margin: 0;
+    text-align: center;
+    max-width: none;
+  }
+  .ch-takeaway {
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    line-height: 1.5;
+    color: var(--ink-muted);
+    margin: 0 auto;
+    max-width: 38ch;
+  }
+</style>

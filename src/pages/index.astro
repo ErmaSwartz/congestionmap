@@ -1,0 +1,146 @@
+---
+import Base from "@layouts/Base.astro";
+import Sparkline from "@components/Sparkline.astro";
+import StatCard from "@components/StatCard.astro";
+import MetadataStrip from "@components/MetadataStrip.astro";
+import ChapterCard from "@components/ChapterCard.astro";
+import { loadDidCi } from "@/lib/data";
+import { BASE } from "@/lib/site";
+
+const ci = loadDidCi();
+
+const fmtPP = (v: number) => {
+  const sign = v < 0 ? "−" : "+";
+  return `${sign}${Math.abs(v).toFixed(2)} pp`;
+};
+const fmtCI = (lo: number, hi: number) => {
+  const f = (v: number) => `${v < 0 ? "−" : "+"}${Math.abs(v).toFixed(2)}`;
+  return `[${f(lo)}, ${f(hi)}] pp`;
+};
+
+const observed = {
+  value: fmtPP(ci.realGap.value),
+  receipts: `n=${ci.nCordon} cordon px · 95% CI ${fmtCI(...ci.realGap.ci)}`,
+};
+const adjusted = {
+  value: fmtPP(ci.didOfDids.value),
+  receipts: `n=${ci.nBoot.toLocaleString()} bootstrap · 95% CI ${fmtCI(...ci.didOfDids.ci)}`,
+};
+---
+<Base
+  title="What changed in NYC's air after congestion pricing?"
+  description="Sixteen months of satellite measurements suggest nitrogen dioxide pollution declined over Manhattan's congestion zone after the January 2025 toll began. The improvement exceeded broader citywide trends, but the effect was modest and unevenly distributed."
+>
+  {/* ── HERO ──────────────────────────────────────────────── */}
+  <section class="wrap section">
+    <p class="eyebrow">A spatial investigation of NYC's congestion-pricing program</p>
+    <h1>What changed in NYC's air after congestion pricing?</h1>
+    <p class="lede" style="margin-top: var(--s-4);">
+      Sixteen months of satellite measurements suggest nitrogen dioxide pollution
+      declined over Manhattan's congestion zone after the January 2025 toll began.
+      The improvement exceeded broader citywide trends, but the effect was modest
+      and unevenly distributed across neighborhoods.
+    </p>
+    <Sparkline />
+  </section>
+
+  {/* ── HEADLINE STAT BLOCK ───────────────────────────────── */}
+  <section class="wrap section">
+    <div class="stat-row">
+      <StatCard
+        label="Observed"
+        value={observed.value}
+        sublabel="Raw difference, zone vs. rest of NYC, before vs. after"
+        receipts={observed.receipts}
+      />
+      <div class="stat-rule" aria-hidden="true"></div>
+      <StatCard
+        label="Adjusted"
+        value={adjusted.value}
+        sublabel="Placebo-corrected (2024 vs. 2023 baseline)"
+        receipts={adjusted.receipts}
+      />
+    </div>
+  </section>
+
+  {/* ── METADATA STRIP ────────────────────────────────────── */}
+  <section class="wrap section">
+    <MetadataStrip
+      items={[
+        { label: "Scope", value: "Manhattan,<br/>south of 60th St" },
+        { label: "Period", value: "Jan 2023 – Apr 2026,<br/>16-month windows" },
+        { label: "Instrument", value: "Sentinel-5P TROPOMI<br/>monthly NO₂ grids" },
+      ]}
+    />
+  </section>
+
+  {/* ── CHAPTERS GRID ─────────────────────────────────────── */}
+  <section class="wrap section">
+    <p class="eyebrow">Chapters</p>
+    <div class="chapter-grid">
+      <ChapterCard
+        number="01"
+        title="The Air"
+        takeaway="How nitrogen dioxide changed across NYC after congestion pricing began."
+        href={`${BASE}/01-air/`}
+      />
+      <ChapterCard
+        number="02"
+        title="Methods"
+        takeaway="The placebo design, the satellite, the stratification, and what the data can responsibly say."
+        href={`${BASE}/02-methods/`}
+      />
+      <ChapterCard
+        number="03"
+        title="Other Findings"
+        takeaway="Traffic, transit, and the spillover effects that did — and didn't — appear."
+        href={`${BASE}/03-other-findings/`}
+      />
+      <ChapterCard
+        number="04"
+        title="Verdict"
+        takeaway="What the evidence suggests, what remains uncertain, and where the analysis reaches its limits."
+        href={`${BASE}/04-verdict/`}
+      />
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* Stat block — two cards separated by a hairline rule */
+  .stat-row {
+    display: grid;
+    grid-template-columns: 1fr 1px 1fr;
+    gap: var(--s-5);
+    align-items: center;
+    max-width: 880px;
+    margin: 0 auto;
+  }
+  .stat-rule {
+    background: var(--rule);
+    width: 1px;
+    align-self: stretch;
+  }
+  @media (max-width: 720px) {
+    .stat-row {
+      grid-template-columns: 1fr;
+      gap: var(--s-4);
+    }
+    .stat-rule {
+      width: 100%;
+      height: 1px;
+    }
+  }
+
+  /* Chapter grid — 2x2 desktop, single column mobile */
+  .chapter-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0;
+    margin-top: var(--s-4);
+    border-bottom: 1px solid var(--rule);
+  }
+  @media (max-width: 720px) {
+    .chapter-grid { grid-template-columns: 1fr; }
+  }
+</style>

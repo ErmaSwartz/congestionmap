@@ -1,0 +1,180 @@
+---
+import { loadMonthly } from "@/lib/data";
+import * as d3 from "d3";
+
+const data = loadMonthly();
+
+// Layout
+const W = 760;
+const H = 220;
+const M = { top: 28, right: 16, bottom: 32, left: 44 };
+const innerW = W - M.left - M.right;
+const innerH = H - M.top - M.bottom;
+
+// Scales
+const x = d3
+  .scaleUtc()
+  .domain(d3.extent(data, (d) => d.date) as [Date, Date])
+  .range([0, innerW]);
+
+const yMin = d3.min(data, (d) => Math.min(d.cordonUmol, d.restUmol)) ?? 0;
+const yMax = d3.max(data, (d) => Math.max(d.cordonUmol, d.restUmol)) ?? 1;
+const y = d3
+  .scaleLinear()
+  .domain([yMin * 0.9, yMax * 1.05])
+  .range([innerH, 0]);
+
+const lineGen = d3
+  .line<typeof data[0]>()
+  .x((d) => x(d.date))
+  .curve(d3.curveMonotoneX);
+
+const cordonPath = lineGen.y((d) => y(d.cordonUmol))(data) ?? "";
+const restPath   = lineGen.y((d) => y(d.restUmol))(data)   ?? "";
+
+// Toll start marker (Jan 5 2025)
+const tollStart = new Date(Date.UTC(2025, 0, 5));
+const tollX = x(tollStart);
+
+// Y-axis ticks (4) + X-axis ticks (one per year)
+const yTicks = y.ticks(4);
+const xTicks = [
+  new Date(Date.UTC(2023, 0, 1)),
+  new Date(Date.UTC(2024, 0, 1)),
+  new Date(Date.UTC(2025, 0, 1)),
+  new Date(Date.UTC(2026, 0, 1)),
+];
+
+const id = `sparkline-${Math.random().toString(36).slice(2, 8)}`;
+---
+<figure class="sparkline-figure">
+  <svg
+    viewBox={`0 0 ${W} ${H}`}
+    role="img"
+    aria-labelledby={`${id}-title ${id}-desc`}
+    preserveAspectRatio="xMidYMid meet"
+  >
+    <title id={`${id}-title`}>Monthly NO₂ over the congestion zone vs. the rest of NYC, January 2023 – April 2026</title>
+    <desc id={`${id}-desc`}>
+      Both lines follow a seasonal cycle. After the January 2025 toll start,
+      the zone line declines slightly more than the citywide line.
+    </desc>
+
+    <g transform={`translate(${M.left},${M.top})`}>
+      {/* Y gridlines */}
+      {yTicks.map((t) => (
+        <g class="grid">
+          <line x1="0" x2={innerW} y1={y(t)} y2={y(t)} />
+          <text x="-8" y={y(t)} class="tick" text-anchor="end" dominant-baseline="middle">{t}</text>
+        </g>
+      ))}
+
+      {/* X axis labels */}
+      {xTicks.map((t) => (
+        <text
+          x={x(t)}
+          y={innerH + 18}
+          class="tick"
+          text-anchor="middle"
+        >{t.getUTCFullYear()}</text>
+      ))}
+
+      {/* Toll-start vertical rule */}
+      <line
+        x1={tollX}
+        x2={tollX}
+        y1={0}
+        y2={innerH}
+        class="toll-rule"
+      />
+      <text
+        x={tollX}
+        y={-10}
+        class="annotation"
+        text-anchor="middle"
+      >Toll begins · Jan 5 2025</text>
+
+      {/* Series lines */}
+      <path d={restPath} class="line line-rest" fill="none" />
+      <path d={cordonPath} class="line line-cordon" fill="none" />
+
+      {/* Series labels (right edge) */}
+      <text
+        x={innerW + 4}
+        y={y(data[data.length - 1].cordonUmol)}
+        class="series-label series-label-cordon"
+        dominant-baseline="middle"
+      >Zone</text>
+      <text
+        x={innerW + 4}
+        y={y(data[data.length - 1].restUmol)}
+        class="series-label series-label-rest"
+        dominant-baseline="middle"
+      >Citywide</text>
+    </g>
+  </svg>
+
+  <figcaption>
+    Monthly tropospheric NO₂ (μmol/m²) over the congestion zone and the rest of
+    NYC. The seasonal cycle is the dominant pattern in both series; the gap
+    widens slightly after the January 2025 toll.
+  </figcaption>
+</figure>
+
+<style>
+  .sparkline-figure {
+    margin: var(--s-5) auto 0;
+    max-width: 880px;
+  }
+  .sparkline-figure svg { width: 100%; height: auto; display: block; }
+
+  .grid line {
+    stroke: var(--rule);
+    stroke-width: 0.5;
+    stroke-dasharray: 2 4;
+  }
+  .tick {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    fill: var(--ink-faint);
+    letter-spacing: 0.04em;
+  }
+  .annotation {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    fill: var(--ink-muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .toll-rule {
+    stroke: var(--zone);
+    stroke-width: 1;
+    stroke-dasharray: 3 3;
+  }
+
+  .line {
+    stroke-width: 1.6;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+  }
+  .line-cordon { stroke: var(--zone); }
+  .line-rest   { stroke: var(--ink-muted); stroke-dasharray: 0; }
+
+  .series-label {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .series-label-cordon { fill: var(--zone); }
+  .series-label-rest   { fill: var(--ink-muted); }
+
+  .sparkline-figure figcaption {
+    margin-top: var(--s-2);
+  }
+
+  @media (max-width: 720px) {
+    .annotation { font-size: 9px; }
+  }
+</style>

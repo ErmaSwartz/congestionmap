@@ -1,0 +1,206 @@
+---
+import Base from "@layouts/Base.astro";
+import { BASE } from "@/lib/site";
+import { loadDidCi } from "@/lib/data";
+
+const ci = loadDidCi();
+const fmt = (v: number) => `${v < 0 ? "−" : "+"}${Math.abs(v).toFixed(2)}`;
+
+const claims = [
+  { strength: "strong",   label: "NO₂ declined more over the congestion zone than over the rest of NYC, after adjusting for atmospheric drift." },
+  { strength: "strong",   label: "The placebo year shows little comparable signal over Manhattan, supporting a policy interpretation." },
+  { strength: "moderate", label: "Bridges and tunnels saw a small reduction in vehicle entries (~1.75 percentage points)." },
+  { strength: "moderate", label: "Bus ridership increased substantially, though entangled with simultaneous service expansions." },
+  { strength: "weak",     label: "Yellow-taxi spillover at the cordon edge does not appear in the data; rideshare data was unavailable." },
+] as const;
+---
+<Base
+  title="Verdict"
+  description="A synthesis of what this analysis suggests, what remains uncertain, and where the analysis reaches its limits."
+>
+  <section class="wrap section">
+    <p class="eyebrow">Chapter 04 · Verdict</p>
+    <h1>What the evidence suggests, what remains uncertain, and where the analysis reaches its limits.</h1>
+  </section>
+
+  <section class="wrap section">
+    <p class="eyebrow">The clearest finding</p>
+    <h2>A measurable, modest, spatially coherent improvement.</h2>
+    <p>
+      The evidence suggests congestion pricing was associated with measurable
+      improvements in air quality over Manhattan's congestion zone.
+      Satellite-measured nitrogen dioxide declined more over Manhattan below
+      60th Street than over the rest of the city, and the placebo comparison
+      suggests this gap exceeds ordinary year-to-year atmospheric variation.
+    </p>
+    <p>
+      After adjusting for background drift, the estimated zone-attributable
+      improvement is approximately <strong>{fmt(ci.didOfDids.value)} percentage
+      points</strong> [95% CI {fmt(ci.didOfDids.ci[0])} to {fmt(ci.didOfDids.ci[1])}].
+      The signal is modest in magnitude but spatially coherent and
+      methodologically robust.
+    </p>
+  </section>
+
+  <section class="wrap section">
+    <p class="eyebrow">Findings that proved smaller or conditional</p>
+    <h2>Vehicle entries down, transit up unevenly, taxi spillover not detected.</h2>
+    <p>
+      The bridges difference-in-differences came in at <strong>−1.75 percentage
+      points</strong> [95% CI: −3.32, −0.18] — a real but modest reduction in
+      vehicle entries beyond ordinary fluctuation.
+    </p>
+    <p>
+      Bus ridership gained an estimated <strong>+10 percentage points</strong>
+      above the placebo trajectory, but that result overlaps with the June
+      2025 MTA service expansion in Queens and the addition of 16 enhanced
+      routes citywide. Subway gained a cleaner <strong>+3.9 pp</strong>.
+      Commuter-rail modes declined in both real and placebo windows,
+      suggesting recovery saturation rather than a congestion-zone effect.
+    </p>
+    <p>
+      The taxi-spillover hypothesis was tested across four predictions and
+      did not appear consistently in yellow-taxi data. FHV records were
+      unavailable at zone resolution.
+    </p>
+  </section>
+
+  <section class="wrap section">
+    <p class="eyebrow">What the analysis did not measure</p>
+    <h2>Different instruments, different scales, different answers.</h2>
+    <p>
+      The Columbia and South Bronx Unite study, released as this analysis
+      was being completed, reports PM2.5 increases at 17 of 19 ground
+      monitors in the South Bronx during the congestion zone's first year,
+      especially near major expressways. The satellite used here cannot
+      resolve those neighborhood-block changes.
+    </p>
+    <p>
+      FHV and Uber/Lyft trip records were unavailable at zone resolution.
+      Indoor air, individual exposure, and longer-term trajectories are
+      outside this dataset's scope. None of those gaps are evidence that the
+      corresponding effects did not occur — they are evidence that this
+      analysis cannot speak to them.
+    </p>
+  </section>
+
+  <section class="wrap section">
+    <p class="eyebrow">Confidence scorecard</p>
+    <h2>Each claim, with the strength of evidence behind it.</h2>
+
+    <ul class="scorecard">
+      {claims.map((c) => (
+        <li class:list={["score-item", `score-${c.strength}`]}>
+          <span class="score-tag">{c.strength}</span>
+          <span class="score-label">{c.label}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="wrap section">
+    <p class="eyebrow">A measured interpretation</p>
+    <h2>Real, modest, uneven.</h2>
+    <p>
+      Congestion pricing appears to have produced a measurable, spatially
+      coherent improvement in NYC's nitrogen dioxide pollution over the area
+      where it operates. The improvement was modest in magnitude and
+      unevenly distributed — most pronounced relative to higher-income, less
+      transit-oriented neighborhoods, and smallest relative to lower-income,
+      transit-dependent neighborhoods that experienced similar declines on
+      their own.
+    </p>
+    <p>
+      The findings do not support a story about congestion pricing
+      transforming New York's air. They support a more specific story: a
+      policy producing a detectable signal in one pollutant, over one zone,
+      with effects that varied by neighborhood and that this analysis cannot
+      fully decompose.
+    </p>
+  </section>
+
+  <section class="wrap section">
+    <a class="next-card" href={`${BASE}/01-air/`}>
+      <span class="next-eyebrow">Re-read · Chapter 01</span>
+      <span class="next-title">The Air</span>
+      <span class="next-tease">Back to the centerpiece finding.</span>
+    </a>
+  </section>
+</Base>
+
+<style>
+  .scorecard {
+    list-style: none;
+    padding: 0;
+    margin: var(--s-4) auto 0;
+    max-width: 880px;
+    border-top: 1px solid var(--rule);
+  }
+  .score-item {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: var(--s-3);
+    align-items: baseline;
+    padding: var(--s-3) 0;
+    border-bottom: 1px solid var(--rule);
+    text-align: left;
+  }
+  .score-tag {
+    font-family: var(--font-mono);
+    font-size: var(--t-meta);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-align: left;
+  }
+  .score-strong   .score-tag { color: var(--improve); }
+  .score-moderate .score-tag { color: var(--ink); }
+  .score-weak     .score-tag { color: var(--zone); }
+  .score-label {
+    font-family: var(--font-display);
+    font-size: var(--t-body);
+    line-height: 1.5;
+    color: var(--ink);
+    text-align: left;
+    max-width: none;
+  }
+  @media (max-width: 720px) {
+    .score-item { grid-template-columns: 1fr; gap: var(--s-1); }
+  }
+
+  .next-card {
+    display: block;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    padding: var(--s-4) 0;
+    text-align: center;
+    color: var(--ink);
+    border-bottom: 1px solid var(--rule);
+    transition: background var(--d) var(--ease);
+  }
+  .next-card:hover { background: color-mix(in srgb, var(--zone) 6%, transparent); }
+  .next-eyebrow {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: var(--t-meta);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--zone);
+    margin-bottom: var(--s-1);
+  }
+  .next-title {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 1.625rem;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: var(--s-1);
+  }
+  .next-tease {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    color: var(--ink-muted);
+    max-width: 50ch;
+    margin: 0 auto;
+  }
+</style>

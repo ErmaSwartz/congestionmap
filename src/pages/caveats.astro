@@ -1,0 +1,131 @@
+---
+import Base from "@layouts/Base.astro";
+import { BASE } from "@/lib/site";
+
+const caveats = [
+  {
+    label: "Satellite resolution",
+    body: "TROPOMI's native footprint is roughly 5×3 km. Broad regional patterns are reliable; block-level neighborhood claims are not. The headline cordon-vs-rest comparison is robust at the scale it was measured at.",
+  },
+  {
+    label: "16-month season-matched windows",
+    body: "The pre window runs January 2023 – April 2024 (16 months); the post runs January 2025 – April 2026. Each contains the same calendar months, so winter peaks and summer troughs cancel out.",
+  },
+  {
+    label: "Single pollutant",
+    body: "The satellite measures NO₂ only. PM2.5, ozone, indoor air, and other pollutants that contribute to NYC's air-quality story are outside this analysis. A finding that NO₂ declined is not a finding that all air pollution declined.",
+  },
+  {
+    label: "South Bronx PM2.5 findings",
+    body: "Columbia and South Bronx Unite (May 2026) report PM2.5 increases at 17 of 19 ground monitors in the South Bronx during the congestion zone's first year. Both findings can be true — different instruments, different pollutants, different scales. The satellite is too coarse to resolve those neighborhood-block changes.",
+  },
+  {
+    label: "Placebo assumption",
+    body: "The DiD design assumes the 2024-vs-2023 comparison is a reasonable counterfactual for 2024-vs-2025 atmospheric drift. If the underlying trend changed shape between those transitions for non-policy reasons, the DiD partially attributes that change to the policy.",
+  },
+  {
+    label: "Bus service expansion",
+    body: "The +10 pp bus DiD partly reflects MTA service expansions in June 2025 (Queens redesign + 16 enhanced routes). It is not a clean behavioral mode-shift estimate. Subway's cleaner +3.9 pp is the better number for that.",
+  },
+  {
+    label: "No FHV / Uber / Lyft",
+    body: "The taxi-spillover analysis uses NYC TLC's yellow-taxi trip records only. FHV records at zone resolution were unavailable. The modal-substitution-at-the-edge hypothesis fails on yellow taxis; the broader hypothesis on rideshare is unresolved.",
+  },
+  {
+    label: "Taxi zones as analytical units",
+    body: "NYC's 263 TLC taxi zones were drawn for taxi dispatch, not population analysis. They are imperfect demographic units but adequate at the satellite's coarse resolution. A finer geometry would imply precision the data cannot deliver.",
+  },
+  {
+    label: "Bridges, post-April 2025",
+    body: "MTA stopped publishing per-plaza daily counts after April 2025. From May 2025 forward, the bridges analysis uses aggregate daily totals across all crossings. Per-crossing breakdowns are not available for the later post-period.",
+  },
+];
+---
+<Base
+  title="Caveats"
+  description="The scope of every dataset behind the congestion-zone air analysis: what each one measures, what it doesn't, and which findings rest on weaker evidence.">
+
+  <section class="wrap section">
+    <p class="eyebrow">A page of honest disclosures</p>
+    <h1>What this analysis can, and cannot, tell us.</h1>
+    <p class="lede">
+      Every number on this site has a scope. Some are clean, some are noisy,
+      some are not causal claims. This page lays out what each dataset
+      measures, what it doesn't, and which findings rest on weaker evidence.
+    </p>
+  </section>
+
+  <section class="wrap section">
+    <ol class="caveats">
+      {caveats.map((c, i) => (
+        <li class="caveat">
+          <span class="caveat-num">{String(i + 1).padStart(2, "0")}</span>
+          <div class="caveat-body">
+            <p class="caveat-label">{c.label}</p>
+            <p class="caveat-text">{c.body}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="wrap section">
+    <p>
+      These limitations do not invalidate the findings. They define the scale
+      and scope of what this analysis can responsibly claim.
+    </p>
+    <p>
+      <a href={`${BASE}/`}>← Cover</a> · <a href={`${BASE}/04-verdict/`}>Verdict →</a>
+    </p>
+  </section>
+</Base>
+
+<style>
+  .caveats {
+    list-style: none;
+    padding: 0;
+    margin: 0 auto;
+    max-width: 880px;
+    border-top: 1px solid var(--rule);
+  }
+  .caveat {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: var(--s-3);
+    align-items: baseline;
+    padding: var(--s-4) 0;
+    border-bottom: 1px solid var(--rule);
+    text-align: left;
+    margin: 0;
+  }
+  .caveat-num {
+    font-family: var(--font-mono);
+    font-size: var(--t-h4);
+    color: var(--zone);
+    text-align: right;
+  }
+  .caveat-body { text-align: left; }
+  .caveat-label {
+    font-family: var(--font-mono);
+    font-size: var(--t-meta);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 0 0 var(--s-2);
+    text-align: left;
+    max-width: none;
+  }
+  .caveat-text {
+    font-family: var(--font-display);
+    font-size: var(--t-body);
+    line-height: var(--lh-body);
+    color: var(--ink);
+    margin: 0;
+    text-align: left;
+    max-width: 60ch;
+  }
+  @media (max-width: 720px) {
+    .caveat { grid-template-columns: 1fr; gap: var(--s-1); }
+    .caveat-num { text-align: left; }
+  }
+</style>

@@ -1,0 +1,83 @@
+/* ─────────────────────────────────────────────────────────────
+   Global · Congestion Map v3
+   Imports tokens + type, fonts, resets, layout primitives.
+   ───────────────────────────────────────────────────────────── */
+
+/* Self-hosted fonts via Fontsource — single serif (Playfair Display)
+   for both display and body, plus JetBrains Mono for utility. */
+@import "@fontsource/playfair-display/400.css";
+@import "@fontsource/playfair-display/400-italic.css";
+@import "@fontsource/playfair-display/500.css";
+@import "@fontsource/playfair-display/500-italic.css";
+@import "@fontsource/playfair-display/600.css";
+@import "@fontsource/playfair-display/700.css";
+@import "@fontsource/jetbrains-mono/400.css";
+@import "@fontsource/jetbrains-mono/500.css";
+
+@import "./tokens.css";
+@import "./type.css";
+
+/* ── Reset ─────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; padding: 0; }
+img, svg, video { max-width: 100%; height: auto; display: block; }
+
+/* ── Layout primitives ─────────────────────────────────────── */
+.wrap {
+  width: 100%;
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+.wrap-narrow {
+  width: 100%;
+  max-width: var(--content-narrow);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* Hairline section dividers (no shadows, no rounded boxes) */
+.section {
+  padding: var(--s-7) 0;
+  border-top: 1px solid var(--rule);
+}
+@media (max-width: 720px) {
+  .section { padding: var(--s-6) 0; }
+}
+.section:first-of-type { border-top: 0; }
+
+/* Stack utility — vertical rhythm */
+.stack > * + * { margin-top: var(--s-3); }
+.stack-tight > * + * { margin-top: var(--s-2); }
+.stack-loose > * + * { margin-top: var(--s-5); }
+
+/* Figure containers — used for static raster maps and embedded visuals */
+.fig {
+  margin: var(--s-5) auto;
+  max-width: 1080px;
+}
+.fig-wide { max-width: 1080px; }
+.fig img,
+.fig video {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 2px;
+}
+.fig figcaption {
+  margin-top: var(--s-3);
+}
+
+/* ── Reduced motion ────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+/* ── Print-friendly fallbacks ──────────────────────────────── */
+@media print {
+  body { background: #fff; color: #000; }
+  .utility-bar, .site-footer { display: none; }
+}
