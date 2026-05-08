@@ -1,0 +1,77 @@
+---
+// Three-word typographic verdict, framed by hairline rules.
+// Each word carries its own role color:
+//   real    — improve (the affirmative half)
+//   modest  — ink-muted (the qualifier)
+//   uneven  — zone / terracotta (the equity caveat)
+---
+<aside class="verdict-headline" role="presentation">
+  <div class="rule-top" aria-hidden="true"></div>
+  <p class="verdict-words">
+    <span class="word word-real">Real.</span>
+    <span class="word word-modest"><em>Modest.</em></span>
+    <span class="word word-uneven">Uneven.</span>
+  </p>
+  <div class="rule-bottom" aria-hidden="true"></div>
+</aside>
+
+<style>
+  .verdict-headline {
+    margin: 0 auto var(--s-6);
+    padding: var(--s-6) var(--gutter);
+    max-width: var(--content-max);
+    text-align: center;
+  }
+  .rule-top, .rule-bottom {
+    height: 1px;
+    background: var(--rule);
+    width: 100%;
+    margin: 0 auto;
+  }
+  .verdict-words {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: baseline;
+    gap: clamp(var(--s-3), 4vw, var(--s-6));
+    padding: var(--s-5) 0;
+    margin: 0;
+    max-width: none;
+    font-family: var(--font-display);
+    font-weight: 500;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    font-size: clamp(2.75rem, 8vw, 5.5rem);
+  }
+  .verdict-words .word {
+    display: inline-block;
+  }
+  .verdict-words em {
+    font-style: italic;
+    font-weight: 400;
+  }
+  .word-real   { color: var(--improve); }
+  .word-modest { color: var(--ink-muted); }
+  .word-uneven { color: var(--zone); }
+
+  @media (max-width: 560px) {
+    .verdict-words {
+      flex-direction: column;
+      gap: var(--s-2);
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .verdict-words .word {
+      opacity: 0;
+      transform: translateY(6px);
+      animation: verdict-rise 600ms var(--ease) forwards;
+    }
+    .word-real   { animation-delay: 80ms; }
+    .word-modest { animation-delay: 240ms; }
+    .word-uneven { animation-delay: 400ms; }
+  }
+  @keyframes verdict-rise {
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>

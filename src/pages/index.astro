@@ -28,13 +28,13 @@ const adjusted = {
 };
 ---
 <Base
-  title="What changed in NYC's air after congestion pricing?"
+  title="What Changed in NYC's Air After Congestion Pricing?"
   description="Sixteen months of satellite measurements suggest nitrogen dioxide pollution declined over Manhattan's congestion zone after the January 2025 toll began. The improvement exceeded broader citywide trends, but the effect was modest and unevenly distributed."
 >
   {/* ── HERO ──────────────────────────────────────────────── */}
   <section class="wrap section">
     <p class="eyebrow">A spatial investigation of NYC's congestion-pricing program</p>
-    <h1>What changed in NYC's air after congestion pricing?</h1>
+    <h1>What Changed in NYC's <span class="accent-improve">Air</span> After Congestion Pricing?</h1>
     <p class="lede" style="margin-top: var(--s-4);">
       Sixteen months of satellite measurements suggest nitrogen dioxide pollution
       declined over Manhattan's congestion zone after the January 2025 toll began.
@@ -83,25 +83,59 @@ const adjusted = {
         title="The Air"
         takeaway="How nitrogen dioxide changed across NYC after congestion pricing began."
         href={`${BASE}/01-air/`}
-      />
+      >
+        <svg slot="icon" class="ch-icon" viewBox="0 0 64 48" aria-hidden="true">
+          <path d="M4 14 q8 -8 16 0 t16 0 t16 0 t8 0" />
+          <path d="M4 24 q8 -8 16 0 t16 0 t16 0 t8 0" />
+          <path d="M4 34 q8 -8 16 0 t16 0 t16 0 t8 0" />
+        </svg>
+      </ChapterCard>
       <ChapterCard
         number="02"
         title="Methods"
         takeaway="The placebo design, the satellite, the stratification, and what the data can responsibly say."
         href={`${BASE}/02-methods/`}
-      />
+      >
+        <svg slot="icon" class="ch-icon" viewBox="0 0 64 48" aria-hidden="true">
+          {/* Two pairs of horizontal lines (real + placebo windows) joined by a vertical reference */}
+          <line x1="6" y1="14" x2="26" y2="14" />
+          <line x1="38" y1="14" x2="58" y2="14" />
+          <line x1="6" y1="34" x2="26" y2="34" />
+          <line x1="38" y1="34" x2="58" y2="34" />
+          <line x1="32" y1="6" x2="32" y2="42" stroke-dasharray="3 3" />
+        </svg>
+      </ChapterCard>
       <ChapterCard
         number="03"
         title="Other Findings"
         takeaway="Traffic, transit, and the spillover effects that did — and didn't — appear."
         href={`${BASE}/03-other-findings/`}
-      />
+      >
+        <svg slot="icon" class="ch-icon" viewBox="0 0 64 48" aria-hidden="true">
+          {/* Forest-plot suggestion: 4 horizontal CI bars with center dots */}
+          <line x1="14" y1="10" x2="40" y2="10" />
+          <circle cx="32" cy="10" r="2.5" fill="currentColor" />
+          <line x1="22" y1="20" x2="50" y2="20" />
+          <circle cx="44" cy="20" r="2.5" fill="currentColor" />
+          <line x1="10" y1="30" x2="34" y2="30" />
+          <circle cx="20" cy="30" r="2.5" fill="currentColor" />
+          <line x1="32" y1="40" x2="58" y2="40" stroke-dasharray="2 3" />
+        </svg>
+      </ChapterCard>
       <ChapterCard
         number="04"
         title="Verdict"
         takeaway="What the evidence suggests, what remains uncertain, and where the analysis reaches its limits."
         href={`${BASE}/04-verdict/`}
-      />
+      >
+        <svg slot="icon" class="ch-icon" viewBox="0 0 64 48" aria-hidden="true">
+          {/* Balance: triangular fulcrum with a slightly tipped beam */}
+          <line x1="10" y1="14" x2="54" y2="20" />
+          <line x1="10" y1="14" x2="10" y2="22" />
+          <line x1="54" y1="20" x2="54" y2="28" />
+          <path d="M22 38 L42 38 L32 22 Z" />
+        </svg>
+      </ChapterCard>
     </div>
   </section>
 </Base>
@@ -142,5 +176,18 @@ const adjusted = {
   }
   @media (max-width: 720px) {
     .chapter-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Editorial line-art icons sitting in each chapter card */
+  :global(.ch-icon) {
+    width: 64px;
+    height: 48px;
+    margin: 0 auto;
+    display: block;
+    fill: none;
+    stroke: var(--zone);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
 </style>

@@ -39,17 +39,59 @@ img, svg, video { max-width: 100%; height: auto; display: block; }
 /* Hairline section dividers (no shadows, no rounded boxes) */
 .section {
   padding: var(--s-7) 0;
-  border-top: 1px solid var(--rule);
+  position: relative;
 }
 @media (max-width: 720px) {
   .section { padding: var(--s-6) 0; }
 }
-.section:first-of-type { border-top: 0; }
+
+/* Dingbat between consecutive sections — three small dots, centered,
+   replaces the hairline. Editorial magazine signal that one beat ended
+   and another is starting. */
+.section + .section::before,
+.section + .full-bleed::before,
+.full-bleed + .section::before,
+.full-bleed + .full-bleed::before {
+  content: "·  ·  ·";
+  display: block;
+  text-align: center;
+  letter-spacing: 0.5em;
+  color: var(--ink-faint);
+  font-family: var(--font-mono);
+  font-size: 20px;
+  line-height: 1;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--bg);
+  padding: 0 var(--s-3);
+  z-index: 2;
+}
+
+/* Bring back a faint horizontal rule behind the dingbat so the eye still
+   reads a section boundary, but only between consecutive sections. */
+.section + .section,
+.section + .full-bleed,
+.full-bleed + .section,
+.full-bleed + .full-bleed {
+  border-top: 1px solid var(--rule);
+}
 
 /* Stack utility — vertical rhythm */
 .stack > * + * { margin-top: var(--s-3); }
 .stack-tight > * + * { margin-top: var(--s-2); }
 .stack-loose > * + * { margin-top: var(--s-5); }
+
+/* Full-bleed section — escapes the wrap container, runs edge to edge */
+.full-bleed {
+  width: 100%;
+  padding: var(--s-7) 0;
+  border-top: 1px solid var(--rule);
+}
+@media (max-width: 720px) {
+  .full-bleed { padding: var(--s-6) 0; }
+}
 
 /* Figure containers — used for static raster maps and embedded visuals */
 .fig {

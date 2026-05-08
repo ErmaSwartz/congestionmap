@@ -1,7 +1,8 @@
 ---
 import Base from "@layouts/Base.astro";
+import TropomiAnomalyMap from "@components/TropomiAnomalyMap.astro";
+import ForestPlot from "@components/ForestPlot.astro";
 import { BASE } from "@/lib/site";
-const fig = (path: string) => `${BASE}/figures/${path}`;
 ---
 <Base
   title="Methods"
@@ -9,7 +10,7 @@ const fig = (path: string) => `${BASE}/figures/${path}`;
 >
   <section class="wrap section">
     <p class="eyebrow">Chapter 02 · Methods</p>
-    <h1>How this analysis isolates the congestion zone's effect from broader atmospheric change.</h1>
+    <h1>How This Analysis <span class="accent-improve">Isolates</span> the Congestion Zone's Effect From Broader Atmospheric Change.</h1>
     <p class="lede">
       This chapter explains the placebo comparison, the satellite
       measurements, the neighborhood aggregation, the statistical model, and
@@ -18,60 +19,34 @@ const fig = (path: string) => `${BASE}/figures/${path}`;
   </section>
 
   <section class="wrap section">
-    <p class="eyebrow">The core analytical problem</p>
-    <h2>Pollution changes for many reasons. The analysis needs a counterfactual.</h2>
-    <p>
-      Air pollution changes for many reasons: weather, economic activity,
-      seasonal cycles, vehicle turnover, and long-term emissions trends. To
-      estimate whether congestion pricing mattered, the analysis needs a
-      comparison representing what would likely have happened without the
-      policy.
-    </p>
-    <p>
-      The basic strategy is a placebo design. The analysis compares a real
-      policy window — before vs. after congestion pricing — against a placebo
-      window from a year earlier, when no congestion zone existed. Any
-      pattern appearing in both comparisons is likely background atmospheric
-      drift. Any additional pattern appearing only after January 2025 is more
-      plausibly associated with the congestion zone itself.
-    </p>
-  </section>
-
-  <section class="wrap section">
     <p class="eyebrow">The placebo comparison</p>
-    <h2>Two pairs, one year apart.</h2>
-    <p>The congestion zone began on January 5, 2025.</p>
+    <h2>The Analysis Compares Two Pairs, One Year Apart.</h2>
+    <p>
+      Air pollution changes for many reasons — weather, fleet turnover,
+      post-pandemic recovery, seasonal cycles. To estimate whether congestion
+      pricing mattered, the analysis needs a comparison representing what
+      would likely have happened without it.
+    </p>
     <p>
       The "real" comparison measures NO₂ change between Jan 2023 – Apr 2024
-      and Jan 2025 – Apr 2026. The placebo comparison repeats the same
-      exercise one year earlier — 2023 vs. 2024 — when no congestion zone
-      existed.
+      and Jan 2025 – Apr 2026, around the January 5, 2025 toll start. The
+      "placebo" comparison repeats the same exercise shifted one year earlier
+      — 2024 vs. 2023 — when no congestion zone existed.
     </p>
 
-    <figure class="fig fig-wide">
-      <img src={fig("no2_placebo_anomaly.png")}
-           alt="Placebo map: NO₂ change for 2024 versus 2023, before the congestion zone existed. Mostly flat over Manhattan."
-           loading="lazy" />
-      <figcaption>
-        Placebo comparison: 2024 minus 2023, before the congestion zone
-        existed. Roughly flat over lower Manhattan. The real comparison does
-        not look like this — that contrast is what allows the analysis to
-        distinguish the policy signal from background drift.
-      </figcaption>
-    </figure>
-
     <p>
-      The purpose of the placebo is to estimate how much NO₂ changes
-      naturally year to year, even without policy intervention. If the
-      placebo comparison had produced a similar Manhattan-centered anomaly,
-      the analysis could not confidently attribute the observed change to
-      congestion pricing.
+      Anything appearing in both comparisons is background atmospheric drift.
+      Anything appearing only in the real comparison is more plausibly the
+      policy. The placebo year shows little comparable signal over Manhattan,
+      strengthening the interpretation that the post-2025 pattern reflects
+      more than ordinary atmospheric variability. (See the
+      <a href={`${BASE}/01-air/#placebo`}>placebo map on the air chapter</a>.)
     </p>
   </section>
 
   <section class="wrap section">
     <p class="eyebrow">The satellite</p>
-    <h2>What TROPOMI measures, and what it doesn't.</h2>
+    <h2>What TROPOMI Measures, and What It Doesn't.</h2>
     <p>
       This project uses nitrogen dioxide measurements from TROPOMI, a
       spectrometer aboard the European Space Agency's Sentinel-5P satellite.
@@ -97,29 +72,8 @@ const fig = (path: string) => `${BASE}/figures/${path}`;
   </section>
 
   <section class="wrap section">
-    <p class="eyebrow">Neighborhood aggregation</p>
-    <h2>From satellite pixels to NYC neighborhoods.</h2>
-    <p>
-      To compare pollution change across neighborhoods, the analysis
-      aggregates the satellite measurements to NYC's 263 TLC taxi zones using
-      area-weighted averaging. For each zone, the analysis merges demographic
-      measures from the American Community Survey: median household income,
-      vehicle ownership, transit commuting share, and population density.
-      Neighborhoods are split into thirds ("tertiles") for each trait and
-      compared against the congestion zone.
-    </p>
-
-    <figure class="fig fig-wide">
-      <img src={fig("no2_strata_maps.png")}
-           alt="Three side-by-side NYC maps showing neighborhood groupings by income, car ownership, and transit reliance."
-           loading="lazy" />
-      <figcaption>
-        NYC neighborhoods sorted into tertiles for income, car ownership, and
-        transit reliance. The congestion zone is outlined for reference.
-        These groupings define the strata used in the distributional analysis.
-      </figcaption>
-    </figure>
-
+    <p class="eyebrow">Uncertainty</p>
+    <h2>Confidence Intervals From Bootstrap Resampling.</h2>
     <p>
       Confidence intervals throughout the project come from bootstrap
       resampling — repeatedly rerunning the same comparison on slightly
@@ -130,7 +84,7 @@ const fig = (path: string) => `${BASE}/figures/${path}`;
 
   <section class="wrap section">
     <p class="eyebrow">Statistical model</p>
-    <h2>Which neighborhood traits predict bigger pollution drops?</h2>
+    <h2>Which Neighborhood Traits Predict Bigger Pollution Drops?</h2>
     <p>
       A Spatial Lag Model accounts for the fact that nearby neighborhoods
       influence one another environmentally. Air pollution does not stop at
@@ -139,17 +93,21 @@ const fig = (path: string) => `${BASE}/figures/${path}`;
       simultaneously.
     </p>
 
-    <figure class="fig fig-wide">
-      <img src={fig("no2_regression_results.svg")}
-           alt="Forest plot showing model coefficients: which neighborhood traits predict the size of the pollution drop."
-           loading="lazy" />
-      <figcaption>
-        Coefficients from the Spatial Lag Model. Distance to the congestion
-        zone and the share of households without a car show the strongest
-        evidence; income, density, and subway-station count do not show clear
-        effects once the others are accounted for.
-      </figcaption>
-    </figure>
+    <ForestPlot
+      data="regression.csv"
+      labelCol="predictor"
+      valueCol="z"
+      ciCols={["z_lo", "z_hi"]}
+      xLabel="Effect on NO₂ change (z-statistic)"
+    />
+    <p class="caption" style="margin-top: var(--s-2);">
+      Each row shows how strongly a neighborhood trait predicts NO₂ change,
+      holding the others constant. Bars to the right of the dashed reference
+      line at 0 are positive predictors; bars whose interval does not cross 0
+      are statistically distinguishable. Distance to the zone, the share of
+      households without a car, and the share of transit commuters show the
+      strongest evidence.
+    </p>
 
     <p>
       The model explains roughly one-third of neighborhood-level variation —
@@ -159,22 +117,50 @@ const fig = (path: string) => `${BASE}/figures/${path}`;
   </section>
 
   <section class="wrap section">
-    <p class="eyebrow">What this analysis cannot measure</p>
-    <h2>The limits of the instrument.</h2>
+    <p class="eyebrow">A note on the South Bronx</p>
+    <h2>Different Instruments, Different Answers.</h2>
+
     <p>
-      This project measures monthly NO₂ column density over broad spatial
-      areas. It does not directly measure PM2.5, ozone, indoor exposure,
-      within-day variation, individual health outcomes, or hyperlocal
-      roadside conditions.
+      While this analysis was being completed, Columbia and South Bronx Unite
+      released ground-monitor findings showing PM2.5 increased at 17 of 19
+      South Bronx monitoring sites during the congestion zone's first year,
+      especially near major expressways.
     </p>
+
+    <p><strong>Both findings may be true simultaneously.</strong></p>
+
     <p>
-      The South Bronx PM2.5 findings released by Columbia and South Bronx
-      Unite are therefore not necessarily inconsistent with this analysis.
-      Different instruments measuring different pollutants at different
-      spatial scales can produce different patterns simultaneously. The
-      findings here should be interpreted as evidence about citywide and
-      zone-level atmospheric change, not block-level exposure or the full
-      public-health impact of congestion pricing.
+      This project measures NO₂ using a satellite instrument with a native
+      footprint of roughly 5×3 km. The South Bronx study measures PM2.5
+      using ground-level monitors capable of detecting highly localized
+      roadside changes. A regional satellite signal showing cleaner air
+      over lower Manhattan does not rule out hyperlocal pollution increases
+      along truck diversion corridors.
+    </p>
+
+    <p>
+      The fairest interpretation is that congestion pricing's environmental
+      effects were measurable but uneven, and that some communities already
+      burdened by traffic pollution may have absorbed costs this analysis
+      cannot fully resolve.
+    </p>
+  </section>
+
+  <section class="wrap section">
+    <p class="eyebrow">Things this analysis cannot see</p>
+    <h2>Limits and What They Mean.</h2>
+
+    <ul>
+      <li>TROPOMI's native satellite footprint is roughly 5×3 km, making broad regional patterns more reliable than block-level neighborhood interpretation.</li>
+      <li>This project measures NO₂ only. It does not directly measure PM2.5, ozone, indoor exposure, or cumulative health outcomes.</li>
+      <li>Sixteen months is enough to detect a signal, but not enough to determine long-term trajectory.</li>
+      <li>High-resolution FHV and rideshare trip records were unavailable at the spatial scale needed to evaluate Uber/Lyft substitution effects.</li>
+      <li>Some transportation findings in later chapters partially reflect simultaneous MTA service changes rather than pure congestion-pricing effects alone.</li>
+    </ul>
+
+    <p>
+      These limitations do not invalidate the findings. They define the
+      scale and scope of what this analysis can responsibly claim.
     </p>
   </section>
 

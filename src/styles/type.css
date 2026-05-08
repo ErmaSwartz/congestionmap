@@ -102,6 +102,12 @@ p {
   margin-right: auto;
 }
 
+/* Inline accent words — used sparingly inside H1/H2 to highlight one
+   carrier word per heading. Mirrors the verdict-headline color logic. */
+.accent-improve { color: var(--improve); }
+.accent-zone    { color: var(--zone); }
+.accent-italic  { font-style: italic; }
+
 /* Italic only for captions and footnotes */
 em, i { font-style: italic; }
 figcaption,

@@ -1,0 +1,267 @@
+---
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+import * as d3 from "d3";
+
+// Load satellite arrays (44×62 grid) + cordon polygon at build time
+const data     = JSON.parse(readFileSync(resolve("public/data/no2_panels.json"), "utf-8"));
+const cordon   = JSON.parse(readFileSync(resolve("public/data/cordon.geojson"), "utf-8"));
+const boroughs = JSON.parse(readFileSync(resolve("public/data/boroughs.geojson"), "utf-8"));
+
+const W_PANEL = 380;
+const H_PANEL = 360;
+const M = { top: 16, right: 8, bottom: 8, left: 8 };
+const innerW = W_PANEL - M.left - M.right;
+const innerH = H_PANEL - M.top - M.bottom;
+
+// Build a feature representing the data extent so the projection covers all of NYC
+const lats: number[] = data.lats;
+const lons: number[] = data.lons;
+const minLat = Math.min(...lats), maxLat = Math.max(...lats);
+const minLon = Math.min(...lons), maxLon = Math.max(...lons);
+const dataExtent = {
+  type: "Feature" as const,
+  properties: {},
+  geometry: {
+    type: "Polygon" as const,
+    coordinates: [[
+      [minLon, maxLat], [maxLon, maxLat],
+      [maxLon, minLat], [minLon, minLat], [minLon, maxLat],
+    ]],
+  },
+};
+
+const projection = d3.geoAlbers().fitExtent(
+  [[M.left, M.top], [innerW, innerH]],
+  dataExtent as any,
+);
+const pathGen = d3.geoPath(projection as any);
+
+const dLat = Math.abs((lats[0] - lats[lats.length - 1]) / (lats.length - 1));
+const dLon = Math.abs((lons[lons.length - 1] - lons[0]) / (lons.length - 1));
+
+// Color scales — match the v3 palette
+function rampSequential(t: number): string {
+  // 0 → cream, 1 → carbon-black-green
+  const stops: [number, string][] = [
+    [0.00, "#f2e8cf"],
+    [0.20, "#a1cca5"],
+    [0.40, "#8fb996"],
+    [0.60, "#6a994e"],
+    [0.80, "#386641"],
+    [1.00, "#111d13"],
+  ];
+  for (let i = 0; i < stops.length - 1; i++) {
+    if (t <= stops[i + 1][0]) {
+      const [t0, c0] = stops[i];
+      const [t1, c1] = stops[i + 1];
+      const f = (t - t0) / (t1 - t0);
+      return d3.interpolateRgb(c0, c1)(f);
+    }
+  }
+  return stops[stops.length - 1][1];
+}
+
+function rampDiverging(t: number): string {
+  // t in [-1, 1]; -1 → improve (yellow-green), 0 → walnut, +1 → terracotta
+  if (t < 0) return d3.interpolateRgb("#3a2a1d", "#a7c957")(Math.min(1, -t));
+  return d3.interpolateRgb("#3a2a1d", "#c2664e")(Math.min(1, t));
+}
+
+// Sequential domain (for pre/post): 2nd–98th pct of (pre ∪ post)
+const flat = (a: (number | null)[][]) => a.flat().filter((v): v is number => v !== null);
+const seqValues = [...flat(data.pre), ...flat(data.post)].sort(d3.ascending);
+const seqMin = d3.quantile(seqValues, 0.02) ?? 0;
+const seqMax = d3.quantile(seqValues, 0.98) ?? 1;
+
+// Diverging max (for anomaly): 95th pct of |anomaly|
+const anomVals = flat(data.anomaly).map(Math.abs).sort(d3.ascending);
+const divMax = d3.quantile(anomVals, 0.95) ?? 1;
+
+interface Pixel { x: number; y: number; w: number; h: number; fill: string; }
+function buildPixels(grid: (number | null)[][], scale: (v: number) => string): Pixel[] {
+  const out: Pixel[] = [];
+  for (let i = 0; i < grid.length; i++) {
+    for (let j = 0; j < grid[i].length; j++) {
+      const v = grid[i][j];
+      if (v === null) continue;
+      const lat = lats[i], lon = lons[j];
+      const tl = projection([lon - dLon / 2, lat + dLat / 2]);
+      const br = projection([lon + dLon / 2, lat - dLat / 2]);
+      if (!tl || !br) continue;
+      out.push({
+        x: tl[0], y: tl[1],
+        w: br[0] - tl[0], h: br[1] - tl[1],
+        fill: scale(v),
+      });
+    }
+  }
+  return out;
+}
+
+// Sequential cmap for pre/post (normalize to [0,1] within seqMin..seqMax)
+const seqCmap = (v: number) => {
+  const t = Math.max(0, Math.min(1, (v - seqMin) / (seqMax - seqMin)));
+  return rampSequential(t);
+};
+// Diverging cmap for anomaly (normalize to [-1, 1] within ±divMax)
+const divCmap = (v: number) => rampDiverging(Math.max(-1, Math.min(1, v / divMax)));
+
+const prePixels  = buildPixels(data.pre,     seqCmap);
+const postPixels = buildPixels(data.post,    seqCmap);
+const anomPixels = buildPixels(data.anomaly, divCmap);
+
+const cordonD = pathGen(cordon.features[0]) ?? "";
+const boroughPaths = (boroughs.features as any[]).map((f) => pathGen(f) ?? "");
+
+const fmtSci = (v: number) => v.toExponential(1).replace("e", "×10");
+---
+<figure class="three-panel-figure">
+  <div class="panels">
+    <div class="panel">
+      <p class="panel-eyebrow">Before the zone</p>
+      <p class="panel-period">Jan 2023 – Apr 2024</p>
+      <svg viewBox={`0 0 ${W_PANEL} ${H_PANEL}`} role="img" aria-labelledby="pre-title">
+        <title id="pre-title">Average NO₂ over NYC, January 2023 to April 2024</title>
+        {prePixels.map((p) => (
+          <rect x={p.x} y={p.y} width={p.w + 0.5} height={p.h + 0.5} fill={p.fill} />
+        ))}
+        {boroughPaths.map((d) => (
+          <path d={d} class="borough-line" fill="none" />
+        ))}
+        <path d={cordonD} class="cordon-line" fill="none" />
+      </svg>
+    </div>
+
+    <div class="panel">
+      <p class="panel-eyebrow">After the zone</p>
+      <p class="panel-period">Jan 2025 – Apr 2026</p>
+      <svg viewBox={`0 0 ${W_PANEL} ${H_PANEL}`} role="img" aria-labelledby="post-title">
+        <title id="post-title">Average NO₂ over NYC, January 2025 to April 2026</title>
+        {postPixels.map((p) => (
+          <rect x={p.x} y={p.y} width={p.w + 0.5} height={p.h + 0.5} fill={p.fill} />
+        ))}
+        {boroughPaths.map((d) => (
+          <path d={d} class="borough-line" fill="none" />
+        ))}
+        <path d={cordonD} class="cordon-line" fill="none" />
+      </svg>
+    </div>
+
+    <div class="panel">
+      <p class="panel-eyebrow">What changed</p>
+      <p class="panel-period">After minus before</p>
+      <svg viewBox={`0 0 ${W_PANEL} ${H_PANEL}`} role="img" aria-labelledby="anom-title">
+        <title id="anom-title">Change in NO₂ between the two windows</title>
+        {anomPixels.map((p) => (
+          <rect x={p.x} y={p.y} width={p.w + 0.5} height={p.h + 0.5} fill={p.fill} />
+        ))}
+        {boroughPaths.map((d) => (
+          <path d={d} class="borough-line" fill="none" />
+        ))}
+        <path d={cordonD} class="cordon-line" fill="none" />
+      </svg>
+    </div>
+  </div>
+
+  {/* Two-panel legend */}
+  <div class="legends">
+    <div class="legend">
+      <p class="legend-eyebrow">Before / After (μmol/m²)</p>
+      <div class="ramp-bar" style="background: linear-gradient(to right, #f2e8cf 0%, #a1cca5 20%, #8fb996 40%, #6a994e 60%, #386641 80%, #111d13 100%);"></div>
+      <div class="ramp-ticks">
+        <span>{(seqMin * 1e6).toFixed(0)}</span>
+        <span>{((seqMin + seqMax) / 2 * 1e6).toFixed(0)}</span>
+        <span>{(seqMax * 1e6).toFixed(0)}</span>
+      </div>
+    </div>
+    <div class="legend">
+      <p class="legend-eyebrow">Change (μmol/m²)</p>
+      <div class="ramp-bar" style="background: linear-gradient(to right, #a7c957 0%, #3a2a1d 50%, #c2664e 100%);"></div>
+      <div class="ramp-ticks">
+        <span>−{(divMax * 1e6).toFixed(0)}</span>
+        <span>0</span>
+        <span>+{(divMax * 1e6).toFixed(0)}</span>
+      </div>
+    </div>
+  </div>
+</figure>
+
+<style>
+  .three-panel-figure {
+    margin: var(--s-5) auto;
+    max-width: 1280px;
+    width: 100%;
+  }
+  .panels {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--s-3);
+  }
+  .panel { text-align: center; }
+  .panel svg { width: 100%; height: auto; display: block; }
+  .panel-eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--t-meta);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--zone);
+    margin: 0 0 4px;
+    text-align: center;
+    max-width: none;
+  }
+  .panel-period {
+    font-family: var(--font-display);
+    font-size: 0.9375rem;
+    color: var(--ink-muted);
+    margin: 0 0 var(--s-2);
+    text-align: center;
+    max-width: none;
+  }
+  .borough-line {
+    stroke: var(--ink);
+    stroke-opacity: 0.45;
+    stroke-width: 0.6;
+    stroke-linejoin: round;
+  }
+  .cordon-line {
+    stroke: var(--ink);
+    stroke-width: 1.8;
+  }
+
+  .legends {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--s-4);
+    margin: var(--s-3) auto 0;
+    max-width: 920px;
+  }
+  .legend-eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--t-meta);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 0 0 var(--s-1);
+    text-align: left;
+    max-width: none;
+  }
+  .ramp-bar {
+    height: 10px;
+    border-radius: 1px;
+  }
+  .ramp-ticks {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 4px;
+    font-family: var(--font-mono);
+    font-size: var(--t-meta);
+    color: var(--ink-faint);
+    font-feature-settings: "tnum" 1;
+  }
+
+  @media (max-width: 720px) {
+    .panels { grid-template-columns: 1fr; gap: var(--s-4); }
+    .legends { grid-template-columns: 1fr; }
+  }
+</style>

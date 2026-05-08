@@ -11,11 +11,13 @@ const { number, title, takeaway, href, thumbnail, thumbAlt } = Astro.props;
 ---
 <a class="chapter-card" href={href}>
   <div class="ch-thumb">
-    {thumbnail ? (
-      <img src={thumbnail} alt={thumbAlt ?? ""} loading="lazy" />
-    ) : (
-      <div class="ch-placeholder" aria-hidden="true"></div>
-    )}
+    <slot name="icon">
+      {thumbnail ? (
+        <img src={thumbnail} alt={thumbAlt ?? ""} loading="lazy" />
+      ) : (
+        <div class="ch-placeholder" aria-hidden="true"></div>
+      )}
+    </slot>
   </div>
   <div class="ch-meta">
     <span class="ch-num">{number}</span>
@@ -69,7 +71,7 @@ const { number, title, takeaway, href, thumbnail, thumbAlt } = Astro.props;
   }
   .ch-title {
     font-family: var(--font-display);
-    font-size: 1.625rem;
+    font-size: 1.875rem;
     font-weight: 500;
     line-height: 1.15;
     color: var(--ink);
@@ -79,7 +81,7 @@ const { number, title, takeaway, href, thumbnail, thumbAlt } = Astro.props;
   }
   .ch-takeaway {
     font-family: var(--font-display);
-    font-size: 1.0625rem;
+    font-size: 1.1875rem;
     line-height: 1.5;
     color: var(--ink-muted);
     margin: 0 auto;

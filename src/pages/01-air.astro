@@ -1,14 +1,12 @@
 ---
 import Base from "@layouts/Base.astro";
 import Choropleth from "@components/Choropleth.astro";
-import Sparkline from "@components/Sparkline.astro";
-import { loadDidCi } from "@/lib/data";
+import Tropomi3Panel from "@components/Tropomi3Panel.astro";
+import TropomiAnomalyMap from "@components/TropomiAnomalyMap.astro";
+import DistributiveStrata from "@components/DistributiveStrata.astro";
+import StrataMaps from "@components/StrataMaps.astro";
 import { BASE } from "@/lib/site";
 
-const ci = loadDidCi();
-const fmtPP = (v: number) => `${v < 0 ? "−" : "+"}${Math.abs(v).toFixed(2)} pp`;
-const fmtCI = (lo: number, hi: number) =>
-  `[${lo < 0 ? "−" : "+"}${Math.abs(lo).toFixed(2)}, ${hi < 0 ? "−" : "+"}${Math.abs(hi).toFixed(2)}] pp`;
 const fig = (path: string) => `${BASE}/figures/${path}`;
 ---
 <Base
@@ -18,7 +16,7 @@ const fig = (path: string) => `${BASE}/figures/${path}`;
   {/* ── HERO ──────────────────────────────────────────────── */}
   <section class="wrap section">
     <p class="eyebrow">Chapter 01 · The Air</p>
-    <h1>How nitrogen dioxide changed across NYC after congestion pricing began.</h1>
+    <h1>How Nitrogen Dioxide <span class="accent-zone">Changed</span> Across NYC After Congestion Pricing Began.</h1>
     <p class="lede" style="margin-top: var(--s-4);">
       Sixteen months of satellite measurements suggest pollution declined more
       over Manhattan's congestion zone than over the rest of New York City.
@@ -26,20 +24,39 @@ const fig = (path: string) => `${BASE}/figures/${path}`;
       changes more plausibly associated with the toll.
     </p>
 
-    <Sparkline />
   </section>
 
   {/* ── ANIMATION ─────────────────────────────────────────── */}
   <section class="wrap section">
     <p class="eyebrow">The seasonal cycle, animated</p>
-    <h2>Sixteen months of monthly NO₂, frame by frame.</h2>
-    <figure class="fig fig-wide">
+    <h2>Sixteen Months of Monthly NO₂, Frame by Frame.</h2>
+    <figure class="fig fig-wide animation-figure">
       <video
         src={fig("no2_animation.mp4")}
         poster={fig("no2_animation.gif")}
         autoplay loop muted playsinline preload="metadata"
         aria-label="Animated monthly NO₂ over NYC, January 2023 through April 2026"
       ></video>
+
+      <div class="animation-legend">
+        <p class="animation-legend-eyebrow">Monthly NO₂ (μmol/m²)</p>
+        <div
+          class="animation-legend-ramp"
+          style="background: linear-gradient(to right, #f2e8cf 0%, #a1cca5 20%, #8fb996 40%, #6a994e 60%, #386641 80%, #111d13 100%);"
+          aria-hidden="true"
+        ></div>
+        <div class="animation-legend-ticks">
+          <span>≈82</span>
+          <span>≈100</span>
+          <span>≈125</span>
+          <span>≈150</span>
+          <span>≈172</span>
+        </div>
+        <p class="animation-legend-key">
+          Lighter cream = less pollution. Darker green = more pollution.
+        </p>
+      </div>
+
       <figcaption>
         Pollution rises seasonally during winter and falls during summer. The
         spatial pattern shifts after January 2025, when the congestion zone
@@ -51,29 +68,25 @@ const fig = (path: string) => `${BASE}/figures/${path}`;
   {/* ── BEFORE / AFTER / CHANGE ───────────────────────────── */}
   <section class="wrap section">
     <p class="eyebrow">Before, after, and change</p>
-    <h2>The congestion zone's footprint in the air.</h2>
+    <h2>The Congestion Zone's Footprint in the Air.</h2>
     <p>
       The left panels show average NO₂ before and after congestion pricing.
       The difference map on the right isolates where pollution changed most
       strongly — concentrated around lower Manhattan and adjacent corridors,
       rather than appearing evenly across the city.
     </p>
-    <figure class="fig fig-wide">
-      <img src={fig("no2_three_panel.png")}
-           alt="Three NYC maps: NO2 before, NO2 after, and the change. The change panel shows blue tones over Manhattan."
-           loading="lazy" />
-      <figcaption>
-        Average NO₂ before (Jan 2023 – Apr 2024), after (Jan 2025 – Apr
-        2026), and the difference. Same calendar months in each window remove
-        seasonal cycles from the comparison.
-      </figcaption>
-    </figure>
+    <Tropomi3Panel />
+    <p class="caption" style="margin-top: var(--s-2);">
+      Pixels are TROPOMI satellite cells (~5×3 km). The cordon polygon is
+      outlined in cream. Same calendar months in each window remove seasonal
+      cycles from the comparison.
+    </p>
   </section>
 
   {/* ── MAIN VISUALIZATION (zone-level choropleth) ────────── */}
   <section class="wrap section">
     <p class="eyebrow">Where pollution declined most</p>
-    <h2>Change in monthly NO₂ by neighborhood.</h2>
+    <h2>Change in Monthly NO₂ by Neighborhood.</h2>
     <p>
       Each shape is a NYC neighborhood (TLC taxi zone). Greens indicate
       decreases; terracotta indicates increases. The congestion zone is
@@ -90,40 +103,57 @@ const fig = (path: string) => `${BASE}/figures/${path}`;
 
   {/* ── PLACEBO LOGIC ─────────────────────────────────────── */}
   <section class="wrap section">
-    <p class="eyebrow">Why the placebo matters</p>
-    <h2>What change looks like without the policy.</h2>
+    <p class="eyebrow">Why this counts as a finding</p>
+    <h2>Background Atmospheric Drift, Ruled Out.</h2>
 
     <p>
-      Atmospheric pollution changes from year to year even without policy
-      intervention. To estimate how much the congestion zone mattered, the
-      analysis compares two pairs: a real window before vs. after the toll,
-      and a placebo window from a year earlier when no congestion zone existed.
+      NO₂ shifts year to year for many reasons unrelated to policy. The
+      analysis tests this directly: the same comparison run a year earlier,
+      before the congestion zone existed, shows little comparable Manhattan
+      signal. The post-2025 pattern reflects more than ordinary atmospheric
+      variability.
     </p>
 
-    <div class="finding-block">
-      <div class="finding-row">
-        <p class="finding-label">Observed</p>
-        <p class="finding-value">{fmtPP(ci.realGap.value)}</p>
-        <p class="finding-receipts">95% CI {fmtCI(...ci.realGap.ci)} · n={ci.nCordon} cordon px / {ci.nRest} rest of NYC</p>
-      </div>
-      <div class="finding-row">
-        <p class="finding-label">After adjusting for atmospheric drift</p>
-        <p class="finding-value">{fmtPP(ci.didOfDids.value)}</p>
-        <p class="finding-receipts">95% CI {fmtCI(...ci.didOfDids.ci)} · pixel-level bootstrap, n={ci.nBoot.toLocaleString()}</p>
-      </div>
-    </div>
+    <TropomiAnomalyMap
+      field="placebo_anomaly"
+      legendLabel="Placebo change"
+      legendSub="2024 vs. 2023, no policy in effect"
+    />
+    <p class="caption" style="margin-top: var(--s-2);">
+      The placebo year. Roughly flat over lower Manhattan — without the
+      policy, the cordon area doesn't show the kind of anomaly that appears
+      in the real comparison. The
+      <a href={`${BASE}/02-methods/`}>methods chapter</a> explains the
+      placebo design step by step.
+    </p>
+  </section>
 
-    <p>
-      The placebo period shows little comparable signal over lower Manhattan,
-      strengthening the interpretation that the post-2025 pattern reflects
-      more than ordinary atmospheric variability.
+  {/* ── STRATA MAPS ───────────────────────────────────────── */}
+  <section class="full-bleed">
+    <div class="wrap-narrow" style="margin-bottom: var(--s-4);">
+      <p class="eyebrow">Sorting neighborhoods three ways</p>
+      <h2>Three Ways of Grouping NYC.</h2>
+      <p>
+        To ask whether different kinds of neighborhoods saw different
+        effects, the analysis sorts NYC's 263 zones into thirds along three
+        traits — income, car ownership, and transit reliance. The maps
+        below show where each group sits geographically; the chart that
+        follows compares how the congestion zone's air benefit reached
+        each one.
+      </p>
+    </div>
+    <StrataMaps />
+    <p class="caption" style="margin-top: var(--s-2);">
+      NYC neighborhoods sorted into thirds for income, car ownership, and
+      transit reliance. Click any map to enlarge. The congestion zone is
+      outlined in terracotta.
     </p>
   </section>
 
   {/* ── DISTRIBUTIONAL ────────────────────────────────────── */}
   <section class="wrap section">
     <p class="eyebrow">Did all neighborhoods benefit equally?</p>
-    <h2>The pattern does not map cleanly onto neighborhood wealth.</h2>
+    <h2>The Pattern Does Not Map Cleanly Onto Neighborhood Wealth.</h2>
 
     <p>
       The congestion zone improved most relative to higher-income, less
@@ -139,65 +169,12 @@ const fig = (path: string) => `${BASE}/figures/${path}`;
       have benefited less than the Manhattan core.
     </p>
 
-    <figure class="fig fig-wide">
-      <img src={fig("no2_distributive_strata.svg")}
-           alt="Forest-style chart of how much more the congestion zone's air improved than groups of similar neighborhoods elsewhere, by income, car ownership, and transit reliance."
-           loading="lazy" />
-      <figcaption>
-        Each row compares a group of neighborhoods to the congestion zone.
-        Bars show how much more the zone's air improved than that group's,
-        with 95% bootstrap confidence intervals.
-      </figcaption>
-    </figure>
-  </section>
-
-  {/* ── SOUTH BRONX ───────────────────────────────────────── */}
-  <section class="wrap section">
-    <p class="eyebrow">A note on the South Bronx</p>
-    <h2>Different instruments, different answers.</h2>
-
-    <p>
-      While this analysis was being completed, Columbia and South Bronx Unite
-      released ground-monitor findings showing PM2.5 increased at 17 of 19
-      South Bronx monitoring sites during the congestion zone's first year,
-      especially near major expressways.
-    </p>
-
-    <p><strong>Both findings may be true simultaneously.</strong></p>
-
-    <p>
-      This project measures NO₂ using a satellite instrument with a native
-      footprint of roughly 5×3 km. The South Bronx study measures PM2.5 using
-      ground-level monitors capable of detecting highly localized roadside
-      changes. A regional satellite signal showing cleaner air over lower
-      Manhattan does not rule out hyperlocal pollution increases along truck
-      diversion corridors.
-    </p>
-
-    <p>
-      The fairest interpretation is that congestion pricing's environmental
-      effects were measurable but uneven, and that some communities already
-      burdened by traffic pollution may have absorbed costs this analysis
-      cannot fully resolve.
-    </p>
-  </section>
-
-  {/* ── LIMITATIONS ───────────────────────────────────────── */}
-  <section class="wrap section">
-    <p class="eyebrow">Things this analysis cannot see</p>
-    <h2>Limits and what they mean.</h2>
-
-    <ul>
-      <li>TROPOMI's native satellite footprint is roughly 5×3 km, making broad regional patterns more reliable than block-level neighborhood interpretation.</li>
-      <li>This project measures NO₂ only. It does not directly measure PM2.5, ozone, indoor exposure, or cumulative health outcomes.</li>
-      <li>Sixteen months is enough to detect a signal, but not enough to determine long-term trajectory.</li>
-      <li>High-resolution FHV and rideshare trip records were unavailable at the spatial scale needed to evaluate Uber/Lyft substitution effects.</li>
-      <li>Some transportation findings in later chapters partially reflect simultaneous MTA service changes rather than pure congestion-pricing effects alone.</li>
-    </ul>
-
-    <p>
-      These limitations do not invalidate the findings. They define the scale
-      and scope of what this analysis can responsibly claim.
+    <DistributiveStrata />
+    <p class="caption" style="margin-top: var(--s-2);">
+      Each row compares a group of neighborhoods to the congestion zone.
+      Bars show how much more the zone's air improved than that group's,
+      with 95% bootstrap confidence intervals. Two reference lines mark the
+      citywide average and the placebo-corrected zone effect.
     </p>
   </section>
 
@@ -212,6 +189,44 @@ const fig = (path: string) => `${BASE}/figures/${path}`;
 </Base>
 
 <style>
+  /* Animation legend — sits between video and caption, mirrors the
+     sequential ramp the GIF was rendered with. */
+  .animation-figure .animation-legend {
+    margin: var(--s-3) auto 0;
+    max-width: 600px;
+  }
+  .animation-legend-eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--t-meta);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    text-align: center;
+    margin: 0 0 var(--s-1);
+    max-width: none;
+  }
+  .animation-legend-ramp {
+    height: 12px;
+    border-radius: 1px;
+  }
+  .animation-legend-ticks {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 4px;
+    font-family: var(--font-mono);
+    font-size: var(--t-meta);
+    color: var(--ink-faint);
+    font-feature-settings: "tnum" 1;
+  }
+  .animation-legend-key {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--t-small);
+    color: var(--ink-muted);
+    margin: var(--s-2) auto 0;
+    text-align: center;
+  }
+
   /* Finding block — observed + adjusted in centered stack */
   .finding-block {
     margin: var(--s-5) auto;
