@@ -1,0 +1,193 @@
+---
+import Base from "@layouts/Base.astro";
+import Sparkline from "@components/Sparkline.astro";
+import StatCard from "@components/StatCard.astro";
+import MetadataStrip from "@components/MetadataStrip.astro";
+import ChapterCard from "@components/ChapterCard.astro";
+import { loadDidCi } from "@/lib/data";
+import { BASE } from "@/lib/site";
+
+const ci = loadDidCi();
+
+const fmtPP = (v: number) => {
+  const sign = v < 0 ? "−" : "+";
+  return `${sign}${Math.abs(v).toFixed(2)} pp`;
+};
+const fmtCI = (lo: number, hi: number) => {
+  const f = (v: number) => `${v < 0 ? "−" : "+"}${Math.abs(v).toFixed(2)}`;
+  return `[${f(lo)}, ${f(hi)}] pp`;
+};
+
+const observed = {
+  value: fmtPP(ci.realGap.value),
+  receipts: `n=${ci.nCordon} cordon px · 95% CI ${fmtCI(...ci.realGap.ci)}`,
+};
+const adjusted = {
+  value: fmtPP(ci.didOfDids.value),
+  receipts: `n=${ci.nBoot.toLocaleString()} bootstrap · 95% CI ${fmtCI(...ci.didOfDids.ci)}`,
+};
+---
+<Base
+  title="What Changed in NYC's Air After Congestion Pricing?"
+  description="Sixteen months of satellite measurements suggest nitrogen dioxide pollution declined over Manhattan's congestion zone after the January 2025 toll began. The improvement exceeded broader citywide trends, but the effect was modest and unevenly distributed."
+>
+  {/* ── HERO ──────────────────────────────────────────────── */}
+  <section class="wrap section">
+    <p class="eyebrow">A spatial investigation of NYC's congestion-pricing program</p>
+    <h1>What Changed in NYC's <span class="accent-improve">Air</span> After Congestion Pricing?</h1>
+    <p class="lede" style="margin-top: var(--s-4);">
+      Sixteen months of satellite measurements suggest nitrogen dioxide pollution
+      declined over Manhattan's congestion zone after the January 2025 toll began.
+      The improvement exceeded broader citywide trends, but the effect was modest
+      and unevenly distributed across neighborhoods.
+    </p>
+    <Sparkline />
+  </section>
+
+  {/* ── HEADLINE STAT BLOCK ───────────────────────────────── */}
+  <section class="wrap section">
+    <div class="stat-row">
+      <StatCard
+        label="Observed"
+        value={observed.value}
+        sublabel="Raw difference, zone vs. rest of NYC, before vs. after"
+        receipts={observed.receipts}
+      />
+      <div class="stat-rule" aria-hidden="true"></div>
+      <StatCard
+        label="Adjusted"
+        value={adjusted.value}
+        sublabel="Placebo-corrected (2024 vs. 2023 baseline)"
+        receipts={adjusted.receipts}
+      />
+    </div>
+  </section>
+
+  {/* ── METADATA STRIP ────────────────────────────────────── */}
+  <section class="wrap section">
+    <MetadataStrip
+      items={[
+        { label: "Scope", value: "Manhattan,<br/>south of 60th St" },
+        { label: "Period", value: "Jan 2023 – Apr 2026,<br/>16-month windows" },
+        { label: "Instrument", value: "Sentinel-5P TROPOMI<br/>monthly NO₂ grids" },
+      ]}
+    />
+  </section>
+
+  {/* ── CHAPTERS GRID ─────────────────────────────────────── */}
+  <section class="wrap section">
+    <p class="eyebrow">Chapters</p>
+    <div class="chapter-grid">
+      <ChapterCard
+        number="01"
+        title="The Air"
+        takeaway="How nitrogen dioxide changed across NYC after congestion pricing began."
+        href={`${BASE}/01-air/`}
+      >
+        <svg slot="icon" class="ch-icon" viewBox="0 0 64 48" aria-hidden="true">
+          <path d="M4 14 q8 -8 16 0 t16 0 t16 0 t8 0" />
+          <path d="M4 24 q8 -8 16 0 t16 0 t16 0 t8 0" />
+          <path d="M4 34 q8 -8 16 0 t16 0 t16 0 t8 0" />
+        </svg>
+      </ChapterCard>
+      <ChapterCard
+        number="02"
+        title="Methods"
+        takeaway="The placebo design, the satellite, the stratification, and what the data can responsibly say."
+        href={`${BASE}/02-methods/`}
+      >
+        <svg slot="icon" class="ch-icon" viewBox="0 0 64 48" aria-hidden="true">
+          {/* Two pairs of horizontal lines (real + placebo windows) joined by a vertical reference */}
+          <line x1="6" y1="14" x2="26" y2="14" />
+          <line x1="38" y1="14" x2="58" y2="14" />
+          <line x1="6" y1="34" x2="26" y2="34" />
+          <line x1="38" y1="34" x2="58" y2="34" />
+          <line x1="32" y1="6" x2="32" y2="42" stroke-dasharray="3 3" />
+        </svg>
+      </ChapterCard>
+      <ChapterCard
+        number="03"
+        title="Other Findings"
+        takeaway="Traffic, transit, and the spillover effects that did — and didn't — appear."
+        href={`${BASE}/03-other-findings/`}
+      >
+        <svg slot="icon" class="ch-icon" viewBox="0 0 64 48" aria-hidden="true">
+          {/* Forest-plot suggestion: 4 horizontal CI bars with center dots */}
+          <line x1="14" y1="10" x2="40" y2="10" />
+          <circle cx="32" cy="10" r="2.5" fill="currentColor" />
+          <line x1="22" y1="20" x2="50" y2="20" />
+          <circle cx="44" cy="20" r="2.5" fill="currentColor" />
+          <line x1="10" y1="30" x2="34" y2="30" />
+          <circle cx="20" cy="30" r="2.5" fill="currentColor" />
+          <line x1="32" y1="40" x2="58" y2="40" stroke-dasharray="2 3" />
+        </svg>
+      </ChapterCard>
+      <ChapterCard
+        number="04"
+        title="Verdict"
+        takeaway="What the evidence suggests, what remains uncertain, and where the analysis reaches its limits."
+        href={`${BASE}/04-verdict/`}
+      >
+        <svg slot="icon" class="ch-icon" viewBox="0 0 64 48" aria-hidden="true">
+          {/* Balance: triangular fulcrum with a slightly tipped beam */}
+          <line x1="10" y1="14" x2="54" y2="20" />
+          <line x1="10" y1="14" x2="10" y2="22" />
+          <line x1="54" y1="20" x2="54" y2="28" />
+          <path d="M22 38 L42 38 L32 22 Z" />
+        </svg>
+      </ChapterCard>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* Stat block — two cards separated by a hairline rule */
+  .stat-row {
+    display: grid;
+    grid-template-columns: 1fr 1px 1fr;
+    gap: var(--s-5);
+    align-items: center;
+    max-width: 880px;
+    margin: 0 auto;
+  }
+  .stat-rule {
+    background: var(--rule);
+    width: 1px;
+    align-self: stretch;
+  }
+  @media (max-width: 720px) {
+    .stat-row {
+      grid-template-columns: 1fr;
+      gap: var(--s-4);
+    }
+    .stat-rule {
+      width: 100%;
+      height: 1px;
+    }
+  }
+
+  /* Chapter grid — 2x2 desktop, single column mobile */
+  .chapter-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0;
+    margin-top: var(--s-4);
+    border-bottom: 1px solid var(--rule);
+  }
+  @media (max-width: 720px) {
+    .chapter-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Editorial line-art icons sitting in each chapter card */
+  :global(.ch-icon) {
+    width: 64px;
+    height: 48px;
+    margin: 0 auto;
+    display: block;
+    fill: none;
+    stroke: var(--zone);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+</style>

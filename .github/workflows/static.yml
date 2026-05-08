@@ -1,4 +1,4 @@
-# Build the Vite scrollytelling app and deploy to GitHub Pages
+# Build the Astro site (v3) and deploy to GitHub Pages.
 name: Deploy site to Pages
 
 on:
@@ -21,9 +21,6 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: app
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -33,12 +30,11 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: app/package-lock.json
 
       - name: Install dependencies
         run: npm ci --no-audit --no-fund
 
-      - name: Build
+      - name: Build (Astro)
         run: npm run build
 
       - name: Setup Pages
@@ -47,7 +43,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: app/dist
+          path: dist
 
       - name: Deploy to GitHub Pages
         id: deployment

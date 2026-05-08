@@ -1,0 +1,113 @@
+---
+// Synthesis flow diagram — shows the structure of the analysis.
+// Top: "Congestion zone, Jan 2025" trunk.
+// Branches: Air, Bridges, Transit, Spillover.
+// Each branch has a brief label and an outcome (no numbers — confidence
+// strength is shown by the separate ConfidenceAxis component below).
+
+interface Branch {
+  label: string;
+  outcome: string;
+  outcomeStrength: "strong" | "moderate" | "weak";
+}
+const BRANCHES: Branch[] = [
+  { label: "Air",       outcome: "Cleaner over the zone",         outcomeStrength: "strong" },
+  { label: "Bridges",   outcome: "Modestly fewer entries",        outcomeStrength: "moderate" },
+  { label: "Transit",   outcome: "More riders, mixed mechanism",  outcomeStrength: "moderate" },
+  { label: "Spillover", outcome: "Not detected",                  outcomeStrength: "weak" },
+];
+
+const W = 920;
+const H = 360;
+const trunkY = 60;
+const branchY = 240;
+const labelY = 290;
+const outcomeY = 320;
+
+const colWidth = W / BRANCHES.length;
+const colCenters = BRANCHES.map((_, i) => colWidth * (i + 0.5));
+
+const strengthColor = (s: Branch["outcomeStrength"]) =>
+  s === "strong" ? "var(--improve)" :
+  s === "weak"   ? "var(--zone)" :
+                   "var(--ink-muted)";
+---
+<figure class="flow-figure">
+  <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-labelledby="flow-title flow-desc">
+    <title id="flow-title">Project structure: four lines of evidence</title>
+    <desc id="flow-desc">
+      The congestion zone, beginning in January 2025, anchors four lines of
+      analysis: air quality, bridge crossings, transit ridership, and
+      yellow-taxi spillover. Each branch reaches a different verdict.
+    </desc>
+
+    {/* Trunk */}
+    <text x={W / 2} y={trunkY - 20} class="trunk-eyebrow" text-anchor="middle">
+      Congestion zone · Jan 5, 2025
+    </text>
+    <line x1={W / 2} x2={W / 2} y1={trunkY} y2={trunkY + 28} class="trunk-line" />
+
+    {/* Trunk-to-branches connector */}
+    <line
+      x1={colCenters[0]} x2={colCenters[colCenters.length - 1]}
+      y1={trunkY + 28} y2={trunkY + 28}
+      class="branch-connector"
+    />
+
+    {BRANCHES.map((b, i) => (
+      <g class="branch">
+        {/* Vertical drop */}
+        <line
+          x1={colCenters[i]} x2={colCenters[i]}
+          y1={trunkY + 28} y2={branchY}
+          class="branch-line"
+        />
+        {/* Branch label box */}
+        <circle cx={colCenters[i]} cy={branchY} r="5" fill={strengthColor(b.outcomeStrength)} />
+        <text x={colCenters[i]} y={labelY} class="branch-label" text-anchor="middle">{b.label}</text>
+        <text x={colCenters[i]} y={outcomeY} class="branch-outcome" text-anchor="middle">{b.outcome}</text>
+      </g>
+    ))}
+  </svg>
+</figure>
+
+<style>
+  .flow-figure {
+    margin: var(--s-5) auto;
+    max-width: 1080px;
+  }
+  .flow-figure svg { width: 100%; height: auto; display: block; }
+
+  .trunk-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    fill: var(--ink-faint);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .trunk-line {
+    stroke: var(--ink-muted);
+    stroke-width: 1;
+  }
+  .branch-connector {
+    stroke: var(--ink-muted);
+    stroke-width: 1;
+  }
+  .branch-line {
+    stroke: var(--ink-muted);
+    stroke-width: 0.8;
+    stroke-dasharray: 4 3;
+  }
+  .branch-label {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 500;
+    fill: var(--ink);
+  }
+  .branch-outcome {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 16px;
+    fill: var(--ink-muted);
+  }
+</style>

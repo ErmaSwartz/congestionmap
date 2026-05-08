@@ -1,0 +1,167 @@
+---
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+import * as d3 from "d3";
+
+interface Props {
+  /** Which anomaly to render — "anomaly" (real post-pre) or "placebo_anomaly" */
+  field?: "anomaly" | "placebo_anomaly";
+  /** Caption-line label for the legend */
+  legendLabel?: string;
+  /** Caption-line subtitle for the legend (years etc.) */
+  legendSub?: string;
+}
+
+const { field = "anomaly", legendLabel = "Change in NO₂", legendSub = "" } = Astro.props;
+
+const data     = JSON.parse(readFileSync(resolve("public/data/no2_panels.json"), "utf-8"));
+const cordon   = JSON.parse(readFileSync(resolve("public/data/cordon.geojson"), "utf-8"));
+const boroughs = JSON.parse(readFileSync(resolve("public/data/boroughs.geojson"), "utf-8"));
+
+const W = 880;
+const H = 600;
+const M = { top: 16, right: 16, bottom: 8, left: 16 };
+const innerW = W - M.left - M.right;
+const innerH = H - M.top - M.bottom;
+
+const lats: number[] = data.lats;
+const lons: number[] = data.lons;
+const dataExtent = {
+  type: "Feature" as const,
+  properties: {},
+  geometry: {
+    type: "Polygon" as const,
+    coordinates: [[
+      [Math.min(...lons), Math.max(...lats)],
+      [Math.max(...lons), Math.max(...lats)],
+      [Math.max(...lons), Math.min(...lats)],
+      [Math.min(...lons), Math.min(...lats)],
+      [Math.min(...lons), Math.max(...lats)],
+    ]],
+  },
+};
+
+const projection = d3.geoAlbers().fitExtent(
+  [[M.left + 8, M.top + 8], [innerW + M.left - 8, innerH + M.top - 8]],
+  dataExtent as any,
+);
+const pathGen = d3.geoPath(projection as any);
+
+const dLat = Math.abs((lats[0] - lats[lats.length - 1]) / (lats.length - 1));
+const dLon = Math.abs((lons[lons.length - 1] - lons[0]) / (lons.length - 1));
+
+const grid: (number | null)[][] = data[field];
+const flat = grid.flat().filter((v): v is number => v !== null);
+const divMax = d3.quantile(flat.map(Math.abs).sort(d3.ascending), 0.95) ?? 1;
+
+function diverging(t: number): string {
+  if (t < 0) return d3.interpolateRgb("#3a2a1d", "#a7c957")(Math.min(1, -t));
+  return d3.interpolateRgb("#3a2a1d", "#c2664e")(Math.min(1, t));
+}
+const cmap = (v: number) => diverging(Math.max(-1, Math.min(1, v / divMax)));
+
+interface Pixel { x: number; y: number; w: number; h: number; fill: string; }
+const pixels: Pixel[] = [];
+for (let i = 0; i < grid.length; i++) {
+  for (let j = 0; j < grid[i].length; j++) {
+    const v = grid[i][j];
+    if (v === null) continue;
+    const tl = projection([lons[j] - dLon / 2, lats[i] + dLat / 2]);
+    const br = projection([lons[j] + dLon / 2, lats[i] - dLat / 2]);
+    if (!tl || !br) continue;
+    pixels.push({ x: tl[0], y: tl[1], w: br[0] - tl[0], h: br[1] - tl[1], fill: cmap(v) });
+  }
+}
+const cordonD = pathGen(cordon.features[0]) ?? "";
+const boroughPaths = (boroughs.features as any[]).map((f) => pathGen(f) ?? "");
+
+const fmt = (v: number) => `${v >= 0 ? "+" : "−"}${Math.abs(v).toFixed(0)}`;
+---
+<figure class="anomaly-figure">
+  <svg viewBox={`0 0 ${W} ${H}`} role="img" preserveAspectRatio="xMidYMid meet">
+    {pixels.map((p) => (
+      <rect x={p.x} y={p.y} width={p.w + 0.5} height={p.h + 0.5} fill={p.fill} />
+    ))}
+    {boroughPaths.map((d) => (
+      <path d={d} class="borough-line" fill="none" />
+    ))}
+    <path d={cordonD} class="cordon-line" fill="none" />
+  </svg>
+
+  <div class="legend">
+    <p class="legend-eyebrow">{legendLabel}{legendSub && <span class="legend-sub"> · {legendSub}</span>}</p>
+    <div class="ramp-bar"></div>
+    <div class="ramp-ticks">
+      <span>{fmt(-divMax * 1e6)} μmol/m²</span>
+      <span>0</span>
+      <span>{fmt(+divMax * 1e6)}</span>
+    </div>
+    <p class="legend-key">
+      <span><span class="key-swatch swatch-improve"></span> cleaner</span>
+      <span><span class="key-swatch swatch-worsen"></span> more polluted</span>
+      <span><span class="key-swatch swatch-cordon"></span> congestion zone</span>
+    </p>
+  </div>
+</figure>
+
+<style>
+  .anomaly-figure {
+    margin: var(--s-5) auto;
+    max-width: 1080px;
+  }
+  .anomaly-figure svg { width: 100%; height: auto; display: block; }
+  .borough-line {
+    stroke: var(--ink);
+    stroke-opacity: 0.45;
+    stroke-width: 0.6;
+    stroke-linejoin: round;
+  }
+  .cordon-line { stroke: var(--ink); stroke-width: 1.8; }
+
+  .legend {
+    margin: var(--s-3) auto 0;
+    max-width: 600px;
+  }
+  .legend-eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--t-meta);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 0 0 var(--s-1);
+    text-align: center;
+    max-width: none;
+  }
+  .legend-sub { color: var(--ink-muted); }
+  .ramp-bar {
+    height: 10px;
+    border-radius: 1px;
+    background: linear-gradient(to right, #a7c957 0%, #3a2a1d 50%, #c2664e 100%);
+  }
+  .ramp-ticks {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 4px;
+    font-family: var(--font-mono);
+    font-size: var(--t-meta);
+    color: var(--ink-faint);
+    font-feature-settings: "tnum" 1;
+  }
+  .legend-key {
+    display: flex;
+    justify-content: center;
+    gap: var(--s-3);
+    margin: var(--s-2) auto 0;
+    font-family: var(--font-mono);
+    font-size: var(--t-meta);
+    color: var(--ink-muted);
+    max-width: none;
+  }
+  .legend-key span { display: inline-flex; align-items: center; gap: 6px; }
+  .key-swatch {
+    display: inline-block; width: 14px; height: 10px; border-radius: 1px;
+  }
+  .swatch-improve { background: #a7c957; }
+  .swatch-worsen { background: #c2664e; }
+  .swatch-cordon { background: transparent; border: 1.5px solid var(--ink); }
+</style>

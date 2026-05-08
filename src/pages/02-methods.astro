@@ -1,0 +1,225 @@
+---
+import Base from "@layouts/Base.astro";
+import TropomiAnomalyMap from "@components/TropomiAnomalyMap.astro";
+import ForestPlot from "@components/ForestPlot.astro";
+import { BASE } from "@/lib/site";
+---
+<Base
+  title="Methods"
+  description="The placebo comparison, satellite measurements, neighborhood aggregation, statistical model, and limits of this congestion-pricing air-quality analysis."
+>
+  <section class="wrap section">
+    <p class="eyebrow">Chapter 02 · Methods</p>
+    <h1>How This Analysis <span class="accent-improve">Isolates</span> the Congestion Zone's Effect From Broader Atmospheric Change.</h1>
+    <p class="lede">
+      This chapter explains the placebo comparison, the satellite
+      measurements, the neighborhood aggregation, the statistical model, and
+      the limits of what the data can responsibly say.
+    </p>
+  </section>
+
+  <section class="wrap section">
+    <p class="eyebrow">The placebo comparison</p>
+    <h2>The Analysis Compares Two Pairs, One Year Apart.</h2>
+    <p>
+      Air pollution changes for many reasons — weather, fleet turnover,
+      post-pandemic recovery, seasonal cycles. To estimate whether congestion
+      pricing mattered, the analysis needs a comparison representing what
+      would likely have happened without it.
+    </p>
+    <p>
+      The "real" comparison measures NO₂ change between Jan 2023 – Apr 2024
+      and Jan 2025 – Apr 2026, around the January 5, 2025 toll start. The
+      "placebo" comparison repeats the same exercise shifted one year earlier
+      — 2024 vs. 2023 — when no congestion zone existed.
+    </p>
+
+    <p>
+      Anything appearing in both comparisons is background atmospheric drift.
+      Anything appearing only in the real comparison is more plausibly the
+      policy. The placebo year shows little comparable signal over Manhattan,
+      strengthening the interpretation that the post-2025 pattern reflects
+      more than ordinary atmospheric variability. (See the
+      <a href={`${BASE}/01-air/#placebo`}>placebo map on the air chapter</a>.)
+    </p>
+  </section>
+
+  <section class="wrap section">
+    <p class="eyebrow">The satellite</p>
+    <h2>What TROPOMI Measures, and What It Doesn't.</h2>
+    <p>
+      This project uses nitrogen dioxide measurements from TROPOMI, a
+      spectrometer aboard the European Space Agency's Sentinel-5P satellite.
+      TROPOMI estimates atmospheric NO₂ by measuring how sunlight reflects
+      through the atmosphere. The result is a "column density" measurement:
+      the total amount of NO₂ present in the air column above each location.
+    </p>
+    <p>
+      Column NO₂ is not identical to street-level exposure. Because most NO₂
+      remains concentrated in the lower atmosphere near emission sources,
+      satellite measurements are strongly correlated with traffic-related
+      urban pollution patterns, but they are a regional proxy rather than a
+      direct measure of breathing-level air.
+    </p>
+    <p>
+      The analysis uses monthly average grids rather than daily measurements
+      to reduce weather noise. The comparison windows are season-matched
+      (Jan 2023 – Apr 2024 against Jan 2025 – Apr 2026), so winter peaks and
+      summer troughs cancel out. TROPOMI's native footprint is roughly
+      5×3 km — sufficient for identifying broad regional patterns, but not
+      for individual blocks or roadside conditions.
+    </p>
+  </section>
+
+  <section class="wrap section">
+    <p class="eyebrow">Uncertainty</p>
+    <h2>Confidence Intervals From Bootstrap Resampling.</h2>
+    <p>
+      Confidence intervals throughout the project come from bootstrap
+      resampling — repeatedly rerunning the same comparison on slightly
+      altered versions of the data to estimate how stable results remain
+      across resamples.
+    </p>
+  </section>
+
+  <section class="wrap section">
+    <p class="eyebrow">Statistical model</p>
+    <h2>Which Neighborhood Traits Predict Bigger Pollution Drops?</h2>
+    <p>
+      A Spatial Lag Model accounts for the fact that nearby neighborhoods
+      influence one another environmentally. Air pollution does not stop at
+      administrative boundaries. The model estimates how strongly different
+      neighborhood traits predict NO₂ change while controlling for the others
+      simultaneously.
+    </p>
+
+    <ForestPlot
+      data="regression.csv"
+      labelCol="predictor"
+      valueCol="z"
+      ciCols={["z_lo", "z_hi"]}
+      xLabel="Effect on NO₂ change (z-statistic)"
+    />
+    <p class="caption" style="margin-top: var(--s-2);">
+      Each row shows how strongly a neighborhood trait predicts NO₂ change,
+      holding the others constant. Bars to the right of the dashed reference
+      line at 0 are positive predictors; bars whose interval does not cross 0
+      are statistically distinguishable. Distance to the zone, the share of
+      households without a car, and the share of transit commuters show the
+      strongest evidence.
+    </p>
+
+    <p>
+      The model explains roughly one-third of neighborhood-level variation —
+      substantial enough to interpret the coefficients meaningfully, but
+      limited enough to avoid overstating precision.
+    </p>
+  </section>
+
+  <section class="wrap section">
+    <p class="eyebrow">A note on the South Bronx</p>
+    <h2>Different Instruments, Different Answers.</h2>
+
+    <p>
+      While this analysis was being completed, Columbia and South Bronx Unite
+      released ground-monitor findings showing PM2.5 increased at 17 of 19
+      South Bronx monitoring sites during the congestion zone's first year,
+      especially near major expressways.
+    </p>
+
+    <p><strong>Both findings may be true simultaneously.</strong></p>
+
+    <p>
+      This project measures NO₂ using a satellite instrument with a native
+      footprint of roughly 5×3 km. The South Bronx study measures PM2.5
+      using ground-level monitors capable of detecting highly localized
+      roadside changes. A regional satellite signal showing cleaner air
+      over lower Manhattan does not rule out hyperlocal pollution increases
+      along truck diversion corridors.
+    </p>
+
+    <p>
+      The fairest interpretation is that congestion pricing's environmental
+      effects were measurable but uneven, and that some communities already
+      burdened by traffic pollution may have absorbed costs this analysis
+      cannot fully resolve.
+    </p>
+  </section>
+
+  <section class="wrap section">
+    <p class="eyebrow">Things this analysis cannot see</p>
+    <h2>Limits and What They Mean.</h2>
+
+    <ul>
+      <li>TROPOMI's native satellite footprint is roughly 5×3 km, making broad regional patterns more reliable than block-level neighborhood interpretation.</li>
+      <li>This project measures NO₂ only. It does not directly measure PM2.5, ozone, indoor exposure, or cumulative health outcomes.</li>
+      <li>Sixteen months is enough to detect a signal, but not enough to determine long-term trajectory.</li>
+      <li>High-resolution FHV and rideshare trip records were unavailable at the spatial scale needed to evaluate Uber/Lyft substitution effects.</li>
+      <li>Some transportation findings in later chapters partially reflect simultaneous MTA service changes rather than pure congestion-pricing effects alone.</li>
+    </ul>
+
+    <p>
+      These limitations do not invalidate the findings. They define the
+      scale and scope of what this analysis can responsibly claim.
+    </p>
+  </section>
+
+  <section class="wrap section">
+    <a class="next-card" href={`${BASE}/03-other-findings/`}>
+      <span class="next-eyebrow">Continue · Chapter 03</span>
+      <span class="next-title">Other Findings</span>
+      <span class="next-tease">Traffic, transit, and the spillover effects that did — and didn't — appear.</span>
+    </a>
+  </section>
+</Base>
+
+<style>
+  .fig {
+    margin: var(--s-5) auto;
+    max-width: 1080px;
+  }
+  .fig img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 2px;
+  }
+  .fig figcaption { margin-top: var(--s-2); }
+
+  .next-card {
+    display: block;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    padding: var(--s-4) 0;
+    text-align: center;
+    color: var(--ink);
+    border-bottom: 1px solid var(--rule);
+    transition: background var(--d) var(--ease);
+  }
+  .next-card:hover { background: color-mix(in srgb, var(--zone) 6%, transparent); }
+  .next-eyebrow {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: var(--t-meta);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--zone);
+    margin-bottom: var(--s-1);
+  }
+  .next-title {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 1.625rem;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: var(--s-1);
+  }
+  .next-tease {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    color: var(--ink-muted);
+    max-width: 50ch;
+    margin: 0 auto;
+  }
+</style>

@@ -1,0 +1,315 @@
+---
+import Base from "@layouts/Base.astro";
+import Choropleth from "@components/Choropleth.astro";
+import Tropomi3Panel from "@components/Tropomi3Panel.astro";
+import TropomiAnomalyMap from "@components/TropomiAnomalyMap.astro";
+import DistributiveStrata from "@components/DistributiveStrata.astro";
+import StrataMaps from "@components/StrataMaps.astro";
+import { BASE } from "@/lib/site";
+
+const fig = (path: string) => `${BASE}/figures/${path}`;
+---
+<Base
+  title="The Air"
+  description="Sixteen months of satellite measurements suggest nitrogen dioxide pollution declined more over Manhattan's congestion zone than over the rest of NYC."
+>
+  {/* ── HERO ──────────────────────────────────────────────── */}
+  <section class="wrap section">
+    <p class="eyebrow">Chapter 01 · The Air</p>
+    <h1>How Nitrogen Dioxide <span class="accent-zone">Changed</span> Across NYC After Congestion Pricing Began.</h1>
+    <p class="lede" style="margin-top: var(--s-4);">
+      Sixteen months of satellite measurements suggest pollution declined more
+      over Manhattan's congestion zone than over the rest of New York City.
+      The placebo comparison helps separate background atmospheric drift from
+      changes more plausibly associated with the toll.
+    </p>
+
+  </section>
+
+  {/* ── ANIMATION ─────────────────────────────────────────── */}
+  <section class="wrap section">
+    <p class="eyebrow">The seasonal cycle, animated</p>
+    <h2>Sixteen Months of Monthly NO₂, Frame by Frame.</h2>
+    <figure class="fig fig-wide animation-figure">
+      <video
+        src={fig("no2_animation.mp4")}
+        poster={fig("no2_animation.gif")}
+        autoplay loop muted playsinline preload="metadata"
+        aria-label="Animated monthly NO₂ over NYC, January 2023 through April 2026"
+      ></video>
+
+      <div class="animation-legend">
+        <p class="animation-legend-eyebrow">Monthly NO₂ (μmol/m²)</p>
+        <div
+          class="animation-legend-ramp"
+          style="background: linear-gradient(to right, #f2e8cf 0%, #a1cca5 20%, #8fb996 40%, #6a994e 60%, #386641 80%, #111d13 100%);"
+          aria-hidden="true"
+        ></div>
+        <div class="animation-legend-ticks">
+          <span>≈82</span>
+          <span>≈100</span>
+          <span>≈125</span>
+          <span>≈150</span>
+          <span>≈172</span>
+        </div>
+        <p class="animation-legend-key">
+          Lighter cream = less pollution. Darker green = more pollution.
+        </p>
+      </div>
+
+      <figcaption>
+        Pollution rises seasonally during winter and falls during summer. The
+        spatial pattern shifts after January 2025, when the congestion zone
+        began.
+      </figcaption>
+    </figure>
+  </section>
+
+  {/* ── BEFORE / AFTER / CHANGE ───────────────────────────── */}
+  <section class="wrap section">
+    <p class="eyebrow">Before, after, and change</p>
+    <h2>The Congestion Zone's Footprint in the Air.</h2>
+    <p>
+      The left panels show average NO₂ before and after congestion pricing.
+      The difference map on the right isolates where pollution changed most
+      strongly — concentrated around lower Manhattan and adjacent corridors,
+      rather than appearing evenly across the city.
+    </p>
+    <Tropomi3Panel />
+    <p class="caption" style="margin-top: var(--s-2);">
+      Pixels are TROPOMI satellite cells (~5×3 km). The cordon polygon is
+      outlined in cream. Same calendar months in each window remove seasonal
+      cycles from the comparison.
+    </p>
+  </section>
+
+  {/* ── MAIN VISUALIZATION (zone-level choropleth) ────────── */}
+  <section class="wrap section">
+    <p class="eyebrow">Where pollution declined most</p>
+    <h2>Change in Monthly NO₂ by Neighborhood.</h2>
+    <p>
+      Each shape is a NYC neighborhood (TLC taxi zone). Greens indicate
+      decreases; terracotta indicates increases. The congestion zone is
+      outlined in cream.
+    </p>
+
+    <Choropleth />
+
+    <p class="receipts" style="margin-top: var(--s-4);">
+      n=263 zones · 95% CI on the citywide gap [−2.26, −1.46] pp · TROPOMI
+      ~5×3 km native footprint
+    </p>
+  </section>
+
+  {/* ── PLACEBO LOGIC ─────────────────────────────────────── */}
+  <section class="wrap section">
+    <p class="eyebrow">Why this counts as a finding</p>
+    <h2>Background Atmospheric Drift, Ruled Out.</h2>
+
+    <p>
+      NO₂ shifts year to year for many reasons unrelated to policy. The
+      analysis tests this directly: the same comparison run a year earlier,
+      before the congestion zone existed, shows little comparable Manhattan
+      signal. The post-2025 pattern reflects more than ordinary atmospheric
+      variability.
+    </p>
+
+    <TropomiAnomalyMap
+      field="placebo_anomaly"
+      legendLabel="Placebo change"
+      legendSub="2024 vs. 2023, no policy in effect"
+    />
+    <p class="caption" style="margin-top: var(--s-2);">
+      The placebo year. Roughly flat over lower Manhattan — without the
+      policy, the cordon area doesn't show the kind of anomaly that appears
+      in the real comparison. The
+      <a href={`${BASE}/02-methods/`}>methods chapter</a> explains the
+      placebo design step by step.
+    </p>
+  </section>
+
+  {/* ── STRATA MAPS ───────────────────────────────────────── */}
+  <section class="full-bleed">
+    <div class="wrap-narrow" style="margin-bottom: var(--s-4);">
+      <p class="eyebrow">Sorting neighborhoods three ways</p>
+      <h2>Three Ways of Grouping NYC.</h2>
+      <p>
+        To ask whether different kinds of neighborhoods saw different
+        effects, the analysis sorts NYC's 263 zones into thirds along three
+        traits — income, car ownership, and transit reliance. The maps
+        below show where each group sits geographically; the chart that
+        follows compares how the congestion zone's air benefit reached
+        each one.
+      </p>
+    </div>
+    <StrataMaps />
+    <p class="caption" style="margin-top: var(--s-2);">
+      NYC neighborhoods sorted into thirds for income, car ownership, and
+      transit reliance. Click any map to enlarge. The congestion zone is
+      outlined in terracotta.
+    </p>
+  </section>
+
+  {/* ── DISTRIBUTIONAL ────────────────────────────────────── */}
+  <section class="wrap section">
+    <p class="eyebrow">Did all neighborhoods benefit equally?</p>
+    <h2>The Pattern Does Not Map Cleanly Onto Neighborhood Wealth.</h2>
+
+    <p>
+      The congestion zone improved most relative to higher-income, less
+      transit-oriented neighborhoods elsewhere in the city. Lower-income,
+      car-free, transit-dependent neighborhoods often experienced pollution
+      declines similar to the zone itself, producing smaller relative gaps.
+    </p>
+
+    <p>
+      This does not suggest the benefits were regressive. Many lower-income
+      transit-reliant neighborhoods saw measurable improvement. The gains were
+      uneven, and some neighborhoods bordering major truck corridors appear to
+      have benefited less than the Manhattan core.
+    </p>
+
+    <DistributiveStrata />
+    <p class="caption" style="margin-top: var(--s-2);">
+      Each row compares a group of neighborhoods to the congestion zone.
+      Bars show how much more the zone's air improved than that group's,
+      with 95% bootstrap confidence intervals. Two reference lines mark the
+      citywide average and the placebo-corrected zone effect.
+    </p>
+  </section>
+
+  {/* ── NEXT ──────────────────────────────────────────────── */}
+  <section class="wrap section">
+    <a class="next-card" href={`${BASE}/02-methods/`}>
+      <span class="next-eyebrow">Continue · Chapter 02</span>
+      <span class="next-title">Methods</span>
+      <span class="next-tease">How the satellite analysis, placebo comparison, and neighborhood stratification work.</span>
+    </a>
+  </section>
+</Base>
+
+<style>
+  /* Animation legend — sits between video and caption, mirrors the
+     sequential ramp the GIF was rendered with. */
+  .animation-figure .animation-legend {
+    margin: var(--s-3) auto 0;
+    max-width: 600px;
+  }
+  .animation-legend-eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--t-meta);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    text-align: center;
+    margin: 0 0 var(--s-1);
+    max-width: none;
+  }
+  .animation-legend-ramp {
+    height: 12px;
+    border-radius: 1px;
+  }
+  .animation-legend-ticks {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 4px;
+    font-family: var(--font-mono);
+    font-size: var(--t-meta);
+    color: var(--ink-faint);
+    font-feature-settings: "tnum" 1;
+  }
+  .animation-legend-key {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--t-small);
+    color: var(--ink-muted);
+    margin: var(--s-2) auto 0;
+    text-align: center;
+  }
+
+  /* Finding block — observed + adjusted in centered stack */
+  .finding-block {
+    margin: var(--s-5) auto;
+    padding: var(--s-4) 0;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    max-width: 720px;
+  }
+  .finding-row {
+    text-align: center;
+    padding: var(--s-3) 0;
+  }
+  .finding-row + .finding-row {
+    border-top: 1px dotted var(--rule);
+  }
+  .finding-label {
+    font-family: var(--font-mono);
+    font-size: var(--t-meta);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 0 auto var(--s-1);
+    max-width: none;
+    text-align: center;
+  }
+  .finding-value {
+    font-family: var(--font-mono);
+    font-size: clamp(2rem, 4.5vw, 2.75rem);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--improve);
+    font-feature-settings: "tnum" 1, "lnum" 1;
+    margin: 0 auto var(--s-2);
+    max-width: none;
+    text-align: center;
+  }
+  .finding-receipts {
+    font-family: var(--font-mono);
+    font-size: var(--t-meta);
+    color: var(--ink-faint);
+    margin: 0 auto;
+    max-width: none;
+    text-align: center;
+  }
+
+  /* Next-chapter card */
+  .next-card {
+    display: block;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    padding: var(--s-4) 0;
+    text-align: center;
+    color: var(--ink);
+    border-bottom: 1px solid var(--rule);
+    transition: background var(--d) var(--ease);
+  }
+  .next-card:hover {
+    background: color-mix(in srgb, var(--zone) 6%, transparent);
+  }
+  .next-card .next-eyebrow {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: var(--t-meta);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--zone);
+    margin-bottom: var(--s-1);
+  }
+  .next-card .next-title {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 1.625rem;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: var(--s-1);
+  }
+  .next-card .next-tease {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    color: var(--ink-muted);
+    max-width: 50ch;
+    margin: 0 auto;
+  }
+</style>

@@ -1,0 +1,180 @@
+---
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+import * as d3 from "d3";
+
+interface Props {
+  /** Filename under public/data, e.g. "transit_did.csv" */
+  data: string;
+  /** Column name for the row label */
+  labelCol: string;
+  /** Column name for the central estimate */
+  valueCol: string;
+  /** Column names for the CI bounds (lower, upper) */
+  ciCols: [string, string];
+  /** X-axis label */
+  xLabel?: string;
+  /** Optional: vertical reference line at this x-value (default 0) */
+  refLine?: number;
+  /** Layout */
+  width?: number;
+  height?: number;
+  /** Format value as a string (e.g. v => `${v.toFixed(1)} pp`) */
+  format?: (v: number) => string;
+}
+
+const {
+  data,
+  labelCol,
+  valueCol,
+  ciCols,
+  xLabel = "",
+  refLine = 0,
+  width = 760,
+  height = 320,
+  format,
+} = Astro.props;
+
+const fmt = format ?? ((v: number) => `${v >= 0 ? "+" : "−"}${Math.abs(v).toFixed(1)}`);
+
+// Load CSV
+const csvPath = resolve(`public/data/${data}`);
+const raw = readFileSync(csvPath, "utf-8").trim();
+const lines = raw.split("\n");
+const headers = lines[0].split(",");
+const idx = {
+  label: headers.indexOf(labelCol),
+  value: headers.indexOf(valueCol),
+  lo:    headers.indexOf(ciCols[0]),
+  hi:    headers.indexOf(ciCols[1]),
+};
+
+interface Row { label: string; value: number; lo: number; hi: number; }
+const rows: Row[] = lines.slice(1).map((l) => {
+  const f = l.split(",");
+  return {
+    label: f[idx.label].replace(/^"|"$/g, ""),
+    value: parseFloat(f[idx.value]),
+    lo:    parseFloat(f[idx.lo]),
+    hi:    parseFloat(f[idx.hi]),
+  };
+});
+
+// Layout
+const M = { top: 24, right: 96, bottom: 48, left: 140 };
+const innerW = width - M.left - M.right;
+const innerH = height - M.top - M.bottom;
+
+// Scales
+const allValues = rows.flatMap((r) => [r.value, r.lo, r.hi]);
+const dom: [number, number] = [d3.min(allValues) ?? 0, d3.max(allValues) ?? 1];
+const span = dom[1] - dom[0];
+const x = d3.scaleLinear()
+  .domain([dom[0] - span * 0.08, dom[1] + span * 0.08])
+  .range([0, innerW])
+  .nice();
+
+const y = d3.scaleBand()
+  .domain(rows.map((r) => r.label))
+  .range([0, innerH])
+  .padding(0.32);
+
+const xTicks = x.ticks(5);
+
+const colorFor = (v: number): string =>
+  v < 0 ? "var(--improve)" : "var(--zone)";
+---
+<figure class="forest-figure">
+  <svg viewBox={`0 0 ${width} ${height}`} role="img" preserveAspectRatio="xMidYMid meet">
+    <g transform={`translate(${M.left},${M.top})`}>
+
+      {/* Reference line at 0 (or refLine) */}
+      {x.domain()[0] <= refLine && refLine <= x.domain()[1] && (
+        <line
+          x1={x(refLine)} x2={x(refLine)}
+          y1={0} y2={innerH}
+          class="ref-line"
+        />
+      )}
+
+      {/* X gridlines + ticks */}
+      {xTicks.map((t) => (
+        <g class="x-grid">
+          <line x1={x(t)} x2={x(t)} y1={0} y2={innerH} />
+          <text x={x(t)} y={innerH + 22} class="tick" text-anchor="middle">{fmt(t)}</text>
+        </g>
+      ))}
+
+      {/* Y row labels and CI bars */}
+      {rows.map((r) => {
+        const yc = (y(r.label) ?? 0) + y.bandwidth() / 2;
+        const xv  = x(r.value);
+        const xlo = x(r.lo);
+        const xhi = x(r.hi);
+        const fill = colorFor(r.value);
+        return (
+          <g class="row">
+            <text x={-10} y={yc} class="row-label" text-anchor="end" dominant-baseline="middle">{r.label}</text>
+            <line x1={xlo} x2={xhi} y1={yc} y2={yc} class="ci-bar" stroke={fill} />
+            <line x1={xlo} x2={xlo} y1={yc - 5} y2={yc + 5} class="ci-cap" stroke={fill} />
+            <line x1={xhi} x2={xhi} y1={yc - 5} y2={yc + 5} class="ci-cap" stroke={fill} />
+            <circle cx={xv} cy={yc} r={5} fill={fill} stroke="var(--bg)" stroke-width="1.5" />
+            <text x={xhi + 10} y={yc} class="row-value" dominant-baseline="middle">
+              {fmt(r.value)}
+            </text>
+          </g>
+        );
+      })}
+
+      {/* X-axis label */}
+      {xLabel && (
+        <text x={innerW / 2} y={innerH + 42} class="axis-label" text-anchor="middle">{xLabel}</text>
+      )}
+    </g>
+  </svg>
+</figure>
+
+<style>
+  .forest-figure {
+    margin: var(--s-5) auto;
+    max-width: 920px;
+  }
+  .forest-figure svg { width: 100%; height: auto; display: block; }
+
+  .x-grid line {
+    stroke: var(--rule);
+    stroke-width: 0.5;
+    stroke-dasharray: 2 4;
+  }
+  .ref-line {
+    stroke: var(--ink-faint);
+    stroke-width: 1;
+    stroke-dasharray: 4 4;
+  }
+  .ci-bar { stroke-width: 2; }
+  .ci-cap { stroke-width: 1.5; }
+
+  .row-label {
+    font-family: var(--font-mono);
+    font-size: 15px;
+    fill: var(--ink-muted);
+  }
+  .row-value {
+    font-family: var(--font-mono);
+    font-size: 15px;
+    fill: var(--ink);
+    font-feature-settings: "tnum" 1;
+  }
+  .tick {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    fill: var(--ink-faint);
+  }
+  .axis-label {
+    font-family: var(--font-mono);
+    font-size: 15px;
+    fill: var(--ink-muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+</style>

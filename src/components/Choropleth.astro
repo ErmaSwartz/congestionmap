@@ -1,0 +1,180 @@
+---
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+import * as d3 from "d3";
+
+interface Props {
+  /** Field on each zone feature to color by (signed % change) */
+  field?: string;
+  /** Width and height of the SVG viewBox */
+  width?: number;
+  height?: number;
+}
+
+const { field = "no2_change_pct", width = 880, height = 640 } = Astro.props;
+
+// Read the simplified zones + cordon GeoJSONs at build time
+const zonesPath  = resolve("public/data/zones.geojson");
+const cordonPath = resolve("public/data/cordon.geojson");
+const zones  = JSON.parse(readFileSync(zonesPath, "utf-8"));
+const cordon = JSON.parse(readFileSync(cordonPath, "utf-8"));
+
+// Project NYC to fit the viewBox
+const projection = d3.geoAlbers().fitExtent(
+  [[16, 16], [width - 16, height - 16]],
+  zones,
+);
+const path = d3.geoPath(projection);
+
+// Diverging color scale (greens for decreases, terracotta for increases)
+const values = (zones.features as any[])
+  .map((f) => f.properties[field])
+  .filter((v): v is number => Number.isFinite(v));
+const vmax = d3.quantile(values.map(Math.abs).sort(d3.ascending), 0.95) ?? 1;
+
+const colorFor = (v: number | null | undefined) => {
+  if (v == null || !Number.isFinite(v)) return "#3a2a1d"; // missing — slightly lighter than bg
+  // Diverging: -vmax → yellow-green, 0 → bg blend, +vmax → terracotta
+  const t = Math.max(-1, Math.min(1, v / vmax));
+  const interp = t < 0
+    ? d3.interpolateRgb("#3a2a1d", "#a7c957")
+    : d3.interpolateRgb("#3a2a1d", "#c2664e");
+  return interp(Math.abs(t));
+};
+
+// Render features
+const features = (zones.features as any[]).map((f) => ({
+  d: path(f) ?? "",
+  fill: colorFor(f.properties[field]),
+  name: f.properties.zone,
+  borough: f.properties.borough,
+  value: f.properties[field],
+}));
+
+const cordonD = path(cordon.features[0]) ?? "";
+
+// Legend ticks
+const legendTicks = [-vmax, -vmax / 2, 0, vmax / 2, vmax];
+---
+<figure class="choropleth-figure">
+  <svg
+    viewBox={`0 0 ${width} ${height}`}
+    role="img"
+    aria-labelledby="choropleth-title choropleth-desc"
+    preserveAspectRatio="xMidYMid meet"
+  >
+    <title id="choropleth-title">NO₂ change by NYC neighborhood, after the congestion zone began</title>
+    <desc id="choropleth-desc">
+      A diverging-color map of percent change in nitrogen dioxide. Most NYC
+      neighborhoods are some shade of green, indicating decreases. The
+      congestion zone is outlined in cream.
+    </desc>
+
+    <g class="zones">
+      {features.map((f) => (
+        <path
+          d={f.d}
+          fill={f.fill}
+          class="zone-poly"
+          data-name={f.name}
+          data-value={f.value}
+        />
+      ))}
+    </g>
+
+    <path d={cordonD} class="cordon-line" fill="none" />
+  </svg>
+
+  {/* Inline legend */}
+  <div class="legend">
+    <div class="legend-bar" aria-hidden="true">
+      <span class="ramp"></span>
+    </div>
+    <div class="legend-ticks" aria-hidden="true">
+      {legendTicks.map((t) => (
+        <span class="legend-tick">{(t > 0 ? "+" : t < 0 ? "−" : "") + Math.abs(t).toFixed(1)}%</span>
+      ))}
+    </div>
+    <p class="legend-caption">
+      Percent change in monthly NO₂ between the pre and post windows.
+      <span class="legend-key">
+        <span class="key-swatch swatch-improve"></span> decrease
+        <span class="key-swatch swatch-worsen"></span> increase
+        <span class="key-swatch swatch-cordon"></span> congestion zone
+      </span>
+    </p>
+  </div>
+</figure>
+
+<style>
+  .choropleth-figure {
+    margin: var(--s-5) auto 0;
+    max-width: 1080px;
+  }
+  .choropleth-figure svg { width: 100%; height: auto; display: block; }
+
+  .zone-poly {
+    stroke: var(--bg);
+    stroke-width: 0.4;
+    transition: stroke-width var(--d) var(--ease);
+  }
+  .zone-poly:hover { stroke: var(--ink); stroke-width: 1.2; }
+  .cordon-line { stroke: var(--ink); stroke-width: 1.6; }
+
+  .legend {
+    margin: var(--s-3) auto 0;
+    max-width: 600px;
+  }
+  .legend-bar {
+    height: 10px;
+    border-radius: 1px;
+    overflow: hidden;
+  }
+  .legend-bar .ramp {
+    display: block;
+    height: 100%;
+    background: linear-gradient(to right,
+      #a7c957 0%,
+      #3a2a1d 50%,
+      #c2664e 100%);
+  }
+  .legend-ticks {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 4px;
+    font-family: var(--font-mono);
+    font-size: var(--t-meta);
+    color: var(--ink-faint);
+    font-feature-settings: "tnum" 1;
+  }
+  .legend-caption {
+    font-family: var(--font-display);
+    font-size: var(--t-small);
+    line-height: 1.5;
+    color: var(--ink-muted);
+    text-align: center;
+    margin: var(--s-3) auto 0;
+    max-width: 60ch;
+  }
+  .legend-key {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+    margin-left: var(--s-2);
+  }
+  .key-swatch {
+    display: inline-block;
+    width: 14px;
+    height: 10px;
+    margin-right: 2px;
+    margin-left: var(--s-1);
+    vertical-align: middle;
+    border-radius: 1px;
+  }
+  .swatch-improve { background: #a7c957; }
+  .swatch-worsen  { background: #c2664e; }
+  .swatch-cordon  {
+    background: transparent;
+    border: 1.5px solid var(--ink);
+  }
+</style>

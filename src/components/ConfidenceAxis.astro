@@ -1,0 +1,180 @@
+---
+// Single horizontal axis with all five dots on the same line, numbered.
+// A legend below maps each number to its claim and strength tag.
+
+interface Claim {
+  text: string;
+  strength: number;     // 0 (weakest) to 1 (strongest)
+  tag: "strong" | "moderate" | "weak";
+}
+const CLAIMS: Claim[] = [
+  { text: "NO₂ declined more over the congestion zone than over the rest of NYC, after adjusting for atmospheric drift.", strength: 0.92, tag: "strong" },
+  { text: "The placebo year shows little comparable signal over Manhattan, supporting a policy interpretation.",          strength: 0.88, tag: "strong" },
+  { text: "Bridge and tunnel volume saw a small reduction in vehicle entries.",                                            strength: 0.55, tag: "moderate" },
+  { text: "Bus ridership increased substantially, though entangled with simultaneous service expansions.",                 strength: 0.45, tag: "moderate" },
+  { text: "Yellow-taxi spillover at the cordon edge does not appear significant in the data.",                             strength: 0.18, tag: "weak" },
+];
+
+const W = 920;
+const H = 160;
+const M = { top: 38, right: 32, bottom: 56, left: 32 };
+const innerW = W - M.left - M.right;
+const innerH = H - M.top - M.bottom;
+const axisY = innerH / 2;
+
+const x = (s: number) => s * innerW;
+
+const colorFor = (tag: Claim["tag"]) =>
+  tag === "strong"   ? "var(--improve)" :
+  tag === "weak"     ? "var(--zone)" :
+                       "var(--ink-muted)";
+
+// Tick marks at 0%, 50%, 100%
+const TICKS = [0, 0.5, 1];
+---
+<figure class="conf-figure">
+  {/* ── Axis chart ──────────────────────────────────────── */}
+  <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-labelledby="conf-title conf-desc"
+       preserveAspectRatio="xMidYMid meet">
+    <title id="conf-title">Evidence strength of each claim</title>
+    <desc id="conf-desc">
+      Five claims plotted on a horizontal strength axis. Strong claims
+      (numbered 1 and 2) sit on the right; weaker claims (4 and 5) sit on
+      the left. Numbers correspond to the legend below.
+    </desc>
+
+    <g transform={`translate(${M.left},${M.top})`}>
+      {/* Axis end labels */}
+      <text x={0} y={-10} class="axis-end" text-anchor="start">
+        ← weaker evidence
+      </text>
+      <text x={innerW} y={-10} class="axis-end" text-anchor="end">
+        stronger evidence →
+      </text>
+
+      {/* Axis line */}
+      <line x1={0} x2={innerW} y1={axisY} y2={axisY} class="axis-line" />
+
+      {/* Tick marks + tick labels */}
+      {TICKS.map((t) => (
+        <g class="axis-tick">
+          <line x1={x(t)} x2={x(t)} y1={axisY - 6} y2={axisY + 6} />
+        </g>
+      ))}
+
+      {/* Dots on the axis with their numbers */}
+      {CLAIMS.map((c, i) => (
+        <g class="dot-group">
+          <circle cx={x(c.strength)} cy={axisY} r="9"
+                  fill={colorFor(c.tag)} stroke="var(--bg)" stroke-width="2" />
+          <text x={x(c.strength)} y={axisY + 4} class="dot-num"
+                text-anchor="middle">{i + 1}</text>
+        </g>
+      ))}
+    </g>
+  </svg>
+
+  {/* ── Numbered legend ─────────────────────────────────── */}
+  <ol class="conf-legend" aria-label="Claim legend">
+    {CLAIMS.map((c, i) => (
+      <li class="legend-row">
+        <span class="legend-num" style={`background: ${colorFor(c.tag)};`}>{i + 1}</span>
+        <p class="legend-text">{c.text}</p>
+        <span class="legend-tag" style={`color: ${colorFor(c.tag)};`}>{c.tag}</span>
+      </li>
+    ))}
+  </ol>
+</figure>
+
+<style>
+  .conf-figure {
+    margin: var(--s-5) auto;
+    max-width: 1080px;
+  }
+
+  /* SVG axis */
+  .conf-figure svg { width: 100%; height: auto; display: block; }
+
+  .axis-end {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    fill: var(--ink-faint);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .axis-line {
+    stroke: var(--ink-muted);
+    stroke-width: 1.5;
+  }
+  .axis-tick line {
+    stroke: var(--ink-muted);
+    stroke-width: 1.5;
+  }
+  .dot-num {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 13px;
+    fill: var(--bg);
+    pointer-events: none;
+  }
+
+  /* Legend */
+  .conf-legend {
+    list-style: none;
+    padding: 0;
+    margin: var(--s-3) auto 0;
+    max-width: none;
+    border-top: 1px solid var(--rule);
+  }
+  .legend-row {
+    display: grid;
+    grid-template-columns: 32px 1fr 110px;
+    gap: var(--s-3);
+    align-items: center;
+    padding: var(--s-3) 0;
+    border-bottom: 1px solid var(--rule);
+    margin: 0;
+  }
+  .legend-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--bg);
+  }
+  .legend-text {
+    font-family: var(--font-display);
+    font-size: var(--t-body);
+    line-height: 1.45;
+    color: var(--ink);
+    margin: 0;
+    text-align: left;
+    max-width: none;
+  }
+  .legend-tag {
+    font-family: var(--font-mono);
+    font-size: var(--t-meta);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-align: right;
+  }
+
+  @media (max-width: 720px) {
+    .legend-row {
+      grid-template-columns: 28px 1fr;
+      grid-template-areas:
+        "num text"
+        "tag tag";
+      gap: var(--s-1) var(--s-2);
+    }
+    .legend-num  { grid-area: num; }
+    .legend-text { grid-area: text; }
+    .legend-tag  { grid-area: tag; text-align: left; padding-left: calc(28px + var(--s-2)); }
+    .axis-end { font-size: 11px; }
+  }
+</style>

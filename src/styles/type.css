@@ -1,0 +1,190 @@
+/* ─────────────────────────────────────────────────────────────
+   Typography · Congestion Map v3
+   Display serif for H1/H2 only.
+   Text serif for body, lede, captions.
+   Italic reserved for captions and footnotes.
+   Mono for metadata, labels, numerals in stats.
+   ───────────────────────────────────────────────────────────── */
+
+html { font-size: 16px; }
+body {
+  font-family: var(--font-text);
+  font-size: var(--t-body);
+  line-height: var(--lh-body);
+  /* Playfair Display has high stroke contrast. On dark backgrounds the thin
+     verticals shimmer at 400, so body sits at 500 for stable rendering. */
+  font-weight: 500;
+  color: var(--ink);
+  background: var(--bg);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+p, .lede, li, figcaption, .caption, .footnote {
+  font-weight: 500;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  color: var(--ink);
+  margin-inline: auto;
+  margin-block-start: 0;
+  text-align: center;
+}
+h1 {
+  font-size: var(--t-h1);
+  line-height: var(--lh-tight);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  max-width: 26ch;
+  margin-block-end: var(--s-5);    /* big gap after h1 */
+}
+@media (min-width: 900px) {
+  h1 { font-size: var(--t-h1-lg); }
+}
+h2 {
+  font-size: var(--t-h2);
+  line-height: var(--lh-snug);
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  max-width: 32ch;
+  margin-block-end: var(--s-4);    /* gap before body */
+}
+h3 {
+  font-size: var(--t-h3);
+  line-height: var(--lh-snug);
+  font-weight: 500;
+  letter-spacing: -0.003em;
+  max-width: 36ch;
+  margin-block-end: var(--s-3);
+}
+h4 {
+  font-size: var(--t-h4);
+  font-weight: 500;
+  line-height: 1.3;
+  margin-block-end: var(--s-2);
+}
+
+/* If a paragraph follows a heading directly, no extra top margin needed.
+   But if a heading follows a paragraph, push it down. */
+p + h2, ul + h2, ol + h2, figure + h2,
+p + h3, ul + h3, ol + h3, figure + h3 {
+  margin-block-start: var(--s-5);
+}
+
+p {
+  font-family: var(--font-text);
+  font-size: var(--t-body);
+  line-height: var(--lh-body);
+  color: var(--ink);
+  max-width: 72ch;             /* wider line — was 60 */
+  margin: 0 auto var(--s-3);
+  text-align: center;
+}
+
+.lede {
+  font-size: var(--t-lede);
+  line-height: 1.5;
+  color: var(--ink);
+  max-width: 64ch;             /* slightly tighter than body — was 60 */
+  margin: 0 auto var(--s-3);
+  text-align: center;
+}
+
+/* Use this when a block of long-form prose reads better left-aligned
+   (e.g., dense methods sections). Apply to a parent container. */
+.prose-flow p,
+.prose-flow ul,
+.prose-flow ol,
+.prose-flow .lede {
+  text-align: left;
+  margin-left: 0;
+  margin-right: auto;
+}
+
+/* Inline accent words — used sparingly inside H1/H2 to highlight one
+   carrier word per heading. Mirrors the verdict-headline color logic. */
+.accent-improve { color: var(--improve); }
+.accent-zone    { color: var(--zone); }
+.accent-italic  { font-style: italic; }
+
+/* Italic only for captions and footnotes */
+em, i { font-style: italic; }
+figcaption,
+.caption,
+.footnote {
+  font-family: var(--font-text);
+  font-style: italic;
+  font-size: var(--t-small);
+  line-height: 1.55;
+  color: var(--ink-muted);
+  max-width: 70ch;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Monospace utility */
+.mono,
+.eyebrow,
+.metadata-label,
+.utility-bar {
+  font-family: var(--font-mono);
+  font-feature-settings: "tnum" 1;
+}
+
+/* Eyebrow — uppercase mono labels above titles */
+.eyebrow {
+  display: block;
+  font-size: var(--t-meta);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  margin-bottom: var(--s-3);
+  text-align: center;
+}
+
+/* Receipts — inline n / CI / caveat under stats */
+.receipts {
+  font-family: var(--font-mono);
+  font-size: var(--t-meta);
+  letter-spacing: 0.04em;
+  color: var(--ink-faint);
+  font-feature-settings: "tnum" 1;
+  margin-top: var(--s-1);
+  text-align: center;
+}
+.receipts .sep {
+  margin: 0 0.5em;
+  color: var(--rule);
+}
+
+a {
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--rule);
+  text-underline-offset: 3px;
+  transition: border-color var(--d) var(--ease), color var(--d) var(--ease);
+}
+a:hover { border-color: var(--ink); }
+a:focus-visible {
+  outline: 2px solid var(--zone);
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+
+ul, ol {
+  padding-left: 1.25em;
+  max-width: 64ch;
+  margin: 0 auto var(--s-3);
+  text-align: left;            /* lists stay left-aligned even within centered sections */
+}
+li {
+  font-size: var(--t-body);
+  line-height: var(--lh-body);
+}
+li {
+  font-family: var(--font-text);
+  font-size: var(--t-body);
+  line-height: var(--lh-body);
+  margin-bottom: var(--s-1);
+}

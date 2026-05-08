@@ -1,0 +1,155 @@
+---
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+import * as d3 from "d3";
+
+const zones  = JSON.parse(readFileSync(resolve("public/data/zones_demographic.geojson"), "utf-8"));
+const cordon = JSON.parse(readFileSync(resolve("public/data/cordon.geojson"), "utf-8"));
+
+const PANELS = [
+  { field: "median_hh_income_tertile",     title: "Neighborhood income",                tertileLabels: ["Lower", "Mid", "Higher"] },
+  { field: "pct_no_vehicle_tertile",       title: "How car-free",                       tertileLabels: ["Most cars", "Mid", "Most car-free"] },
+  { field: "pct_transit_commute_tertile",  title: "How transit-reliant",                tertileLabels: ["Least transit", "Mid", "Most transit"] },
+];
+
+// Tertile color ramp using v3 green family
+const TERT_COLORS = ["#f2e8cf", "#8fb996", "#386641"]; // cream / muted-teal / hunter
+
+const W = 460;
+const H = 480;
+const M = { top: 16, right: 12, bottom: 12, left: 12 };
+
+const projection = d3.geoAlbers().fitExtent(
+  [[M.left, M.top], [W - M.right, H - M.bottom]],
+  zones,
+);
+const pathGen = d3.geoPath(projection as any);
+
+interface Feature { d: string; tertile: number | null; }
+function featuresFor(field: string): Feature[] {
+  return (zones.features as any[]).map((f) => ({
+    d: pathGen(f) ?? "",
+    tertile: f.properties[field],
+  }));
+}
+const cordonD = pathGen(cordon.features[0]) ?? "";
+---
+<figure class="strata-maps-figure">
+  <div class="panels">
+    {PANELS.map((p) => (
+      <div class="panel">
+        <p class="panel-title">{p.title}</p>
+        <svg
+          viewBox={`0 0 ${W} ${H}`}
+          role="img"
+          aria-label={`NYC neighborhoods grouped by ${p.title.toLowerCase()} tertile`}
+        >
+          {featuresFor(p.field).map((f) => (
+            <path
+              d={f.d}
+              fill={f.tertile != null ? TERT_COLORS[f.tertile - 1] : "var(--bg-deep)"}
+              class="zone-poly"
+            />
+          ))}
+          <path d={cordonD} class="cordon-line" fill="none" />
+        </svg>
+        <div class="legend">
+          {p.tertileLabels.map((lbl, i) => (
+            <span class="legend-item">
+              <span class="legend-swatch" style={`background: ${TERT_COLORS[i]}`}></span>
+              {lbl}
+            </span>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+</figure>
+
+<style>
+  .strata-maps-figure {
+    margin: var(--s-5) auto;
+    /* full-width per the brief — break out of the wrap-narrow container */
+    max-width: min(100vw, 1600px);
+    width: 100%;
+  }
+  .panels {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--s-3);
+    padding: 0 var(--gutter);
+  }
+  .panel { text-align: center; }
+  .panel svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    cursor: zoom-in;
+  }
+  .panel-title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.125rem;
+    color: var(--ink);
+    margin: 0 0 var(--s-1);
+    text-align: center;
+    max-width: none;
+  }
+  .zone-poly {
+    stroke: var(--bg);
+    stroke-width: 0.4;
+    transition: stroke-width var(--d) var(--ease);
+  }
+  .zone-poly:hover { stroke: var(--ink); stroke-width: 1.2; }
+  .cordon-line {
+    stroke: var(--zone);
+    stroke-width: 1.8;
+  }
+  .legend {
+    display: flex;
+    justify-content: center;
+    gap: var(--s-2);
+    margin-top: var(--s-2);
+    font-family: var(--font-mono);
+    font-size: var(--t-meta);
+    color: var(--ink-muted);
+    flex-wrap: wrap;
+  }
+  .legend-item { display: inline-flex; align-items: center; gap: 6px; }
+  .legend-swatch {
+    display: inline-block;
+    width: 14px;
+    height: 10px;
+    border: 0.5px solid var(--rule);
+    border-radius: 1px;
+  }
+  @media (max-width: 900px) {
+    .panels { grid-template-columns: 1fr; gap: var(--s-4); }
+  }
+</style>
+
+<script type="module" is:inline define:vars={{}}>
+  // Click-to-zoom on each panel
+  document.querySelectorAll(".strata-maps-figure .panel svg").forEach((svg) => {
+    svg.addEventListener("click", () => {
+      const overlay = document.createElement("div");
+      overlay.className = "zoom-overlay";
+      overlay.style.cssText = `
+        position: fixed; inset: 0; background: rgba(28,18,10,0.94);
+        display: flex; align-items: center; justify-content: center;
+        cursor: zoom-out; z-index: 9999; padding: 32px;
+      `;
+      const clone = svg.cloneNode(true);
+      clone.style.cssText = "max-width: 95vw; max-height: 90vh; width: auto; height: auto;";
+      overlay.appendChild(clone);
+      overlay.addEventListener("click", () => overlay.remove());
+      document.addEventListener("keydown", function escHandler(e) {
+        if (e.key === "Escape") {
+          overlay.remove();
+          document.removeEventListener("keydown", escHandler);
+        }
+      });
+      document.body.appendChild(overlay);
+    });
+  });
+</script>

@@ -1,0 +1,26 @@
+{
+  "n_cordon_pixels": 24,
+  "n_rest_pixels": 817,
+  "n_bootstrap": 2000,
+  "method": "pixel-level bootstrap on TROPOMI monthly-grid means; real_pre / real_post / plac_pre / plac_post averaged separately so each pct uses its own window's pre as denominator. NYC mask = union of TLC taxi-zone polygons.",
+  "real_window": {
+    "cordon_pct": -5.530670640142356,
+    "rest_pct": -3.669611077799254,
+    "gap_pp": -1.8610595623431019,
+    "gap_ci_pp": [
+      -2.2554519832999174,
+      -1.4624366934299886
+    ]
+  },
+  "placebo_window": {
+    "cordon_pct": 0.5306830290918747,
+    "rest_pct": -1.6057681511155302,
+    "gap_pp": 2.1364511802074047
+  },
+  "did_of_dids_pp": -3.9975107425505065,
+  "did_of_dids_ci_pp": [
+    -4.545729905548831,
+    -3.4421781666532687
+  ],
+  "caveat": "Pixel-level bootstrap; understates precision modestly due to ~5km TROPOMI spatial autocorrelation. Cordon n=24 pixels, rest of NYC n=~840. Bootstrap n=2,000."
+}

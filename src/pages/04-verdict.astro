@@ -1,0 +1,248 @@
+---
+import Base from "@layouts/Base.astro";
+import VerdictHeadline from "@components/VerdictHeadline.astro";
+import SynthesisFlow from "@components/SynthesisFlow.astro";
+import ConfidenceAxis from "@components/ConfidenceAxis.astro";
+import { BASE } from "@/lib/site";
+---
+<Base
+  title="Verdict"
+  description="A synthesis of what this analysis suggests, what remains uncertain, and where the analysis reaches its limits."
+>
+  <VerdictHeadline />
+
+  <section class="wrap section" style="border-top: 0; padding-top: 0;">
+    <p class="eyebrow">Chapter 04 · Verdict</p>
+    <h1>What the Evidence Suggests, What Remains Uncertain, and Where the Analysis Reaches Its Limits.</h1>
+  </section>
+
+  <section class="wrap section">
+    <p class="eyebrow">The clearest finding</p>
+    <h2>A Measurable, Modest, Spatially Coherent Improvement.</h2>
+    <p>
+      The evidence suggests congestion pricing was associated with measurable
+      improvements in air quality over Manhattan's congestion zone.
+      Satellite-measured nitrogen dioxide declined more over Manhattan below
+      60th Street than over the rest of the city, and the placebo comparison
+      suggests this gap exceeds ordinary year-to-year atmospheric variation.
+      The signal is modest in magnitude but spatially coherent and
+      methodologically robust.
+    </p>
+  </section>
+
+  <section class="wrap section">
+    <p class="eyebrow">Findings that proved smaller or conditional</p>
+    <h2>Vehicle Entries Down, Transit Up Unevenly, Taxi Spillover Not Detected.</h2>
+    <p>
+      Bridge and tunnel volume declined modestly — a real but small
+      reduction in vehicle entries beyond ordinary fluctuation.
+    </p>
+    <p>
+      Bus ridership gained substantially above its placebo trajectory, but
+      that result overlaps with the June 2025 MTA service expansion in
+      Queens and the addition of enhanced routes citywide. Subway gained
+      more cleanly. Commuter-rail modes declined in both real and placebo
+      windows, suggesting recovery saturation rather than a congestion-zone
+      effect.
+    </p>
+    <p>
+      The taxi-spillover hypothesis was tested across four predictions and
+      did not appear consistently in yellow-taxi data. FHV records were
+      unavailable at zone resolution.
+    </p>
+  </section>
+
+  <section class="wrap section">
+    <p class="eyebrow">What the analysis did not measure</p>
+    <h2>Different Instruments, Different Scales, Different Answers.</h2>
+    <p>
+      The Columbia and South Bronx Unite study, released as this analysis
+      was being completed, reports PM2.5 increases at 17 of 19 ground
+      monitors in the South Bronx during the congestion zone's first year,
+      especially near major expressways. The satellite used here cannot
+      resolve those neighborhood-block changes.
+    </p>
+    <p>
+      FHV and Uber/Lyft trip records were unavailable at zone resolution.
+      Indoor air, individual exposure, and longer-term trajectories are
+      outside this dataset's scope. None of those gaps are evidence that the
+      corresponding effects did not occur — they are evidence that this
+      analysis cannot speak to them.
+    </p>
+  </section>
+
+  <section class="wrap section">
+    <p class="eyebrow">The structure of the analysis</p>
+    <h2>Four Lines of Evidence, Four Different Verdicts.</h2>
+    <p>
+      The congestion zone anchored four parallel investigations. Each
+      addressed a different question and reached a different conclusion.
+    </p>
+    <SynthesisFlow />
+  </section>
+
+  <section class="wrap section">
+    <p class="eyebrow">Where each claim sits</p>
+    <h2>The Strength of the Evidence, on One Axis.</h2>
+    <p>
+      The flow above shows what was tested. This axis shows how strongly
+      the data supports each claim. Claims to the right are well-supported;
+      claims to the left rest on weaker or partial evidence.
+    </p>
+    <ConfidenceAxis />
+  </section>
+
+  <section class="wrap section">
+    <p class="eyebrow">What appears to matter most</p>
+    <h2>Transportation Alternatives Shape Environmental Outcomes.</h2>
+
+    <p>
+      The strongest pollution reductions appeared in and around
+      neighborhoods already structured around lower automobile dependence
+      and higher transit use. Areas with larger shares of transit
+      commuters and households without vehicles generally experienced
+      larger or comparable nitrogen dioxide declines relative to the
+      congestion zone itself.
+    </p>
+
+    <p>
+      This suggests the effects of congestion pricing may depend less on
+      the toll alone than on the transportation system surrounding it.
+      Pricing can discourage vehicle entry, but the ability to shift
+      behavior appears closely tied to the availability of viable
+      alternatives — especially subways and buses capable of absorbing
+      displaced trips.
+    </p>
+
+    <p>
+      The findings do not suggest transit access alone determines air
+      quality outcomes, nor that all communities benefited equally. But
+      they do suggest that transportation infrastructure and mobility
+      access are central to whether traffic-reduction policies translate
+      into measurable environmental change.
+    </p>
+  </section>
+
+  <section class="wrap section">
+    <p class="eyebrow">A measured interpretation</p>
+    <h2>Real, Modest, Uneven.</h2>
+
+    <p>
+      Congestion pricing appears associated with a measurable, spatially
+      coherent reduction in nitrogen dioxide pollution over Manhattan's
+      congestion zone. The effect was modest in magnitude, unevenly
+      distributed, and strongest in areas already structured around lower
+      automobile dependence and higher transit use.
+    </p>
+
+    <p>
+      The findings suggest congestion pricing alone is not the entire
+      story. The policy appears to work most clearly where residents
+      already have viable alternatives to driving. In that sense, the
+      analysis points not only to pricing, but to transportation access
+      itself, as a key condition shaping whether traffic-reduction
+      policies translate into measurable environmental improvement.
+    </p>
+
+    <p>
+      At the same time, important uncertainties remain unresolved. Some
+      neighborhoods bordering major expressways may have absorbed pollution
+      burdens this satellite analysis cannot fully detect, and the broader
+      health impacts of the policy remain outside the scope of this
+      dataset.
+    </p>
+
+    <p>
+      The evidence supports a narrower but more defensible conclusion than
+      much of the public debate suggests: congestion pricing produced a
+      detectable environmental signal, but the scale, distribution, and
+      long-term consequences of that signal remain uneven and only
+      partially resolved.
+    </p>
+  </section>
+
+  <section class="wrap section">
+    <a class="next-card" href={`${BASE}/01-air/`}>
+      <span class="next-eyebrow">Re-read · Chapter 01</span>
+      <span class="next-title">The Air</span>
+      <span class="next-tease">Back to the centerpiece finding.</span>
+    </a>
+  </section>
+</Base>
+
+<style>
+  .scorecard {
+    list-style: none;
+    padding: 0;
+    margin: var(--s-4) auto 0;
+    max-width: 880px;
+    border-top: 1px solid var(--rule);
+  }
+  .score-item {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: var(--s-3);
+    align-items: baseline;
+    padding: var(--s-3) 0;
+    border-bottom: 1px solid var(--rule);
+    text-align: left;
+  }
+  .score-tag {
+    font-family: var(--font-mono);
+    font-size: var(--t-meta);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-align: left;
+  }
+  .score-strong   .score-tag { color: var(--improve); }
+  .score-moderate .score-tag { color: var(--ink); }
+  .score-weak     .score-tag { color: var(--zone); }
+  .score-label {
+    font-family: var(--font-display);
+    font-size: var(--t-body);
+    line-height: 1.5;
+    color: var(--ink);
+    text-align: left;
+    max-width: none;
+  }
+  @media (max-width: 720px) {
+    .score-item { grid-template-columns: 1fr; gap: var(--s-1); }
+  }
+
+  .next-card {
+    display: block;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    padding: var(--s-4) 0;
+    text-align: center;
+    color: var(--ink);
+    border-bottom: 1px solid var(--rule);
+    transition: background var(--d) var(--ease);
+  }
+  .next-card:hover { background: color-mix(in srgb, var(--zone) 6%, transparent); }
+  .next-eyebrow {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: var(--t-meta);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--zone);
+    margin-bottom: var(--s-1);
+  }
+  .next-title {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 1.625rem;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: var(--s-1);
+  }
+  .next-tease {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    color: var(--ink-muted);
+    max-width: 50ch;
+    margin: 0 auto;
+  }
+</style>
